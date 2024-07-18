@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+:root {
+    --background: theme('colors.white');
+    --color_main: theme('colors.zinc.100');
+    --color_sec: theme('colors.white');
+    --color_text: theme('colors.zinc.800');
+    --color_icons: theme('colors.zinc.800');
+    --btn_logout: theme('colors.red.100');
+    --border_detail: theme('colors.zinc.200');
+}
+/*
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: theme('colors.stone.800');
+        --color_main: theme('colors.stone.900');
+        --color_sec: theme('colors.stone.800');
+        --color_text: theme('colors.white');
+        --color_icons: theme('colors.white');
+        --btn_logout: theme('colors.red.500');
+        --border_detail: theme('colors.zinc.600');
+    }
+}*/
