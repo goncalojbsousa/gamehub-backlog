@@ -1,5 +1,5 @@
 {
-  "name": "authjs",
+  "name": "gamehub-project",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
   "dependencies": {
     "@auth/pg-adapter": "^1.4.1",
     "@hookform/resolvers": "^3.9.0",
+    "html-escaper": "^3.0.3",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.5",
     "next-auth": "^5.0.0-beta.19",
@@ -20,11 +21,15 @@
     "react-dom": "^18",
     "react-hook": "^0.0.1",
     "react-hook-form": "^7.52.1",
-    "react-icons": "^5.2.1"
+    "react-icons": "^5.2.1",
+    "react-multi-carousel": "^2.8.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/html-escaper": "^3.0.2",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
+    "@types/node-schedule": "^2.1.7",
     "@types/nodemailer": "^6.4.15",
     "@types/pg": "^8.11.6",
     "@types/react": "^18",
