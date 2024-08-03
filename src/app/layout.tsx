@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <SessionProvider>
         <UserProvider>
-          <body className={`${inter.className} bg-background`}>{children}</body>
+          <body className={`${inter.className} bg-background transition-colors duration-200`}>{children}</body>
         </UserProvider>
       </SessionProvider>
     </html>

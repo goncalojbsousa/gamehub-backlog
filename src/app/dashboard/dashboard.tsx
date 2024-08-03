@@ -10,15 +10,17 @@ import { useSession } from "next-auth/react";
 import { getUserRole } from "@/src/lib/auth/getUserRoleServerAction";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/src/components/navbar/navbar";
-import { getUserImage } from "@/src/lib/auth/getUserImageServerAction copy";
+import { getUserImage } from "@/src/lib/auth/getUserImageServerAction";
+import { useUser } from "@/src/context/userContext";
 
 export const DashboardPage: React.FC = () => {
     const [isAccountLinked, setIsAccountLinked] = useState(false);
-    const [username, setUsername] = useState("");
-    const [userImage, setUserImage] = useState("");
     const [role, setUserRole] = useState("");
     const { update } = useSession();
     const router = useRouter();
+
+    const { username, userImage, setUsername, setUserImage } = useUser();
+
 
     useEffect(() => {
         const userInfo = async () => {
@@ -53,7 +55,7 @@ export const DashboardPage: React.FC = () => {
 
     return (
         <main>
-            <Navbar isAuthenticated={true} />
+            <Navbar />
             <div className="flex flex-col justify-center items-center mt-10">
                 <h2 className="text-xl mb-4">Dashboard</h2>
                 <div className="flex flex-col justify-center items-center w-80 p-8 rounded-lg shadow-md bg-white text-center">

@@ -1,6 +1,35 @@
 'use server'
 
-export const fetchGamesBySearch = async (query: string) => {
+import { checkRateLimit } from '@/src/utils/rateLimit';
+import { headers } from 'next/headers';
+
+/**
+ * 
+ * @param query Search tearm that the user introduced
+ * @returns {Game[]} Array of games
+ */
+export const fetchGamesBySearch = async (query: string): Promise<Game[]> => {
+
+    if (!/^[\p{L}\p{N} áàâãéèêíïóôõöúçñ:_\-']{1,100}$/u.test(query)) {
+        throw new Error('Invalid query');
+    }
+
+    // GET CLIENT IP
+    const headersList = headers();
+    const clientIp = headersList.get('x-forwarded-for') || 'unknown';
+
+    if (typeof clientIp !== 'string') {
+        throw new Error('Access temporarily blocked. Try again later.');
+    }
+
+    if (clientIp === 'unknown') {
+        throw new Error('Access temporarily blocked. Try again later.');
+    }
+
+    if (!(await checkRateLimit(clientIp))) {
+        throw new Error('Limit rate exceeded. Try again later.');
+    }
+
     try {
         const IGDB_PROXY_URL = process.env.IGDB_PROXY_URL;
         const IGDB_API_URL = `${IGDB_PROXY_URL}v4/games`;
@@ -10,7 +39,7 @@ export const fetchGamesBySearch = async (query: string) => {
         const origin = process.env.NEXTAUTH_URL;
 
         if (!clientID || !accessToken || !origin) {
-            throw new Error('Client ID ou Access Token ou Origin não definidos');
+            throw new Error('Client ID or Access Token or Origin not defined');
         }
 
         const response = await fetch(IGDB_API_URL, {
@@ -49,6 +78,6 @@ export const fetchGamesBySearch = async (query: string) => {
 
     } catch (error) {
         console.error('Error fetching games from IGDB:', error);
-        throw error;
+        throw new Error('An error occurred while searching for games. Please try again later.');
     }
 }
