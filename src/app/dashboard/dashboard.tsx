@@ -19,7 +19,7 @@ export const DashboardPage: React.FC = () => {
     const { update } = useSession();
     const router = useRouter();
 
-    const { username, userImage, setUsername, setUserImage } = useUser();
+    const { username, setUsername, setUserImage } = useUser();
 
 
     useEffect(() => {
@@ -51,7 +51,7 @@ export const DashboardPage: React.FC = () => {
 
         userInfo();
         accountLinkStatus();
-    }, []);
+    }, [setUserImage, setUsername]);
 
     return (
         <main>

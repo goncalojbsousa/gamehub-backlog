@@ -151,7 +151,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                                 <p className="text-color_text p-2">Involved Companies:</p>
                                 {game.involved_companies.map(involved_companie => (
                                     involved_companie.company.logo?.url && (
-                                        <div key={involved_companie.company.id} className="flex p-2 hover:bg-color_main rounded-lg transition-colors duration-200" key={involved_companie.company.id}>
+                                        <div key={involved_companie.company.id} className="flex p-2 hover:bg-color_main rounded-lg transition-colors duration-200">
                                             <Image
                                                 className="w-16 rounded-lg mr-2"
                                                 width={1280}
