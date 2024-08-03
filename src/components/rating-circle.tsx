@@ -1,12 +1,18 @@
 import React from 'react';
 
-export const RatingCircle = ({ score, size = 100, strokeWidth = 4 }) => {
+interface RatingCircleProps {
+  score: number;
+  size?: number;
+  strokeWidth?: number;
+}
+
+export const RatingCircle: React.FC<RatingCircleProps> = ({ score, size = 100, strokeWidth = 4 }) => {
   const normalizedScore = Math.min(100, Math.max(0, score));
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (normalizedScore / 100) * circumference;
 
-  const getColor = (score) => {
+  const getColor = (score: number) => {
     if (score <= 25) return '#FF0000';
     if (score <= 50) return '#FFA500';
     if (score <= 75) return '#FFFF00';
