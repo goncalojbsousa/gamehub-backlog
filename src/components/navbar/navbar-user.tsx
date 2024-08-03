@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { SignOutButton } from "../sign-out-button";
 import Link from "next/link";
+import Image from "next/image";
 
 interface UserProps {
     username: string;
@@ -43,8 +44,10 @@ export const NavbarUser: React.FC<UserProps> = ({ username, userImage }) => {
 
     return (
         <>
-            <img
+            <Image
                 ref={profilePicRef}
+                width={200}
+                height={200}
                 src={userImage ? userImage : "/placeholder-user.jpg"} alt="Profile picture"
                 className="w-10 rounded-full cursor-pointer"
                 draggable="false"

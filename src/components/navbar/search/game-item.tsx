@@ -4,6 +4,7 @@ import { categories } from "@/src/constants/categories";
 import { convertUnixToDate, getCoverBigUrl } from "@/src/utils/utils";
 import Link from "next/link";
 import { RatingCircle } from "@/src/components/rating-circle";
+import Image from "next/image";
 
 interface GameItemProps {
     game: Game;
@@ -12,7 +13,14 @@ interface GameItemProps {
 export const GameItem: React.FC<GameItemProps> = ({ game }) => (
     <div key={game.id} className="flex p-2 rounded-md hover:bg-color_main">
         <Link href={`/game/${game.slug}`} className="flex w-full">
-            <img src={getCoverBigUrl(game.cover.url)} alt="" className="w-20 rounded-md" draggable="false" />
+            <Image
+                src={"https:" + getCoverBigUrl(game.cover.url)}
+                width={264}
+                height={374}
+                alt=""
+                className="w-20 rounded-md"
+                draggable="false"
+            />
             <div className="flex flex-col space-x-2 flex-grow">
                 <div className="flex space-x-1">
                     <p className="ml-2">{game.name || 'Unknown Name'}</p>

@@ -1,4 +1,5 @@
 import { getScreenShotImageUrl } from '@/src/utils/utils';
+import Image from 'next/image';
 
 interface Screenshot {
     url: string;
@@ -15,9 +16,11 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
         <div className="w-full md:w-2/2 px-2 flex flex-col justify-start items-center">
             {selectedScreenshot &&
                 <div className="mb-4">
-                    <img
-                        src={getScreenShotImageUrl(selectedScreenshot.url)}
+                    <Image
+                        src={"https:" + getScreenShotImageUrl(selectedScreenshot.url)}
                         alt=""
+                        width={1920}
+                        height={1080}
                         className="w-full rounded-lg"
                         draggable={false}
                     />
@@ -27,9 +30,11 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
             {screenshots &&
                 <div className="flex overflow-x-auto">
                     {screenshots.map((screenshot, index) => (
-                        <img
+                        <Image
                             key={index}
-                            src={getScreenShotImageUrl(screenshot.url)}
+                            src={"https:" + getScreenShotImageUrl(screenshot.url)}
+                            width={1920}
+                            height={1080}
                             alt="Game screenshot"
                             className="w-20 object-cover mr-2 cursor-pointer rounded"
                             onClick={() => onSelectScreenshot(screenshot)}

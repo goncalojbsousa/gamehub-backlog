@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { convertUnixToDate, getCoverImageUrl } from "@/src/utils/utils";
 import { RatingCircle } from "@/src/components/rating-circle";
+import Image from "next/image";
 
 interface GameInfoProps {
     game: Game;
@@ -29,9 +30,11 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
             {
                 game.cover && (
                     <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
-                        <img
-                            src={getCoverImageUrl(game.cover.url)}
+                        <Image
+                            src={"https:" + getCoverImageUrl(game.cover.url)}
                             alt={game.name}
+                            width={1280}
+                            height={720}
                             className="w-full rounded-lg mb-2"
                             draggable={false}
                         />
@@ -50,8 +53,8 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                             <div className="flex flex-col p-2 pb-0">
                                 <p className="text-color_text">Genres:</p>
                                 <div className="text-color_text_sec flex gap-1 p-1 flex-wrap">
-                                    {game.genres.map(genre => (
-                                        <p className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{genre.name}</p>
+                                    {game.genres.map((genre, index) => (
+                                        <p key={index} className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{genre.name}</p>
                                     ))}
                                 </div>
                             </div>
@@ -61,8 +64,8 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                             <div className="flex flex-col p-2 pb-0">
                                 <p className="text-color_text">Themes:</p>
                                 <div className="text-color_text_sec flex flex-wrap gap-1 p-1">
-                                    {game.themes.map(theme => (
-                                        <p className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{theme.name}</p>
+                                    {game.themes.map((theme, index) => (
+                                        <p key={index} className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{theme.name}</p>
                                     ))}
                                 </div>
                             </div>
@@ -72,8 +75,8 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                             <div className="flex flex-col p-2 pb-0">
                                 <p className="text-color_text">Perspective:</p>
                                 <div className="text-color_text_sec flex flex-wrap gap-1 p-1">
-                                    {game.player_perspectives.map(player_perspective => (
-                                        <p className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{player_perspective.name}</p>
+                                    {game.player_perspectives.map((player_perspective, index) => (
+                                        <p key={index} className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{player_perspective.name}</p>
                                     ))}
                                 </div>
                             </div>
@@ -83,8 +86,8 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                             <div className="flex flex-col p-2 pb-0">
                                 <p className="text-color_text">Game modes:</p>
                                 <div className="text-color_text_sec flex flex-wrap gap-1 p-1">
-                                    {game.game_modes.map(game_mode => (
-                                        <p className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{game_mode.name}</p>
+                                    {game.game_modes.map((game_mode, index) => (
+                                        <p key={index} className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{game_mode.name}</p>
                                     ))}
                                 </div>
                             </div>
@@ -148,10 +151,12 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                                 <p className="text-color_text p-2">Involved Companies:</p>
                                 {game.involved_companies.map(involved_companie => (
                                     involved_companie.company.logo?.url && (
-                                        <div className="flex p-2 hover:bg-color_main rounded-lg transition-colors duration-200" key={involved_companie.company.id}>
-                                            <img
+                                        <div key={involved_companie.company.id} className="flex p-2 hover:bg-color_main rounded-lg transition-colors duration-200" key={involved_companie.company.id}>
+                                            <Image
                                                 className="w-16 rounded-lg mr-2"
-                                                src={getCoverImageUrl(involved_companie.company.logo.url)}
+                                                width={1280}
+                                                height={720}
+                                                src={"https:" + getCoverImageUrl(involved_companie.company.logo.url)}
                                                 alt={involved_companie.company.name} />
                                             <div>
                                                 <p className="text-color_text">{involved_companie.company.name}</p>
