@@ -20,8 +20,8 @@ interface GamePageProps {
 export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
     const [selectedScreenshot, setSelectedScreenshot] = useState(game.screenshots[0]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState('');
-    const [selectedProgress, setSelectedProgress] = useState('');
+    const [selectedOption, setSelectedOption] = useState(userGameStatus?.status || '');
+    const [selectedProgress, setSelectedProgress] = useState(userGameStatus?.progress || '');
 
     const [currentOption, setCurrentOption] = useState(userGameStatus?.status || '');
     const [currentProgress, setCurrentProgress] = useState(userGameStatus?.progress || '');
