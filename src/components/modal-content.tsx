@@ -31,9 +31,12 @@ interface ModalProps {
     selectedProgress: string;
     handleProgressClick: (progress: string) => void;
     gameId: number;
+    setCurrentOption: React.Dispatch<React.SetStateAction<string>>;
+    setCurrentProgress: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, selectedOption, handleOptionClick, selectedProgress, handleProgressClick, gameId }) => {
+
+export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, selectedOption, handleOptionClick, selectedProgress, handleProgressClick, gameId, setCurrentOption, setCurrentProgress }) => {
     const { data: session } = useSession();
     const [isUpdating, setIsUpdating] = useState(false);
 
@@ -63,8 +66,10 @@ export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, se
                 throw new Error('Failed to update game status');
             }
 
+            setCurrentOption(selectedOption);
+            setCurrentProgress(selectedProgress);
+
             closeModal();
-            // update local state
         } catch (error) {
             console.error('Error updating game status:', error);
             alert('Failed to update game status. Please try again.');
