@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.4.1",
+    "@auth/prisma-adapter": "^2.4.2",
     "@hookform/resolvers": "^3.9.0",
+    "@prisma/client": "^5.17.0",
     "html-escaper": "^3.0.3",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.5",
@@ -37,6 +39,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
+    "prisma": "^5.17.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
