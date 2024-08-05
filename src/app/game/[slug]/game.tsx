@@ -49,16 +49,16 @@ export const GamePage: React.FC<GamePageProps> = ({ game }) => {
                 <div className="flex mt-2 items-center justify-between xl:px-24">
                     <div className="flex items-center p-3">
                         <h1 className="text-color_text text-2xl shadow-sm">{game.name}</h1>
-                        {game.version_title &&
+                        {/*game.version_title &&
                             <p className="text-color_text_sec text-lg ml-2 hidden md:flex shadow-sm">{"(" + game.version_title + ")"}</p>
-                        }
+                        */}
 
                         <p className="text-color_text_sec text-lg ml-2 hidden md:flex shadow-sm"> | {categories[game.category] || 'Unknown Category'}</p>
                     </div>
 
                     <div className="flex">
                         <button
-                            className="mr-4 text-white bg-blue-800 rounded-lg p-2 hover:bg-blue-950 transition-colors duration-200"
+                            className="mr-4 text-color_main bg-color_reverse_sec rounded-lg px-4 py-2 hover:bg-color_reverse transition-colors duration-200"
                             onClick={openModal}
                         >
                             + Add to List
