@@ -25,20 +25,18 @@ export const fetchGameDetails = async (query: string) => {
     try {
         const IGDB_PROXY_URL = process.env.IGDB_PROXY_URL;
         const IGDB_API_URL = `${IGDB_PROXY_URL}v4/games`;
-        const clientID = process.env.IGDB_CLIENT_ID;
-        const accessToken = process.env.IGDB_ACCESS_TOKEN;
+        const apiToken = process.env.IGDB_SECRET;
 
         const origin = process.env.NEXTAUTH_URL;
 
-        if (!clientID || !accessToken || !origin) {
-            throw new Error('Client ID or Access Token or Origin not defined');
+        if (!apiToken || !origin) {
+            throw new Error('Token or Origin not defined');
         }
         const response = await fetch(IGDB_API_URL, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Client-ID': clientID,
-                'Authorization': `Bearer ${accessToken}`,
+                'x-api-key': apiToken,
                 'Origin': origin,
             },
             body: `
