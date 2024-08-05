@@ -6,19 +6,25 @@ import { GamePageContent } from "@/src/components/game-page-content";
 import ScreenshotViewer from "@/src/components/game-screenshot-viewer";
 import { ModalContent } from "@/src/components/modal-content";
 import { Navbar } from "@/src/components/navbar/navbar";
+import { ProgressIcon } from "@/src/components/svg/progress";
+import { StatusIcon } from "@/src/components/svg/status";
 import { categories } from "@/src/constants/categories";
 import { getScreenShotImageUrl } from "@/src/utils/utils";
 import { useState } from "react";
 
 interface GamePageProps {
     game: Game;
+    userGameStatus: UserGameStatus | null;
 }
 
-export const GamePage: React.FC<GamePageProps> = ({ game }) => {
+export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
     const [selectedScreenshot, setSelectedScreenshot] = useState(game.screenshots[0]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedProgress, setSelectedProgress] = useState('');
+
+    const [currentOption, setCurrentOption] = useState(userGameStatus?.status || '');
+    const [currentProgress, setCurrentProgress] = useState(userGameStatus?.progress || '');
 
     const handleOptionClick = (option: string) => {
         setSelectedOption(option);
@@ -57,11 +63,25 @@ export const GamePage: React.FC<GamePageProps> = ({ game }) => {
                     </div>
 
                     <div className="flex">
+                        {
+                            currentOption && currentProgress && (
+                                <div className="flex">
+                                    <div className="flex items-center mr-4 px-4 py-2 rounded-lg border border-border_detail bg-color_sec hover:bg-color_main">
+                                        <StatusIcon className='fill-color_icons mr-2' />
+                                        <p className="text-color_text">{currentOption}</p>
+                                    </div>
+                                    <div className="flex items-center mr-4 px-4 py-2 rounded-lg border border-border_detail bg-color_sec hover:bg-color_main">
+                                        <ProgressIcon className='fill-color_icons mr-2' />
+                                        <p className="text-color_text">{currentProgress}</p>
+                                    </div>
+                                </div>
+                            )
+                        }
                         <button
                             className="mr-4 text-color_main bg-color_reverse_sec rounded-lg px-4 py-2 hover:bg-color_reverse transition-colors duration-200"
                             onClick={openModal}
                         >
-                            + Add to List
+                            {currentOption && currentProgress ? "+ Update" : "+ Add to List"}
                         </button>
                     </div>
                 </div>
@@ -96,6 +116,8 @@ export const GamePage: React.FC<GamePageProps> = ({ game }) => {
                 isModalOpen={isModalOpen}
                 closeModal={closeModal}
                 gameId={game.id}
+                setCurrentOption={setCurrentOption}
+                setCurrentProgress={setCurrentProgress}
             />
 
         </main>
