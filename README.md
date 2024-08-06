@@ -68,37 +68,37 @@ To run this project, you need to configure the following environment variables i
 ### White mode
 | Color               | Hexadecimal                                                |
 | ----------------- | ---------------------------------------------------------------- |
-| Background       | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) #ffffff |
-| Color main       | ![#f8f8f8](https://via.placeholder.com/10/f8f8f8?text=+) #f4f4f5 |
-| Color sec       | ![#00b48a](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
-| Color reverse       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #1c1917 |
-| Color reverse sec       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #292524 |
-| Color text       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #27272a |
-| Color text sec       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #4b5563 |
-| Color icons       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #27272a |
-| Color alert       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #fee2e2 |
-| Color border detail       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #e4e4e7 |
-| Color border detail sec       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #3b82f6 |
-| Color gradient start       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #ffffffcc |
-| Color gradient end       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
+| Background       | ![#ffffff](https://via.placeholder.com/10/0a192f?text=+) #ffffff |
+| Color main       | ![#f4f4f5](https://via.placeholder.com/10/f8f8f8?text=+) #f4f4f5 |
+| Color sec       | ![#ffffff](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
+| Color reverse       | ![#1c1917](https://via.placeholder.com/10/00b48a?text=+) #1c1917 |
+| Color reverse sec       | ![#292524](https://via.placeholder.com/10/00b48a?text=+) #292524 |
+| Color text       | ![#27272a](https://via.placeholder.com/10/00b48a?text=+) #27272a |
+| Color text sec       | ![#4b5563](https://via.placeholder.com/10/00b48a?text=+) #4b5563 |
+| Color icons       | ![#27272a](https://via.placeholder.com/10/00b48a?text=+) #27272a |
+| Color alert       | ![#fee2e2](https://via.placeholder.com/10/00b48a?text=+) #fee2e2 |
+| Color border detail       | ![#e4e4e7](https://via.placeholder.com/10/00b48a?text=+) #e4e4e7 |
+| Color border detail sec       | ![#3b82f6](https://via.placeholder.com/10/00b48a?text=+) #3b82f6 |
+| Color gradient start       | ![#ffffffcc](https://via.placeholder.com/10/00b48a?text=+) #ffffffcc |
+| Color gradient end       | ![#ffffff](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
 
 
 ### Dark mode
 | Color               | Hexadecimal                                                |
 | ----------------- | ---------------------------------------------------------------- |
-| Background       | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) #292524 |
-| Color main       | ![#f8f8f8](https://via.placeholder.com/10/f8f8f8?text=+) #1c1917 |
-| Color sec       | ![#00b48a](https://via.placeholder.com/10/00b48a?text=+) #292524 |
-| Color reverse       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #e4e4e7 |
-| Color reverse sec       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
-| Color text       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
-| Color text sec       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #9ca3af |
-| Color icons       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
-| Color alert       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #ef4444 |
-| Color border detail       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #52525b |
-| Color border detail sec       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #3b82f6 |
-| Color gradient start       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #292524b3 |
-| Color gradient end       | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #292524 |
+| Background       | ![#292524](https://via.placeholder.com/10/0a192f?text=+) #292524 |
+| Color main       | ![#1c1917](https://via.placeholder.com/10/f8f8f8?text=+) #1c1917 |
+| Color sec       | ![#292524](https://via.placeholder.com/10/00b48a?text=+) #292524 |
+| Color reverse       | ![#e4e4e7](https://via.placeholder.com/10/00b48a?text=+) #e4e4e7 |
+| Color reverse sec       | ![#ffffff](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
+| Color text       | ![#ffffff](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
+| Color text sec       | ![#9ca3af](https://via.placeholder.com/10/00b48a?text=+) #9ca3af |
+| Color icons       | ![#ffffff](https://via.placeholder.com/10/00b48a?text=+) #ffffff |
+| Color alert       | ![#ef4444](https://via.placeholder.com/10/00b48a?text=+) #ef4444 |
+| Color border detail       | ![#52525b](https://via.placeholder.com/10/00b48a?text=+) #52525b |
+| Color border detail sec       | ![#3b82f6](https://via.placeholder.com/10/00b48a?text=+) #3b82f6 |
+| Color gradient start       | ![#292524b3](https://via.placeholder.com/10/00b48a?text=+) #292524b3 |
+| Color gradient end       | ![#292524](https://via.placeholder.com/10/00b48a?text=+) #292524 |
 
 ## Authors
 
