@@ -30,37 +30,38 @@ Start the server
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Environment variables
+## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env
+To run this project, you need to configure the following environment variables in your `.env` file:
 
-Website URL
-`NEXTAUTH_URL`
+### Website URL (Domain)
+- `NEXTAUTH_URL`
 
-EMAIL PROVIDER // MAGIC LINK
-`EMAIL_FROM`
-`EMAIL_SERVER_HOST`
-`EMAIL_SERVER_PORT`
-`EMAIL_SERVER_USER`
-`EMAIL_SERVER_PASSWORD`
+### Email Provider (Magic Link)
+- `EMAIL_FROM`
+- `EMAIL_SERVER_HOST`
+- `EMAIL_SERVER_PORT`
+- `EMAIL_SERVER_USER`
+- `EMAIL_SERVER_PASSWORD`
 
-GOOGLE PROVIDER
-`AUTH_GOOGLE_ID`
-`AUTH_GOOGLE_SECRET`
+### Google
+#### Authentication Google Provider Credentials
+- `AUTH_GOOGLE_ID`
+- `AUTH_GOOGLE_SECRET`
 
-RECAPTCHA
-`NEXT_PUBLIC_reCAPTCHA_SITE_KEY`
-`reCAPTCHA_SECRET_KEY`
+#### reCAPTCHA
+- `NEXT_PUBLIC_reCAPTCHA_SITE_KEY`
+- `reCAPTCHA_SECRET_KEY`
 
-JWT SECRET
-`AUTH_SECRET`
+### JWT Secret
+- `AUTH_SECRET`
 
-IGDB SERVICE
-`IGDB_PROXY_URL`
-`IGDB_SECRET`
+### IGDB Service
+- `IGDB_PROXY_URL`
+- `IGDB_SECRET`
 
-DATABASE CONFIGURATION
-`DATABASE_URL`
+### Database Configuration
+- `DATABASE_URL`
 
 ## Color documentation
 
