@@ -136,7 +136,7 @@ All game data is provided by IGDB
 
 ## Inspirations
 
- - [Gamegator](gamegator.ne)
+ - [Gamegator](gamegator.net)
  - [Mathiewz Project](https://frontend-kofb4cduoq-od.a.run.app)
  - [Backloggd](https://backloggd.com)
  - [Infinite Backlog](https://infinitebacklog.net)
