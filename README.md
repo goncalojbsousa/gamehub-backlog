@@ -86,7 +86,7 @@ To run this project, you need to configure the following environment variables i
 ### Dark mode
 | Color               | Hexadecimal                                                |
 | ----------------- | ---------------------------------------------------------------- |
-| Background       | ![#292524](https://via.placeholder.com/10/0a192f?text=+) #292524 |
+| Background       | #292524 |
 | Color main       | ![#1c1917](https://via.placeholder.com/10/f8f8f8?text=+) #1c1917 |
 | Color sec       | ![#292524](https://via.placeholder.com/10/00b48a?text=+) #292524 |
 | Color reverse       | ![#e4e4e7](https://via.placeholder.com/10/00b48a?text=+) #e4e4e7 |
