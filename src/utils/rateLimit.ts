@@ -1,78 +1,81 @@
 'use server'
 
-import { pool } from "@/src/lib/postgres";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 const MAX_REQUESTS_PER_MINUTE = 20; // 20 REQUEST PER MINUTE
-const BLOCK_DURATION = 5 * 60 * 1000; // 5 MINUTES
+const BLOCK_DURATION = 5 * 60; // 5 MINUTES (in seconds)
 const BLOCK_THRESHOLD = 3; // NUMBER OF VIOLATIONS BEFORE BLOCKING
 
 /**
  * Checks if the client has exceeded the rate limit.
  * @param clientIp The IP address of the client.
- * @returns {boolean} True if the request is allowed, false otherwise.
+ * @returns {Promise<boolean>} True if the request is allowed, false otherwise.
  */
 export async function checkRateLimit(clientIp: string): Promise<boolean> {
-    const client = await pool.connect();
+    const now = new Date();
 
     try {
-        await client.query('BEGIN');
+        // Check if the user is blocked
+        const block = await prisma.rateLimitBlock.findUnique({
+            where: {
+                ip: clientIp,
+                block_until: { gt: now }
+            }
+        });
 
-        const now = Math.floor(Date.now() / 1000);
-
-        // Verifique se o usuário está bloqueado
-        const blockResult = await client.query(
-            'SELECT block_until FROM rate_limit_blocks WHERE ip = $1 AND block_until > $2',
-            [clientIp, now]
-        );
-
-        if (blockResult.rows.length > 0) {
-            await client.query('COMMIT');
+        if (block) {
             return false;
         }
 
-        // Conte as requisições na última janela de 1 minuto
-        const countResult = await client.query(
-            'SELECT COUNT(*) FROM rate_limit_requests WHERE ip = $1 AND timestamp > $2',
-            [clientIp, now - 60]
-        );
-
-        const requestCount = parseInt(countResult.rows[0].count);
+        // Count requests in the last minute
+        const oneMinuteAgo = new Date(now.getTime() - 60000);
+        const requestCount = await prisma.rateLimitRequest.count({
+            where: {
+                ip: clientIp,
+                timestamp: { gt: oneMinuteAgo }
+            }
+        });
 
         if (requestCount >= MAX_REQUESTS_PER_MINUTE) {
-            // Incrementar violações
-            const violationResult = await client.query(
-                'INSERT INTO rate_limit_violations (ip, violations) VALUES ($1, 1) ON CONFLICT (ip) DO UPDATE SET violations = rate_limit_violations.violations + 1 RETURNING violations',
-                [clientIp]
-            );
+            // Increment violations
+            const violation = await prisma.rateLimitViolation.upsert({
+                where: { ip: clientIp },
+                update: { violations: { increment: 1 } },
+                create: { ip: clientIp, violations: 1 }
+            });
 
-            const violations = violationResult.rows[0].violations;
-
-            if (violations >= BLOCK_THRESHOLD) {
-                await client.query(
-                    'INSERT INTO rate_limit_blocks (ip, block_until) VALUES ($1, $2) ON CONFLICT (ip) DO UPDATE SET block_until = $2',
-                    [clientIp, now + BLOCK_DURATION]
-                );
+            if (violation.violations >= BLOCK_THRESHOLD) {
+                const blockUntil = new Date(now.getTime() + BLOCK_DURATION * 1000);
+                await prisma.rateLimitBlock.upsert({
+                    where: { ip: clientIp },
+                    update: { block_until: blockUntil },
+                    create: { ip: clientIp, block_until: blockUntil }
+                });
             }
 
-            await client.query('COMMIT');
             return false;
         }
 
-        // Adicionar nova requisição
-        await client.query(
-            'INSERT INTO rate_limit_requests (ip, timestamp) VALUES ($1, $2)',
-            [clientIp, now]
-        );
+        // Add new request
+        await prisma.rateLimitRequest.create({
+            data: {
+                ip: clientIp,
+                timestamp: now
+            }
+        });
 
-        // Resetar violações se estiver dentro do limite
-        await client.query('DELETE FROM rate_limit_violations WHERE ip = $1', [clientIp]);
+        // Reset violations if within limit
+        await prisma.rateLimitViolation.delete({
+            where: { ip: clientIp }
+        }).catch(() => {}); // Ignore if no violation exists
 
-        await client.query('COMMIT');
         return true;
     } catch (e) {
-        await client.query('ROLLBACK');
+        console.error('Error in rate limiting:', e);
         throw e;
     } finally {
-        client.release();
+        await prisma.$disconnect();
     }
 }

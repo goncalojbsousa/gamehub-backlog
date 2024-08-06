@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name          String?   @db.VarChar(255)
+  email         String?   @unique @db.VarChar(255)
+  emailVerified DateTime? @db.Timestamptz
+  image         String?
+  role          AuthRole  @default(USER)
+  accounts      Account[]
+  gameStatus    UserGameStatus[]
+}
+
+model Account {
+  id                String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime @db.Timestamptz
+
+  @@id([identifier, token])
+}
+
+model RateLimitRequest {
+  id        Int      @id @default(autoincrement())
+  ip        String   @db.VarChar(45)
+  timestamp DateTime @db.Timestamptz
+
+  @@index([ip, timestamp], name: "idx_rate_limit_requests_ip_timestamp")
+}
+
+model RateLimitViolation {
+  ip         String @id @db.VarChar(45)
+  violations Int
+}
+
+model RateLimitBlock {
+  ip         String   @id @db.VarChar(45)
+  block_until DateTime @db.Timestamptz
+}
+
+model UserGameStatus {
+  id        Int      @id @default(autoincrement())
+  userId    String   @db.Uuid
+  gameId    Int
+  status    String   @db.VarChar(20)
+  progress  String   @db.VarChar(20)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @default(now()) @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, gameId], name: "idx_user_game_status")
+  @@unique([userId, gameId])
+}

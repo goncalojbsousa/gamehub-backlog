@@ -1,14 +1,16 @@
-import PostgresAdapter from "@auth/pg-adapter";
 import NextAuth from "next-auth";
-import { pool } from "@/src/lib/postgres";
 import Google from "next-auth/providers/google";
 import Nodemailer from "next-auth/providers/nodemailer";
 import { clearStaleTokens } from "@/src/lib/auth/clearStaleTokenServerAction";
 import { setName } from "@/src/lib/auth/setNameServerAction";
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaClient } from "@prisma/client"
+
+const prisma = new PrismaClient()
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     trustHost: true,
-    adapter: PostgresAdapter(pool),
+    adapter: PrismaAdapter(prisma),
     secret: process.env.AUTH_SECRET,
     session: {
         strategy: "jwt",

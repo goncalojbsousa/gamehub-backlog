@@ -15,9 +15,16 @@ export const AdminPage: React.FC = () => {
       const resUsers = await getAllUsers(limit, offset);
       if (resUsers) {
         if (resUsers.length === 0) {
-          setHasMoreUsers(false); // No more users to load
+          setHasMoreUsers(false); // NO MORE USERS TO LOAD
         }
-        setUsers(resUsers);
+        // VALUES CANT BE NULL
+        const transformedUsers = resUsers.map(user => ({
+          ...user,
+          name: user.name ?? '',
+          email: user.email ?? '',
+          image: user.image ?? ''
+        }));
+        setUsers(transformedUsers);
       }
     }
     getUsers();
@@ -42,7 +49,7 @@ export const AdminPage: React.FC = () => {
         <p>This Page is only accessible to users with the ADMIN role</p>
         <a className="text-blue-500" href="/dashboard">Go to Dashboard</a>
       </div>
-      
+
       <div className="overflow-x-auto mt-8">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>

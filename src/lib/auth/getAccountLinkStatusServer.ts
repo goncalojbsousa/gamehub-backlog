@@ -1,7 +1,9 @@
 'use server'
 
 import { auth } from "@/src/lib/auth/authConfig";
-import { pool } from "@/src/lib/postgres";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const getAccountLinkStatus = async () => {
     const session = await auth();
@@ -20,16 +22,17 @@ export const getAccountLinkStatus = async () => {
 
     // CHECK IF USER HAS A GOOGLE ACCOUNT LINKED
     try {
-        const result = await pool.query(
-            "SELECT EXISTS (SELECT 1 FROM accounts WHERE provider = 'google' AND \"userId\" = $1)",
-            [uuid]
-        );
-        if (!result.rows[0].exists) {
-            return false;
-        };
+        const account = await prisma.account.findFirst({
+            where: {
+                provider: 'google',
+                userId: uuid
+            }
+        });
+        return !!account;
     } catch (error) {
         console.error("Failed to check if user has google account linked", error)
-    };
-
-    return true;
+        return false;
+    } finally {
+        await prisma.$disconnect()
+    }
 }
