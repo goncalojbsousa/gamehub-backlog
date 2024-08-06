@@ -3,7 +3,8 @@ import Modal from '@/src/components/modal';
 import { ProgressIcon } from './svg/progress';
 import { StatusIcon } from './svg/status';
 import { GameControlerIcon } from './svg/game-controler';
-import { useSession } from 'next-auth/react';
+import { checkIsAuthenticated } from '../lib/auth/checkIsAuthenticated';
+import { getUserId } from '../lib/auth/getUserIdServerAction';
 
 interface ButtonProps {
     text: string;
@@ -37,25 +38,31 @@ interface ModalProps {
 
 
 export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, selectedOption, handleOptionClick, selectedProgress, handleProgressClick, gameId, setCurrentOption, setCurrentProgress }) => {
-    const { data: session } = useSession();
     const [isUpdating, setIsUpdating] = useState(false);
 
     const handleUpdate = async () => {
-        if (!session?.user?.id || !selectedOption || !selectedProgress) {
+        if (!selectedOption || !selectedProgress) {
             alert('Please select both status and progress');
             return;
         }
 
+        const isAuthenticated = await checkIsAuthenticated();
+        if (!isAuthenticated) {
+            alert('Please authenticate');
+            return;
+        }
         setIsUpdating(true);
 
         try {
+            const userId = await getUserId();
+
             const response = await fetch('/api/game/updateGameStatus', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userId: session.user.id,
+                    userId: userId,
                     gameId: gameId,
                     status: selectedOption,
                     progress: selectedProgress,

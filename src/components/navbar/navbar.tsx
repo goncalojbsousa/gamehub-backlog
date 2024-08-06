@@ -8,7 +8,7 @@ import { NavbarLinks } from "./navbar-links";
 
 export const Navbar = () => {
     const { username, userImage, isAuthenticated } = useUser();
-    
+
     return (
         <div className="bg-color_main fixed top-0 left-0 w-full z-50 flex items-center justify-between md:space-x-8 p-3 xl:px-24 transition-colors duration-200 h-16">
             <div className="flex items-center">
@@ -23,7 +23,7 @@ export const Navbar = () => {
                 {isAuthenticated ? (
                     <NavbarUser username={username} userImage={userImage} />
                 ) : (
-                    <SignInButton className="mr-4 lg:mr-32 text-color_text border border-zinc-800 rounded-lg p-2" />
+                    <SignInButton className="text-color_text border border-border_detail rounded-lg py-2 px-4" />
                 )
                 }
             </div>
