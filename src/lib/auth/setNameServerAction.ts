@@ -1,7 +1,9 @@
 'use server'
 
 import { auth } from "@/src/lib/auth/authConfig";
-import { pool } from "@/src/lib/postgres";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const setName = async (name: string) => {
     const session = await auth();
@@ -20,8 +22,13 @@ export const setName = async (name: string) => {
 
     name = name.trim();
 
-    // UPDATE USER NAME IN THE DATABASE
-    await pool.query("UPDATE users SET name = $1 WHERE id = $2", [name, uuid]);
-
-    return true;
+    try {
+        await prisma.user.update({
+            where: { id: uuid },
+            data: { name: name }
+        });
+        return true;
+    } finally {
+        await prisma.$disconnect();
+    }
 }

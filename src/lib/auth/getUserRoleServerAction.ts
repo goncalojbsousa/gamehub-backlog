@@ -1,7 +1,9 @@
 'use server'
 
 import { auth } from "@/src/lib/auth/authConfig";
-import { pool } from "@/src/lib/postgres";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const getUserRole = async () => {
     const session = await auth();
@@ -15,9 +17,14 @@ export const getUserRole = async () => {
             throw new Error("Invalid UUID");
         };
 
-        const { rows } = await pool.query("SELECT role FROM users WHERE id = $1", [
-            uuid,
-        ]);
-        return rows[0].role;
-    };
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: uuid },
+                select: { role: true }
+            });
+            return user?.role;
+        } finally {
+            await prisma.$disconnect();
+        }
+    }
 };

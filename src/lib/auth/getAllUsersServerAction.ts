@@ -1,8 +1,10 @@
 'use server'
 
 import { auth } from "@/src/lib/auth/authConfig";
-import { pool } from "@/src/lib/postgres";
+import { PrismaClient } from '@prisma/client'
 import { getUserRole } from "@/src/lib/auth/getUserRoleServerAction";
+
+const prisma = new PrismaClient()
 
 export const getAllUsers = async (limit: number, offset: number) => {
     const session = await auth();
@@ -29,10 +31,26 @@ export const getAllUsers = async (limit: number, offset: number) => {
         throw new Error("Invalid offset value");
     }
 
-    const { rows } = await pool.query(
-        "SELECT id, name, email, image, role FROM users ORDER BY id LIMIT $1 OFFSET $2;", [
-        limit, offset
-    ]);
+    try {
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                role: true
+            },
+            orderBy: {
+                id: 'asc'
+            },
+            take: limit,
+            skip: offset
+        });
 
-    return rows;
+        return users;
+    } catch (error) {
+        throw error;
+    } finally {
+        await prisma.$disconnect()
+    }
 };

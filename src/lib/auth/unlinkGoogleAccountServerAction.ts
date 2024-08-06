@@ -1,7 +1,9 @@
 'use server'
 
 import { auth } from "@/src/lib/auth/authConfig";
-import { pool } from "@/src/lib/postgres";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const unlinkGoogleAccount = async () => {
     const session = await auth();
@@ -18,14 +20,18 @@ export const unlinkGoogleAccount = async () => {
         throw new Error("Invalid UUID");
     }
 
-    // CHECK IF USER HAS A GOOGLE ACCOUNT LINKED
     try {
-        const result = await pool.query(
-            "DELETE FROM accounts WHERE provider = 'google' AND \"userId\" = $1",
-            [uuid]
-        );
+        await prisma.account.deleteMany({
+            where: {
+                provider: 'google',
+                userId: uuid
+            }
+        });
         return true;
     } catch (error) {
         console.error("Failed to unlink google account", error);
+        throw error;
+    } finally {
+        await prisma.$disconnect();
     }
 }
