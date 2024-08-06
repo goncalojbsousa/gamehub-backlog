@@ -1,11 +1,15 @@
+'use server'
+
 import { NextResponse } from 'next/server';
-import { pool } from '@/src/lib/postgres';
+import { PrismaClient } from '@prisma/client';
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
 import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
+
+const prisma = new PrismaClient();
 
 const inputSchema = z.object({
   userId: z.string().uuid(),
@@ -15,7 +19,6 @@ const inputSchema = z.object({
 });
 
 export async function POST(request: Request) {
-
   // CHECK IS AUTHENTICATED
   const isAuthenticated = await checkIsAuthenticated();
   if (!isAuthenticated) {
@@ -42,7 +45,6 @@ export async function POST(request: Request) {
   const body = await request.json();
   const validatedInput = inputSchema.parse(body);
 
-
   const userId = await getUserId();
   if (userId === undefined) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -53,28 +55,27 @@ export async function POST(request: Request) {
   }
 
   try {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
+    const result = await prisma.userGameStatus.upsert({
+      where: {
+        userId_gameId: {
+          userId: validatedInput.userId,
+          gameId: validatedInput.gameId,
+        },
+      },
+      update: {
+        status: validatedInput.status,
+        progress: validatedInput.progress,
+        updatedAt: new Date(),
+      },
+      create: {
+        userId: validatedInput.userId,
+        gameId: validatedInput.gameId,
+        status: validatedInput.status,
+        progress: validatedInput.progress,
+      },
+    });
 
-      const result = await client.query(
-        `INSERT INTO user_game_status (user_id, game_id, status, progress)
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (user_id, game_id) DO UPDATE
-         SET status = $3, progress = $4, updated_at = CURRENT_TIMESTAMP
-         RETURNING *`,
-        [validatedInput.userId, validatedInput.gameId, validatedInput.status, validatedInput.progress]
-      );
-
-      await client.query('COMMIT');
-
-      return NextResponse.json(result.rows[0], { status: 200 });
-    } catch (e) {
-      await client.query('ROLLBACK');
-      throw e;
-    } finally {
-      client.release();
-    }
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error('Error updating game status:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

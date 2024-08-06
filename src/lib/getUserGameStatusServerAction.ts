@@ -1,21 +1,28 @@
 'use server'
 
-import { pool } from "@/src/lib/postgres";
+import { PrismaClient } from '@prisma/client'
 import { getUserId } from "@/src/lib/auth/getUserIdServerAction";
 
-export async function fetchUserGameStatus(gameId: string) {
-  const query = `
-    SELECT status, progress 
-    FROM user_game_status 
-    WHERE user_id = $1 AND game_id = $2
-  `;
+const prisma = new PrismaClient()
 
+export async function fetchUserGameStatus(gameId: string) {
   try {
     const userId = await getUserId();
-    const result = await pool.query(query, [userId, gameId]);
-    return result.rows[0] || null;
+    const status = await prisma.userGameStatus.findFirst({
+      where: {
+        userId: userId,
+        gameId: parseInt(gameId)
+      },
+      select: {
+        status: true,
+        progress: true
+      }
+    });
+    return status || null;
   } catch (error) {
     console.error('Error fetching user game status:', error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
   }
 }
