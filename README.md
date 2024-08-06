@@ -4,6 +4,7 @@ GameHub is a game backlog tracker that let you add games to lists and organize t
 
 In the future, we intend to add a price comparator between several stores, so that you can always make the best purchase!
 
+
 ## Running locally
 
 Clone the project
@@ -31,6 +32,7 @@ Start the server
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
 
 ## Environment Variables
 
@@ -64,6 +66,24 @@ To run this project, you need to configure the following environment variables i
 
 ### Database Configuration
 - `DATABASE_URL`
+
+
+## API documentation
+
+### Create/update user game status
+#### To access the route you need to be authenticated 
+
+```http
+  POST /api/game/updateGameStatus
+```
+
+| Parameter   | Type       | Description                                     |
+|-------------|------------|-----------------------------------------------|
+| `userId`    | `string`    | **Mandatory**. User identifier (UUID). |
+| `gameId`    | `number`    | **Mandatory**. Game identifier (positive number). |
+| `status`    | `string`    | **Mandatory**. Game status (maximum 20 characters). |
+| `progress`  | `string`    | **Mandatory**. Game progress (maximum 20 characters). |
+
 
 ## Color documentation
 
@@ -101,15 +121,18 @@ To run this project, you need to configure the following environment variables i
 | Gradient Start Color         | ![#292524b3](https://via.placeholder.com/10/292524b3?text=+) #292524b3 |
 | Gradient End Color           | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
 
+
 ## IGDB
 All game data is provided by IGDB
  - [IGDB](https://www.igdb.com)
  - [Discord](https://discord.com/invite/igdb)
  - [X (Old Twitter)](https://x.com/IGDBcom)
 
+
 ## Authors
 
 - [@goncalojbsousa](https://github.com/goncalojbsousa)
+
 
 ## Inspirations
 
