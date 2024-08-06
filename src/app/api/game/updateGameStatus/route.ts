@@ -1,3 +1,5 @@
+'use server'
+
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { checkRateLimit } from '@/src/utils/rateLimit';
