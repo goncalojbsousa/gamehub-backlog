@@ -1,6 +1,8 @@
 # GameHub Project
 
-GameHub is a game backlog tracker
+GameHub is a game backlog tracker that let you add games to lists and organize the never ending list of games that we all want to "get around to playing eventually".
+
+In the future, we intend to add a price comparator between several stores, so that you can always make the best purchase!
 
 ## Running locally
 
@@ -98,6 +100,12 @@ To run this project, you need to configure the following environment variables i
 | Secondary Border Detail Color| ![#3b82f6](https://via.placeholder.com/10/3b82f6?text=+) #3b82f6 |
 | Gradient Start Color         | ![#292524b3](https://via.placeholder.com/10/292524b3?text=+) #292524b3 |
 | Gradient End Color           | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
+
+## IGDB
+All game data is provided by IGDB
+ - [IGDB](https://www.igdb.com)
+ - [Discord](https://discord.com/invite/igdb)
+ - [X (Old Twitter)](https://x.com/IGDBcom)
 
 ## Authors
 
