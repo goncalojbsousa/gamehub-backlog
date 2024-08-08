@@ -19,7 +19,7 @@ interface GameCardProps {
 const GameCard: React.FC<GameCardProps> = ({ game }) => (
     <Link
         href={`/game/${game.slug}`}
-        className="flex flex-col shadow-lg items-center bg-color_main p-2 rounded-lg transition-transform hover:scale-105"
+        className="flex flex-col items-center  p-2 rounded-lg transition-transform hover:scale-105"
     >
         <Image
             src={`https://${game.cover.url.replace('t_thumb', 't_720p')}`}
@@ -78,9 +78,9 @@ export default function HomePage() {
                     </div>
                     <h2 className="text-3xl font-bold">Popular Games</h2>
                     {gamesPopular.length > 0 && (
-                        <div className="absolute top-0 right-0 w-8/12 h-full">
+                        <div className="absolute top-0 right-0 w-8/12 h-full bg-cover flex items-center">
                             <div
-                                className="absolute top-0 right-0 w-full h-full bg-cover bg-right-top"
+                                className="w-full h-full rounded-lg bg-center"
                                 style={{
                                     backgroundImage: `url(${getCoverImageUrl(
                                         `https://${gamesPopular[0].screenshots[0].url}`
@@ -114,7 +114,7 @@ export default function HomePage() {
                     {gamesPopularYear.length > 0 && (
                         <div className="absolute top-0 right-0 w-8/12 h-full">
                             <div
-                                className="absolute top-0 right-0 w-full h-full bg-cover bg-right-top"
+                                className="absolute top-0 right-0 w-full h-full bg-cover bg-center rounded-lg"
                                 style={{
                                     backgroundImage: `url(${getCoverImageUrl(
                                         `https://${gamesPopularYear[0].screenshots[0].url}`
@@ -147,7 +147,7 @@ export default function HomePage() {
                     {gamesRecent.length > 0 && (
                         <div className="absolute top-0 right-0 w-8/12 h-full">
                             <div
-                                className="absolute top-0 right-0 w-full h-full bg-cover bg-right-top"
+                                className="absolute top-0 right-0 w-full h-full bg-cover bg-center rounded-lg"
                                 style={{
                                     backgroundImage: `url(${getCoverImageUrl(
                                         `https://${gamesRecent[0].screenshots[0].url}`
@@ -180,7 +180,7 @@ export default function HomePage() {
                     {gamesUpcoming.length > 0 && (
                         <div className="absolute top-0 right-0 w-8/12 h-full">
                             <div
-                                className="absolute top-0 right-0 w-full h-full bg-cover bg-right-top"
+                                className="absolute top-0 right-0 w-full h-full bg-cover bg-center rounded-lg"
                                 style={{
                                     backgroundImage: `url(${getCoverImageUrl(
                                         `https://${gamesUpcoming[0].screenshots[0].url}`

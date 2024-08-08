@@ -58,7 +58,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                         break;
                     case 'popular':
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url, websites;
                             where first_release_date > ${oneYearAgo};
                             sort total_rating_count desc;
                             limit ${limit / listTypes.length};
@@ -66,7 +66,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                         break;
                     case 'upcoming':
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url, hypes;
                             where first_release_date > ${Math.floor(Date.now() / 1000)}
                                 & cover.url != null;
                             sort total_rating_count asc;
