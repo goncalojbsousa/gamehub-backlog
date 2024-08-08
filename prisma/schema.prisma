@@ -13,12 +13,13 @@ enum AuthRole {
 }
 
 model User {
-  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name          String?   @db.VarChar(255)
-  email         String?   @unique @db.VarChar(255)
-  emailVerified DateTime? @db.Timestamptz
+  id            String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name          String?          @db.VarChar(255)
+  email         String?          @unique @db.VarChar(255)
+  emailVerified DateTime?        @db.Timestamptz
   image         String?
-  role          AuthRole  @default(USER)
+  role          AuthRole         @default(USER)
+  createdAt     DateTime         @default(now())
   accounts      Account[]
   gameStatus    UserGameStatus[]
 }
@@ -63,7 +64,7 @@ model RateLimitViolation {
 }
 
 model RateLimitBlock {
-  ip         String   @id @db.VarChar(45)
+  ip          String   @id @db.VarChar(45)
   block_until DateTime @db.Timestamptz
 }
 
@@ -77,6 +78,6 @@ model UserGameStatus {
   updatedAt DateTime @default(now()) @db.Timestamptz
   user      User     @relation(fields: [userId], references: [id])
 
-  @@index([userId, gameId], name: "idx_user_game_status")
   @@unique([userId, gameId])
+  @@index([userId, gameId], name: "idx_user_game_status")
 }
