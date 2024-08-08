@@ -9,7 +9,6 @@ import { fetchGamesList } from "@/src/services/igdbServices/getGames";
 import { TrendingIcon } from "@/src/components/svg/trending";
 import { getCoverImageUrl } from "@/src/utils/utils";
 import { Footer } from "@/src/components/footer";
-import { Loading } from "../components/loading";
 import { LoadingIcon } from "../components/svg/loading";
 
 interface GameCardProps {

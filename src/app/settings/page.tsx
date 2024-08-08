@@ -3,7 +3,7 @@
 import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 
-export const Settings = () => {
+const SettingsPage = () => {
     return (
         <div>
             <Navbar />
@@ -15,4 +15,4 @@ export const Settings = () => {
     );
 };
 
-export default Settings;
+export default SettingsPage;
