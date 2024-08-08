@@ -32,9 +32,9 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
                     {screenshots.map((screenshot, index) => (
                         <Image
                             key={index}
-                            src={"https:" + getScreenShotImageUrl(screenshot.url)}
-                            width={1920}
-                            height={1080}
+                            src={"https:" + screenshot.url}
+                            width={240}
+                            height={135}
                             alt="Game screenshot"
                             className="w-20 object-cover mr-2 cursor-pointer rounded"
                             onClick={() => onSelectScreenshot(screenshot)}
