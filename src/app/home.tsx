@@ -71,7 +71,7 @@ export default function HomePage() {
             <Navbar />
 
             <div className="p-4 pt-0 text-color_text xl:px-24">
-                <div className="bg-color_main p-6 rounded-lg mb-6 flex items-center relative">
+                <div className="bg-color_main p-6 rounded-lg mb-6 flex items-center relative z-10">
                     <div className="mr-4">
                         <TrendingIcon className="fill-color_icons" />
                     </div>
