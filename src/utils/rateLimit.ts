@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const MAX_REQUESTS_PER_MINUTE = 20; // 20 REQUEST PER MINUTE
+const MAX_REQUESTS_PER_MINUTE = 60; // 60 REQUEST PER MINUTE
 const BLOCK_DURATION = 5 * 60; // 5 MINUTES (in seconds)
 const BLOCK_THRESHOLD = 3; // NUMBER OF VIOLATIONS BEFORE BLOCKING
 
