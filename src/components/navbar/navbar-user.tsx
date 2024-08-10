@@ -6,11 +6,11 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface UserProps {
-    username: string;
+    usernameSlug: string;
     userImage: string;
 }
 
-export const NavbarUser: React.FC<UserProps> = ({ username, userImage }) => {
+export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const profilePicRef = useRef<HTMLImageElement>(null);
@@ -55,7 +55,7 @@ export const NavbarUser: React.FC<UserProps> = ({ username, userImage }) => {
             />
             {menuOpen && (
                 <div ref={menuRef} className="absolute mt-52 mr-36 bg-color_sec shadow-md border border-border_detail rounded-md w-48 p-2">
-                    <Link href="/profile" className="flex px-4 py-2 text-color_text hover:bg-color_main rounded-md transition-colors duration-200">
+                    <Link href={`/user/${usernameSlug}`} className="flex px-4 py-2 text-color_text hover:bg-color_main rounded-md transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 mt-1 fill-color_icons" width="1em" height="1em" viewBox="0 0 24 24">
                             <path d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4" />
                         </svg>

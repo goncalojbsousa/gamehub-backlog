@@ -4,61 +4,85 @@
 
 
 :root {
-    --background: theme('colors.white');
-    --color_main: theme('colors.zinc.100');
-    --color_sec: theme('colors.white');
-    --color_reverse: theme('colors.stone.900');
-    --color_reverse_sec: theme('colors.stone.800');
+  --background: theme('colors.white');
+  --color_main: theme('colors.zinc.100');
+  --color_sec: theme('colors.white');
+  --color_reverse: theme('colors.stone.900');
+  --color_reverse_sec: theme('colors.stone.800');
 
-    --color_text: theme('colors.zinc.800');
-    --color_text_sec: theme('colors.gray.600');
-    --color_icons: theme('colors.zinc.800');
-    --btn_logout: theme('colors.red.100');
-    --border_detail: theme('colors.zinc.200');
-    --border_detail_sec: theme('colors.blue.500');
+  --color_text: theme('colors.zinc.800');
+  --color_text_sec: theme('colors.gray.600');
+  --color_icons: theme('colors.zinc.800');
+  --btn_logout: theme('colors.red.100');
+  --border_detail: theme('colors.zinc.200');
+  --border_detail_sec: theme('colors.blue.500');
 
-    --gradient-start: rgba(255, 255, 255, 0.8);
-    --gradient-end: rgba(255, 255, 255, 1);
+  --gradient-start: rgba(255, 255, 255, 0.8);
+  --gradient-end: rgba(255, 255, 255, 1);
+
+  --login-bg: rgba(255, 255, 255, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
-        --background: theme('colors.stone.800'); 
-        --color_main: theme('colors.stone.900');
-        --color_sec: theme('colors.stone.800');
-        --color_reverse: theme('colors.zinc.200');
-        --color_reverse_sec: theme('colors.white');
+  :root {
+    --background: theme('colors.stone.800');
+    --color_main: theme('colors.stone.900');
+    --color_sec: theme('colors.stone.800');
+    --color_reverse: theme('colors.zinc.200');
+    --color_reverse_sec: theme('colors.white');
 
-        --color_text: theme('colors.white');
-        --color_text_sec: theme('colors.gray.400');
-        --color_icons: theme('colors.white');
-        --btn_logout: theme('colors.red.500');
-        --border_detail: theme('colors.zinc.600');
-        --border_detail_sec: theme('colors.blue.500');
+    --color_text: theme('colors.white');
+    --color_text_sec: theme('colors.gray.400');
+    --color_icons: theme('colors.white');
+    --btn_logout: theme('colors.red.500');
+    --border_detail: theme('colors.zinc.600');
+    --border_detail_sec: theme('colors.blue.500');
 
-        --gradient-start: rgba(41, 37, 36, 0.7);
-        --gradient-end: rgba(41, 37, 36, 1);
-    }
+    --gradient-start: rgba(41, 37, 36, 0.7);
+    --gradient-end: rgba(41, 37, 36, 1);
+
+    --login-bg: rgba(41, 37, 36, 0.5);
+  }
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: var(--background);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 10px;
-    border: 3px solid  var(--background);
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-  
-  /* Estilos para Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+  border: 3px solid var(--background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Estilos para Firefox */
+scrollbar-width: thin;
+scrollbar-color: #888 #f1f1f1;
+
+
+.bg-cover {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-cover:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to right, var(--color_main), rgba(255, 255, 255, 0));
+}
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

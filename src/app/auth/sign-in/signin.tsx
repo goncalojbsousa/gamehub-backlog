@@ -20,7 +20,7 @@ export const SignInPage: React.FC = () => {
                     grecaptcha.execute(site_key, { action: 'submit' }).then(resolve);
                 });
             });
-    
+
             startTransition(async () => {
                 await handleEmailSignIn(formData.email, token);
             });
@@ -31,10 +31,34 @@ export const SignInPage: React.FC = () => {
 
     return (
         <>
-            <div className="flex justify-center items-center h-screen">
-                <div className="w-80 p-8 rounded-lg shadow-md bg-white text-center">
-                    <h2 className="text-lg font-bold mb-4">Join us!</h2>
-                    <div className="flex flex-col items-center">
+            <div className="flex justify-center items-center h-screen"
+                style={{
+                    backgroundImage: 'url(/login-bg.jpg)', // Substitua com o caminho da sua imagem
+                    backgroundSize: 'cover', // Ajusta a imagem para cobrir toda a área
+                    backgroundPosition: 'center', // Centraliza a imagem
+                    backgroundRepeat: 'no-repeat' // Não repete a imagem
+                }}
+            >
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundColor: 'var(--login-bg)' // Substitua a cor e a transparência conforme necessário
+                    }}
+                ></div>
+
+                <div className="relative  w-80 p-8 rounded-lg shadow-md bg-color_sec text-center">
+                    <h2 className="text-lg text-color_text font-bold mb-4">Join us!</h2>
+                    <div className="flex flex-col items-center text-color_text">
+
+                        <button onClick={() => handleGoogleSignIn()} className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 hover:border-blue-400 focus:border-border_detail focus:outline-none">
+                            <FcGoogle className="text-xl" />
+                            <span className="text-base">Sign in with Google</span>
+                        </button>
+
+                        <div className="m-6 text-color_text_sec">
+                            <span>----  or  ----</span>
+                        </div>
+                        <p className="p-4 pt-0">Temporarily unavailable</p>
                         <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center">
                             <input
                                 className="mb-4 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none"
@@ -44,24 +68,23 @@ export const SignInPage: React.FC = () => {
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     setFormData({ email: event.target.value });
                                 }}
-                                disabled={isPending}
+                                //disabled={isPending}
+                                disabled={true}
                                 required
                             />
-                            <button type="submit" className="w-full flex justify-center items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none">Sign in with email</button>
+                            <button disabled={true} type="submit" className="w-full flex justify-center items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none">Sign in with email</button>
                         </form>
 
-                        <div className="m-6 text-gray-500">
-                            <span>----  or  ----</span>
-                        </div>
-
-                        <button onClick={() => handleGoogleSignIn()} className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 hover:border-blue-400 focus:border-gray-400 focus:outline-none">
-                            <FcGoogle className="text-xl" />
-                            <span className="text-base">Sign in with Google</span>
-                        </button>
+                        <small className="flex flex-col text-color_text_sec text-xs mt-6">This site is protected by reCAPTCHA and the Google.
+                            <div>
+                                <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+                                <a href="https://policies.google.com/terms"> Terms of Service</a> apply.
+                            </div>
+                        </small>
                     </div>
                 </div>
             </div>
-            <Script src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_reCAPTCHA_SITE_KEY}`} />
+            <Script className="grecaptcha-badge" src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_reCAPTCHA_SITE_KEY}`} />
         </>
     )
 };

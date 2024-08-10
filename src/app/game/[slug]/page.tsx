@@ -5,7 +5,6 @@ import { GamePage } from "@/src/app/game/[slug]/game";
 import { fetchGameDetails } from "@/src/services/igdbServices/getGameDetails";
 import { useEffect, useState } from "react";
 import { Loading } from '@/src/components/loading';
-import { fetchUserGameStatus } from '@/src/lib/getUserGameStatusServerAction';
 
 const Game = () => {
     const { slug } = useParams();
@@ -22,8 +21,11 @@ const Game = () => {
                 const gameData = await fetchGameDetails(slug.toString());
                 setGame(gameData[0]);
                 if (gameData && gameData[0]?.id) {
-                    const userGameStatusData = await fetchUserGameStatus(gameData[0].id);
-                    setUserGameStatus(userGameStatusData);
+                    const response = await fetch(`/api/game/getGameStatus?gameId=${gameData[0].id}`);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    setUserGameStatus(await response.json());
                 }
             } catch (error) {
                 console.error("Error fetching game data", error);
