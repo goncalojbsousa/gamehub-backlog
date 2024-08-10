@@ -1,47 +1,13 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { Navbar } from "@/src/components/navbar/navbar";
-import { RatingCircle } from "@/src/components/rating-circle";
 import { fetchGamesList } from "@/src/services/igdbServices/getGames";
 import { TrendingIcon } from "@/src/components/svg/trending";
 import { getCoverImageUrl } from "@/src/utils/utils";
 import { Footer } from "@/src/components/footer";
 import { LoadingIcon } from "../components/svg/loading";
-
-interface GameCardProps {
-    game: Game;
-}
-
-const GameCard: React.FC<GameCardProps> = ({ game }) => (
-    <Link
-        href={`/game/${game.slug}`}
-        className="flex flex-col items-center  p-2 rounded-lg transition-transform hover:scale-105"
-    >
-        <Image
-            src={`https://${game.cover.url.replace('t_thumb', 't_720p')}`}
-            alt={game.name}
-            width={200}
-            height={300}
-            className="rounded-lg w-full h-auto object-cover"
-            draggable={false}
-        />
-        <div className="mt-2 w-full">
-            <h3 className="font-semibold text-sm truncate">{game.name}</h3>
-            <p className="text-xs text-color_text_sec truncate">
-                {game.genres?.map((genre) => genre.name).join(', ')}
-            </p>
-        </div>
-        <div className="flex justify-between items-center w-full mt-2">
-            {game.total_rating && <RatingCircle score={Math.round(game.total_rating)} size={40} />}
-            <button className="text-color_main bg-color_reverse_sec rounded-full p-1 px-3 hover:bg-color_reverse transition-colors">
-                Status +
-            </button>
-        </div>
-    </Link>
-);
+import { GameCard } from "../components/game-card";
 
 export default function HomePage() {
     const [gamesPopularYear, setGamesPopularYear] = useState<Game[]>([]);
