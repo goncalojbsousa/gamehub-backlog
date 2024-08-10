@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { RatingCircle } from "@/src/components/rating-circle";
+import { getCoverImageUrl } from "../utils/utils";
 
 interface GameCardProps {
     game: Game;
@@ -15,7 +16,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, progress }) => {
             className="flex flex-col items-center  p-2 rounded-lg transition-transform hover:scale-105"
         >
             <Image
-                src={`https://${game.cover.url.replace('t_thumb', 't_720p')}`}
+                src={"https:" + getCoverImageUrl(game.cover.url)}
                 alt={game.name}
                 width={200}
                 height={300}
