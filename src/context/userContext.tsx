@@ -1,12 +1,14 @@
 'use client'
 
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { checkIsAuthenticated } from '../lib/auth/checkIsAuthenticated';
-import { getUserName } from '../lib/auth/getUserNameServerAction';
-import { getUserImage } from '../lib/auth/getUserImageServerAction';
+import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
+import { getUserName } from '@/src/lib/auth/getUserNameServerAction';
+import { getUserImage } from '@/src/lib/auth/getUserImageServerAction';
+import { getUserNameSlug } from '@/src/lib/auth/getUserNameSlugServerAction';
 
 interface UserContextProps {
     username: string;
+    usernameSlug: string;
     userImage: string;
     isAuthenticated: boolean;
     setUsername: (username: string) => void;
@@ -16,6 +18,7 @@ interface UserContextProps {
 
 const UserContext = createContext<UserContextProps>({
     username: '',
+    usernameSlug: '',
     userImage: '',
     isAuthenticated: false,
     setUsername: () => { },
@@ -25,6 +28,7 @@ const UserContext = createContext<UserContextProps>({
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [username, setUsername] = useState('');
+    const [usernameSlug, setUsernameSlug] = useState('');
     const [userImage, setUserImage] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -44,6 +48,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 if (name) {
                     setUsername(name);
                 }
+                const usernameSlug = await getUserNameSlug();
+                if (usernameSlug) {
+                    setUsernameSlug(usernameSlug);
+                }
                 const image = await getUserImage();
                 if (image) {
                     setUserImage(image);
@@ -55,7 +63,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
 
     return (
-        <UserContext.Provider value={{ username, userImage, isAuthenticated, setUsername, setUserImage, logout }}>
+        <UserContext.Provider value={{ username, usernameSlug, userImage, isAuthenticated, setUsername, setUserImage, logout }}>
             {children}
         </UserContext.Provider>
     );

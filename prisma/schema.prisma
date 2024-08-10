@@ -20,6 +20,7 @@ model User {
   image         String?
   role          AuthRole         @default(USER)
   createdAt     DateTime         @default(now())
+  username      String?          @unique @db.VarChar(255)
   accounts      Account[]
   gameStatus    UserGameStatus[]
 }
