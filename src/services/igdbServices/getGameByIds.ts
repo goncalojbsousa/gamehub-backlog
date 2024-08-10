@@ -32,6 +32,8 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
             throw new Error('Token or Origin not defined');
         }
 
+        const numberOfGames = gameIds.length;
+
         const response = await fetch(IGDB_API_URL, {
             method: 'POST',
             headers: {
@@ -43,8 +45,10 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
             fields 
               id,
               name, 
-              cover.url;
+              cover.url,
+              slug;
             where id = (${gameIds.join(', ')});
+            limit ${numberOfGames};
           `,
         });
 
