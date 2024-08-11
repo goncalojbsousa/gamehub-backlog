@@ -1,19 +1,42 @@
 import Link from "next/link"
+import { LinkedinIcon } from "./svg/social/linkedin-icon"
+import { GithubIcon } from "./svg/social/github-icon"
+import Image from "next/image";
 
 export const Footer = () => {
     return (
         <footer className="bg-color_main p-6 flex flex-col items-center justify-center">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl w-full">
                 <div className="">
-                    <h3 className="text-lg text-color_text font-semibold mb-2">USEFUL LINKS</h3>
-                    <ul className="text-color_text_sec flex flex-col">
-
-                    </ul>
+                    <h3 className="text-lg text-color_text font-semibold mb-2">DEVELOPED BY</h3>
+                    <div className="flex itens-center">
+                        <Image
+                            src="/gjbs.jpeg"
+                            alt="User profile image"
+                            width={48}
+                            height={48}
+                            className="w-12 h-12 rounded-full mr-3"
+                            draggable={false}
+                        />
+                        <div>
+                            <div className="text-color_text_sec flex flex-col">
+                                Gonçalo Sousa
+                            </div>
+                            <div className="flex">
+                                <Link href="https://github.com/goncalojbsousa" target="_blank">
+                                    <GithubIcon />
+                                </Link>
+                                <Link href="https://www.linkedin.com/in/goncalojbsousa/" target="_blank">
+                                    <LinkedinIcon />
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">ABOUT US</h3>
                     <ul className="text-color_text_sec flex flex-col">
-                        <Link className="hover:underline" href="www.google.com">Roadmap</Link>
+                        <Link className="hover:underline" href="">Roadmap</Link>
                     </ul>
                 </div>
                 <div className="">
@@ -26,12 +49,12 @@ export const Footer = () => {
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">SOCIAL</h3>
                     <ul className="text-color_text_sec flex items-center space-x-2">
-                        <Link href="www.google.com">
+                        <Link href="">
                             <svg xmlns="http://www.w3.org/2000/svg" className="fill-color_icons" width="1.2em" height="1.2em" viewBox="0 0 16 16">
                                 <path d="M9.294 6.928L14.357 1h-1.2L8.762 6.147L5.25 1H1.2l5.31 7.784L1.2 15h1.2l4.642-5.436L10.751 15h4.05zM7.651 8.852l-.538-.775L2.832 1.91h1.843l3.454 4.977l.538.775l4.491 6.47h-1.843z" />
                             </svg>
                         </Link>
-                        <Link href="www.google.com">
+                        <Link href="">
                             <svg xmlns="http://www.w3.org/2000/svg" className="fill-color_icons" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                 <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02M8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12m6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12" />
                             </svg>
