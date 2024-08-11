@@ -2,12 +2,13 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { LoadingIcon } from "@/src/components/svg/loading";
 
 interface UserProps {
     userId: string;
     userImage: string;
+    name: string;
     userName: string;
     joinDate: string;
 }
@@ -17,7 +18,7 @@ interface GameProps {
     gameDetails: Game;
 }
 
-export const ProfilePage: React.FC<UserProps> = ({ userImage, userName, joinDate, userId }) => {
+export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId }) => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>("Played");
     const [selectedProgress, setSelectedProgress] = useState<string | null>(null);
     const [games, setGames] = useState<GameProps[]>([]);
@@ -26,7 +27,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, userName, joinDate
     const [loading, setLoading] = useState<boolean>(false);
     const [totalFilteredItems, setTotalFilteredItems] = useState<number>(0);
 
-    const fetchGames = async (category: string, page: number) => {
+    const fetchGames = useCallback(async (category: string, page: number) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/game/getGameStatusByUserId?userId=${userId}&status=${category}&page=${page}`);
@@ -40,13 +41,13 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, userName, joinDate
         } finally {
             setLoading(false);
         }
-    };
+    }, [userId]);
 
     useEffect(() => {
         if (selectedCategory) {
             fetchGames(selectedCategory, 1);
         }
-    }, [selectedCategory]);
+    }, [selectedCategory, fetchGames]);
 
     const handleCategoryClick = (category: string) => {
         setSelectedCategory(category);
@@ -80,7 +81,6 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, userName, joinDate
         }
     }, [selectedProgress]);
 
-
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= totalPages) {
             fetchGames(selectedCategory!, newPage);
@@ -105,8 +105,8 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, userName, joinDate
                                 draggable={false}
                             />
                             <div className="ml-6">
-                                <h1 className="text-2xl text-color_text">{userName}</h1>
-                                <p className="text-sm text-color_text_sec">Member since {joinDate}</p>
+                                <h1 className="text-2xl text-color_text">{name}</h1>
+                                <p className="text-sm text-color_text_sec">@{userName}</p>
                             </div>
                         </div>
                     </div>

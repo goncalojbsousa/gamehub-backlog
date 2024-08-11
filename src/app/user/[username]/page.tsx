@@ -50,7 +50,7 @@ const Profile = () => {
 
     const joinDate = new Date(userData.createdAt).toLocaleDateString();
 
-    return <ProfilePage userId={userData.id} userImage={userData.image} userName={userData.username} joinDate={joinDate} />;
+    return <ProfilePage userId={userData.id} userImage={userData.image} name={userData.name}  userName={userData.username} joinDate={joinDate} />;
 };
 
 export default Profile;

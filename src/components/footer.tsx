@@ -19,8 +19,8 @@ export const Footer = () => {
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">LEGAL</h3>
                     <ul className="text-color_text_sec flex flex-col">
-                        <Link className="hover:underline" href="www.google.com">Terms of use</Link>
-                        <Link className="hover:underline" href="www.google.com">Privacy policy</Link>
+                        <Link className="hover:underline" href="/terms">Terms of Service</Link>
+                        <Link className="hover:underline" href="/privacy">Privacy Policy</Link>
                     </ul>
                 </div>
                 <div className="">
