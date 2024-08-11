@@ -8,6 +8,7 @@ import { LoadingIcon } from "@/src/components/svg/loading";
 interface UserProps {
     userId: string;
     userImage: string;
+    name: string;
     userName: string;
     joinDate: string;
 }
@@ -17,7 +18,7 @@ interface GameProps {
     gameDetails: Game;
 }
 
-export const ProfilePage: React.FC<UserProps> = ({ userImage, userName, joinDate, userId }) => {
+export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId }) => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>("Played");
     const [selectedProgress, setSelectedProgress] = useState<string | null>(null);
     const [games, setGames] = useState<GameProps[]>([]);
@@ -105,8 +106,8 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, userName, joinDate
                                 draggable={false}
                             />
                             <div className="ml-6">
-                                <h1 className="text-2xl text-color_text">{userName}</h1>
-                                <p className="text-sm text-color_text_sec">Member since {joinDate}</p>
+                                <h1 className="text-2xl text-color_text">{name}</h1>
+                                <p className="text-sm text-color_text_sec">@{userName}</p>
                             </div>
                         </div>
                     </div>
