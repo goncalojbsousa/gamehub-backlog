@@ -2,7 +2,7 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { LoadingIcon } from "@/src/components/svg/loading";
 
 interface UserProps {
@@ -27,7 +27,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [loading, setLoading] = useState<boolean>(false);
     const [totalFilteredItems, setTotalFilteredItems] = useState<number>(0);
 
-    const fetchGames = async (category: string, page: number) => {
+    const fetchGames = useCallback(async (category: string, page: number) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/game/getGameStatusByUserId?userId=${userId}&status=${category}&page=${page}`);
@@ -41,13 +41,13 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
         } finally {
             setLoading(false);
         }
-    };
+    }, [userId]);
 
     useEffect(() => {
         if (selectedCategory) {
             fetchGames(selectedCategory, 1);
         }
-    }, [selectedCategory]);
+    }, [selectedCategory, fetchGames]);
 
     const handleCategoryClick = (category: string) => {
         setSelectedCategory(category);
@@ -80,7 +80,6 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
             setCurrentPage(1);
         }
     }, [selectedProgress]);
-
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= totalPages) {

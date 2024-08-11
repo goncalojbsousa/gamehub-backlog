@@ -4,7 +4,7 @@ const Privacy = () => {
             <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
 
             <p className="mb-4">
-                Welcome to GameHub Backlog! We're gamers just like you, and we understand the importance of privacy in the digital age. This Privacy Policy explains how we collect, use, and protect your information when you use our service.
+                Welcome to GameHub Backlog! We&apos;re gamers just like you, and we understand the importance of privacy in the digital age. This Privacy Policy explains how we collect, use, and protect your information when you use our service.
             </p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4">What This Privacy Policy Governs</h2>
@@ -114,7 +114,7 @@ const Privacy = () => {
             <h2 className="text-2xl font-semibold mt-6 mb-4">Changes to This Privacy Policy</h2>
 
             <p className="mb-4">
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date at the bottom of this page.
+                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date at the bottom of this page.
             </p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4">Contact Us</h2>

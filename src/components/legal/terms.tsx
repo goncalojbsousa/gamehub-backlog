@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
 const Terms = () => {
     return (
-        <div className=" mx-auto p-6 pt-0">
+        <div className="mx-auto p-6 pt-0">
             <h1 className="text-3xl font-bold mb-6">Terms of Service</h1>
 
             <p className="mb-4">
@@ -32,7 +32,7 @@ const Terms = () => {
                 <li>GameHub Backlog is our property and is for personal use only.</li>
                 <li>You must follow our acceptable use guidelines.</li>
                 <li>You are responsible for your use of GameHub Backlog, and our liability is limited.</li>
-                <li>Our privacy policy are part of these terms.</li>
+                <li>Our privacy policy is part of these terms.</li>
                 <li>By using GameHub Backlog in any way, you agree to these terms.</li>
                 <li>If we make changes to these terms, your continued use of GameHub Backlog means you accept the updated terms.</li>
             </ul>
@@ -91,7 +91,7 @@ const Terms = () => {
             <h2 className="text-2xl font-semibold mt-6 mb-4">Disclaimers and Limitations of Liability</h2>
 
             <p className="mb-4">
-                GameHub Backlog is provided on an "as is" and "as available" basis, with no warranties of any kind. Although we strive to offer a reliable service and promptly resolve technical issues, we cannot guarantee uninterrupted or error-free access to the platform. We are not liable for any damages resulting from or related to your use or inability to use the service.
+                GameHub Backlog is provided on an &quot;as is&quot; and &quot;as available&quot; basis, with no warranties of any kind. Although we strive to offer a reliable service and promptly resolve technical issues, we cannot guarantee uninterrupted or error-free access to the platform. We are not liable for any damages resulting from or related to your use or inability to use the service.
             </p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4">Account Termination</h2>
@@ -135,7 +135,7 @@ const Terms = () => {
             <h2 className="text-2xl font-semibold mt-6 mb-4">United States Legal Compliance</h2>
 
             <p className="mb-4">
-                You represent and warrant that you are not located in a country that is subject to a United States government embargo, or that has been designated by the United States government as a "terrorist-supporting" country, and you are not listed on any United States government list of prohibited or restricted parties.
+                You represent and warrant that you are not located in a country that is subject to a United States government embargo, or that has been designated by the United States government as a &quot;terrorist-supporting&quot; country, and you are not listed on any United States government list of prohibited or restricted parties.
             </p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4">Changes to the Terms</h2>
@@ -154,7 +154,7 @@ const Terms = () => {
                 Last updated: 11/08/2024 (August 11, 2024)
             </p>
         </div>
-    )
+    );
 }
 
 export default Terms;
