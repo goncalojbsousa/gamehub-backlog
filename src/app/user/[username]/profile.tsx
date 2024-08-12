@@ -1,3 +1,5 @@
+'use client'
+
 import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
@@ -11,14 +13,16 @@ interface UserProps {
     name: string;
     userName: string;
     joinDate: string;
+    getUserGames: (userId: string, status: string, page: number) => Promise<any>;
 }
+
 interface GameProps {
     id: string;
     progress: string;
     gameDetails: Game;
 }
 
-export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId }) => {
+export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId, getUserGames }) => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>("Played");
     const [selectedProgress, setSelectedProgress] = useState<string | null>(null);
     const [games, setGames] = useState<GameProps[]>([]);
@@ -30,8 +34,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const fetchGames = useCallback(async (category: string, page: number) => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/game/getGameStatusByUserId?userId=${userId}&status=${category}&page=${page}`);
-            const data = await response.json();
+            const data = await getUserGames(userId, category, page);
             setGames(data.data);
             setTotalPages(data.pagination.totalPages);
             setCurrentPage(page);
@@ -41,7 +44,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
         } finally {
             setLoading(false);
         }
-    }, [userId]);
+    }, [userId, getUserGames]);
 
     useEffect(() => {
         if (selectedCategory) {

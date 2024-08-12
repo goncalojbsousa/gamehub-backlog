@@ -1,51 +1,49 @@
-'use client'
+'use server';
 
-import { useParams } from 'next/navigation';
-import { GamePage } from "@/src/app/game/[slug]/game";
 import { fetchGameDetails } from "@/src/services/igdbServices/getGameDetails";
-import { useEffect, useState } from "react";
-import { Loading } from '@/src/components/loading';
+import { Metadata } from 'next';
+import { cache } from 'react';
+import { GamePage } from "./game";
+import { getUserId } from "@/src/lib/auth/getUserIdServerAction";
 
-const Game = () => {
-    const { slug } = useParams();
-    const [game, setGame] = useState<Game>();
-    const [userGameStatus, setUserGameStatus] = useState<UserGameStatus | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+// USE CACHE TO REQUEST IGDB ONLY 1 TIME
+const getGameData = cache(async (slug: string) => {
+    console.log("Fetching data for slug:", slug);
+    const gameData = await fetchGameDetails(slug);
+    return gameData[0];
+});
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!slug) return;
-
-            try {
-                setIsLoading(true);
-                const gameData = await fetchGameDetails(slug.toString());
-                setGame(gameData[0]);
-                if (gameData && gameData[0]?.id) {
-                    const response = await fetch(`/api/game/getGameStatus?gameId=${gameData[0].id}`);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    setUserGameStatus(await response.json());
-                }
-            } catch (error) {
-                console.error("Error fetching game data", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [slug]);
-
-    if (isLoading) {
-        return <Loading />;
+async function getGameStatus(gameId: number) {
+    try {
+        const userId = await getUserId();
+        const response = await fetch(`${process.env.NEXTAUTH_URL}/api/game/getGameStatus?userId=${userId}&gameId=${gameId}`, { cache: 'no-store' });
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error(`Failed to fetch game status: ${response.status} ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Error fetching game status:', error);
     }
+    return null;
+}
+
+// CHANGE TITLE IN THE BROWSER TAB
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+    const game = await getGameData(params.slug);
+    return {
+        title: `${game?.name || 'Game'} | GameHub`,
+    };
+}
+
+export default async function GamePageServer({ params }: { params: { slug: string } }) {
+    const game = await getGameData(params.slug);
 
     if (!game) {
         return <div>Game not found</div>;
     }
 
+    const userGameStatus = game.id ? await getGameStatus(game.id) : null;
+    console.log(userGameStatus);
     return <GamePage game={game} userGameStatus={userGameStatus} />;
-};
-
-export default Game;
+}
