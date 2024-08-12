@@ -48,7 +48,7 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
                 ref={profilePicRef}
                 width={200}
                 height={200}
-                src={userImage ? userImage : "/placeholder-user.jpg"} alt="Profile picture"
+                src={userImage ? userImage : "/placeholder-user.png"} alt="Profile picture"
                 className="w-10 rounded-full cursor-pointer"
                 draggable="false"
                 onClick={toggleMenu}
