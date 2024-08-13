@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { UserProvider } from "@/src/context/userContext";
+import UserDataFetcher from "@/src/context/userDataFetcher";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <SessionProvider>
-        <UserProvider>
+        <UserDataFetcher>
           <body className={`${inter.className} bg-background transition-colors duration-200`}>{children}</body>
-        </UserProvider>
+        </UserDataFetcher>
       </SessionProvider>
     </html>
   );
