@@ -10,6 +10,8 @@
   --color_reverse: theme('colors.stone.900');
   --color_reverse_sec: theme('colors.stone.800');
 
+  --color_click: theme('colors.stone.200');
+
   --color_text: theme('colors.zinc.800');
   --color_text_sec: theme('colors.gray.600');
   --color_icons: theme('colors.zinc.800');
@@ -33,6 +35,8 @@
     --color_sec: theme('colors.stone.800');
     --color_reverse: theme('colors.zinc.200');
     --color_reverse_sec: theme('colors.white');
+
+    --color_click: theme('colors.stone.950');
 
     --color_text: theme('colors.white');
     --color_text_sec: theme('colors.gray.400');
