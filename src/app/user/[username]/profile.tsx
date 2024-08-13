@@ -114,12 +114,12 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-4 pt-6 text-color_text">
+                    <div className="grid grid-cols-4 gap-4 pt-6 text-color_text_sec">
                         {['Played', 'Playing', 'Plan to play', 'Dropped'].map(category => (
                             <button
                                 key={category}
                                 onClick={() => handleCategoryClick(category)}
-                                className={`p-2 ${selectedCategory === category ? 'border-b-2 border-color_reverse' : ''} w-full text-center`}
+                                className={`p-2 ${selectedCategory === category ? 'text-color_text border-b-2 border-color_reverse' : 'hover:text-color_text'} w-full text-center`}
                             >
                                 {category}
                             </button>
@@ -127,18 +127,22 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                     </div>
 
                     {selectedCategory && (
-                        <div className="flex justify-center gap-x-2 sm:gap-x-10 md:gap-x-20 text-center text-color_text_sec pt-2">
-                            {progressOptions.map(progress => (
-                                <button
-                                    key={progress}
-                                    onClick={() => handleProgressClick(progress)}
-                                    className={`p-2 ${selectedProgress === progress ? 'border-b-2 border-color_reverse text-color_text' : ''}`}
-                                >
-                                    {progress}
-                                </button>
-                            ))}
+                        <div className="flex justify-center">
+                            <div className="px-4 gap-x-2 sm:gap-x-10 md:gap-x-20 text-center text-color_text_sec bg-color_main rounded-lg mt-4">
+                                {progressOptions.map(progress => (
+                                    <button
+                                        key={progress}
+                                        onClick={() => handleProgressClick(progress)}
+                                        className={`p-2 ${selectedProgress === progress ? 'border-b-2 border-color_reverse text-color_text' : 'hover:text-color_text'}`}
+                                    >
+                                        {progress}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
+
                     )}
+
 
                     {loading ? (
                         <div className="flex justify-center items-center min-h-[200px]">
