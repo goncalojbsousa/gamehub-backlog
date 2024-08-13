@@ -1,6 +1,6 @@
 # GameHub Project
 
-GameHub is a game backlog tracker that let you add games to lists and organize the never ending list of games that we all want to "get around to playing eventually".
+GameHub is a game backlog tracker that helps you organize and manage the endless collection of games we all plan to "play someday."
 
 In the future, we intend to add a price comparator between several stores, so that you can always make the best purchase!
 
