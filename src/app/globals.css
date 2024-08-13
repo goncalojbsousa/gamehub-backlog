@@ -17,6 +17,9 @@
   --border_detail: theme('colors.zinc.200');
   --border_detail_sec: theme('colors.blue.500');
 
+  --color_error: theme('colors.red.500');
+  --color_success: theme('colors.green.500');
+
   --gradient-start: rgba(255, 255, 255, 0.8);
   --gradient-end: rgba(255, 255, 255, 1);
 
@@ -37,6 +40,9 @@
     --btn_logout: theme('colors.red.500');
     --border_detail: theme('colors.zinc.600');
     --border_detail_sec: theme('colors.blue.500');
+
+    --color_error: theme('colors.red.500');
+    --color_success: theme('colors.green.500');
 
     --gradient-start: rgba(41, 37, 36, 0.7);
     --gradient-end: rgba(41, 37, 36, 1);
