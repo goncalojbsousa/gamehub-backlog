@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const username = url.searchParams.get('username');
 
   if (!username) {
-    return NextResponse.json({ error: 'Please authenticate' }, { status: 401 });
+    return NextResponse.json({ error: 'Username is missing' }, { status: 401 });
   }
 
   try {
