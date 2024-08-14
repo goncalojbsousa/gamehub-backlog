@@ -70,11 +70,9 @@ To run this project, you need to configure the following environment variables i
 ### Database Configuration
 - `DATABASE_URL`
 
-
 ## API documentation
 
 ### Create/update user game status
-#### To access the route you need to be authenticated 
 
 ```http
   POST /api/game/updateGameStatus
@@ -87,42 +85,160 @@ To run this project, you need to configure the following environment variables i
 | `status`    | `string`    | **Mandatory**. Game status (maximum 20 characters). |
 | `progress`  | `string`    | **Mandatory**. Game progress (maximum 20 characters). |
 
+### Get user game status
 
-## Color documentation
+```http
+GET /api/game/getGameStatus
+```
 
-### White Mode
-| Color                        | Hexadecimal                                                |
-| ---------------------------- | ------------------------------------------------------------ |
-| Background                   | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Main Color                   | ![#f4f4f5](https://via.placeholder.com/10/f4f4f5?text=+) #f4f4f5 |
-| Secondary Color              | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Reverse Color                | ![#1c1917](https://via.placeholder.com/10/1c1917?text=+) #1c1917 |
-| Reverse Secondary Color      | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
-| Text Color                   | ![#27272a](https://via.placeholder.com/10/27272a?text=+) #27272a |
-| Secondary Text Color         | ![#4b5563](https://via.placeholder.com/10/4b5563?text=+) #4b5563 |
-| Icons Color                  | ![#27272a](https://via.placeholder.com/10/27272a?text=+) #27272a |
-| Alert Color                  | ![#fee2e2](https://via.placeholder.com/10/fee2e2?text=+) #fee2e2 |
-| Border Detail Color          | ![#e4e4e7](https://via.placeholder.com/10/e4e4e7?text=+) #e4e4e7 |
-| Secondary Border Detail Color| ![#3b82f6](https://via.placeholder.com/10/3b82f6?text=+) #3b82f6 |
-| Gradient Start Color         | ![#ffffffcc](https://via.placeholder.com/10/ffffffcc?text=+) #ffffffcc |
-| Gradient End Color           | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
+##### Query Parameters:
 
-### Dark Mode
-| Color                        | Hexadecimal                                                |
-| ---------------------------- | ------------------------------------------------------------ |
-| Background                   | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
-| Main Color                   | ![#1c1917](https://via.placeholder.com/10/1c1917?text=+) #1c1917 |
-| Secondary Color              | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
-| Reverse Color                | ![#e4e4e7](https://via.placeholder.com/10/e4e4e7?text=+) #e4e4e7 |
-| Reverse Secondary Color      | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Text Color                   | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Secondary Text Color         | ![#9ca3af](https://via.placeholder.com/10/9ca3af?text=+) #9ca3af |
-| Icons Color                  | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Alert Color                  | ![#ef4444](https://via.placeholder.com/10/ef4444?text=+) #ef4444 |
-| Border Detail Color          | ![#52525b](https://via.placeholder.com/10/52525b?text=+) #52525b |
-| Secondary Border Detail Color| ![#3b82f6](https://via.placeholder.com/10/3b82f6?text=+) #3b82f6 |
-| Gradient Start Color         | ![#292524b3](https://via.placeholder.com/10/292524b3?text=+) #292524b3 |
-| Gradient End Color           | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
+| Parameter | Type | Description |
+|-------------|------------|-----------------------------------------------------|
+| `userId` | `string` | **Mandatory**. User identifier (UUID). |
+| `gameId` | `string` | **Mandatory**. Game identifier (positive number in string format). |
+
+##### Responses:
+
+- 200 OK: Returns the game status and progress for the specified user and game.
+
+```json
+{
+    "status": "string", // User's game status
+    "progress": "string" // User's game progress
+}
+```
+
+- 400 Bad Request: Returned when `userId` or `gameId` are missing or improperly formatted.
+
+```json
+{
+    "error": "gameId parameter is missing" // Example error message
+}
+```
+
+- 500 Internal Server Error: Returned if there's a server-side issue when fetching the user's game status.
+
+```json
+{
+    "error": "Internal Server Error"
+}
+```
+
+### Get user game status by user ID
+
+```http
+GET /api/game/getGameStatusByUserId
+```
+
+##### Query Parameters:
+
+| Parameter | Type | Description |
+|-------------|------------|-----------------------------------------------------|
+| `userId` | `string` | **Mandatory**. User identifier (UUID). |
+| `status` | `string` | **Mandatory**. Game status (one of: 'Playing', 'Played', 'Dropped', 'Plan to play'). |
+| `page` | `number` | Optional. Page number for pagination (defaults to 1). |
+
+##### Responses:
+
+- 200 OK: Returns the game statuses and progress for the specified user, with pagination.
+
+```json
+{
+    "data": [
+        {
+            "gameId": 123,
+            "status": "Playing",
+            "progress": "Unfinished",
+            "gameDetails": {
+            "id": 123,
+            "name": "Game Title",
+            "cover": "url_to_image",
+            "summary": "Game summary",
+            // Other game details from IGDB
+        }
+    ],
+    "pagination": {
+        "currentPage": 1,
+        "totalPages": 3,
+        "totalItems": 100
+    }
+}
+```
+
+- 400 Bad Request: Returned when `userId`, `status` or other parameters are missing or improperly formatted.
+
+```json
+{
+    "message": "Invalid parameters"
+}
+```
+
+- 403 Forbidden: Returned when the client IP is blocked due to rate limiting.
+
+```json
+{
+    "message": "Access temporarily blocked. Try again later."
+}
+```
+
+- 429 Too Many Requests: Returned when the rate limit is exceeded.
+
+```json
+{
+    "message": "Limit rate exceeded. Try again later."
+}
+```
+
+- 500 Internal Server Error: Returned if there's a server-side issue when fetching the user's game statuses or game details.
+
+```json
+{
+    "message": "Internal server error"
+}
+```
+
+### Get user data
+
+```http
+GET /api/user/getUserData
+```
+
+##### Query Parameters:
+
+| Parameter | Type | Description |
+|-------------|------------|----------------------------------------------|
+| `username` | `string` | **Mandatory**. Username of the user to fetch. |
+
+##### Responses:
+
+- 200 OK: Returns the user data for the specified username.
+
+```json
+{
+  "id": "string", // User's unique identifier (UUID)
+  "name": "string", // User's full name
+  "image": "string", // URL to the user's profile image
+  "createdAt": "string",// Date and time the user was created
+  "username": "string" // User's username
+}
+```
+
+- 401 Unauthorized: Returned when the `username` parameter is missing.
+
+```json
+{
+  "error": "Username is missing"
+}
+```
+
+- 500 Internal Server Error: Returned if there's a server-side issue when fetching the user's data.
+
+```json
+{
+  "error": "Internal Server Error"
+}
+```
 
 
 ## IGDB
