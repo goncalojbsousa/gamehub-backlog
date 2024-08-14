@@ -75,7 +75,7 @@ To run this project, you need to configure the following environment variables i
 ### Create/update user game status
 
 ```http
-  POST /api/game/updateGameStatus
+POST /api/game/updateGameStatus
 ```
 
 | Parameter   | Type       | Description                                     |
@@ -147,16 +147,19 @@ GET /api/game/getGameStatusByUserId
 {
     "data": [
         {
-            "gameId": 123,
-            "status": "Playing",
+            "gameId": 1942,
+            "status": "Played",
             "progress": "Unfinished",
             "gameDetails": {
-            "id": 123,
-            "name": "Game Title",
-            "cover": "url_to_image",
-            "summary": "Game summary",
-            // Other game details from IGDB
-        }
+                "id": 1942,
+                "cover": {
+                    "id": 89386,
+                    "url": "//images.igdb.com/igdb/image/upload/t_thumb/co1wyy.jpg"
+                },
+                "name": "The Witcher 3: Wild Hunt",
+                "slug": "the-witcher-3-wild-hunt"
+            }
+        },
     ],
     "pagination": {
         "currentPage": 1,
