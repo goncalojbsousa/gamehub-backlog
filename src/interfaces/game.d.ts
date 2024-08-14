@@ -52,4 +52,14 @@ declare interface Game {
     total_rating: number;
     aggregated_rating: number;
     rating: number;
+    similar_games: Game[];
+    expanded_games: Game[];
+    expansions: Game[];
+    dlcs: Game[];
+    bundles: Game[];
+    remakes: Game[];
+    remasters: Game[];
+    parent_game: Game;
+    standalone_expansions: Game[];
+    forks: Game[];
 }
