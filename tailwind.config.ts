@@ -20,6 +20,9 @@ const config: Config = {
         btn_logout: "var(--btn_logout)",
         border_detail: "var(--border_detail)",
         border_detail_sec: "var(--border_detail_sec)",
+        color_error: "var(--color_error)",
+        color_success: "var(--color_success)",
+        color_click: "var(--color_click)",
       }
     },
   },

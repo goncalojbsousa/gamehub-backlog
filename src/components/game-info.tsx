@@ -100,6 +100,17 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                             </div>
                         }
 
+                        {game.platforms && (
+                            <div className="flex flex-col p-2 pb-0">
+                                <p className="text-color_text">Platforms:</p>
+                                <div className="text-color_text_sec flex gap-1 p-1 flex-wrap">
+                                    {game.platforms.map((platform, index) => (
+                                        <p key={index} className="border border-border_detail text-sm rounded-lg px-2 whitespace-nowrap">{platform.name}</p>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {game.language_supports && (
                             <div className="flex flex-col">
                                 <div

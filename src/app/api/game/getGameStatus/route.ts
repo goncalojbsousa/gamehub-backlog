@@ -2,16 +2,15 @@
 
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
-import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
 import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
 export async function GET(request: Request) {
-  // EXTRACT GAME ID FROM URL PARAMETERS
+  // EXTRACT GAME ID AND USER ID FROM URL PARAMETERS
   const url = new URL(request.url);
   const gameId = url.searchParams.get('gameId');
+  const userId = url.searchParams.get('userId');
 
   // VALIDATE GAME ID
   if (gameId === null) {
@@ -25,12 +24,16 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Invalid gameId format' }, { status: 400 });
   }
 
-  // CHECK AUTHENTICATION
-  const isAuthenticated = checkIsAuthenticated();
-  const userId = await getUserId();
-
-  if (!userId || !isAuthenticated) {
-    return NextResponse.json({ error: 'Please authenticate' }, { status: 401 });
+  // VALIDATE USER ID
+  if (userId === null) {
+    return NextResponse.json({ error: 'userId parameter is missing' }, { status: 400 });
+  }
+  
+  const uuidSchema = z.string().uuid();
+  try {
+    uuidSchema.parse(userId);
+  } catch (error) {
+    return NextResponse.json({ error: 'Invalid userId format' }, { status: 400 });
   }
 
   try {

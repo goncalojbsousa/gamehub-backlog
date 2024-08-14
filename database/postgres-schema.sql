@@ -73,6 +73,15 @@ CREATE INDEX idx_user_game_status ON user_game_status (user_id, game_id);
 
 
 /* CLEAN TABLE */
-DELETE FROM rate_limit_requests WHERE timestamp < EXTRACT(EPOCH FROM NOW() - INTERVAL '1 hour');
-DELETE FROM rate_limit_violations WHERE ip NOT IN (SELECT DISTINCT ip FROM rate_limit_requests WHERE timestamp > EXTRACT(EPOCH FROM NOW() - INTERVAL '24 hours'));
-DELETE FROM rate_limit_blocks WHERE block_until < EXTRACT(EPOCH FROM NOW());
+DELETE FROM public."RateLimitRequest"
+WHERE timestamp < NOW() - INTERVAL '1 hour';
+
+DELETE FROM public."RateLimitViolation"
+WHERE ip NOT IN (
+    SELECT DISTINCT ip
+    FROM public."RateLimitRequest"
+    WHERE timestamp > NOW() - INTERVAL '24 hours'
+);
+
+DELETE FROM public."RateLimitBlock"
+WHERE block_until < NOW();

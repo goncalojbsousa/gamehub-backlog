@@ -81,8 +81,55 @@ export const fetchGameDetails = async (query: string) => {
                 
                 language_supports,
 
-                
+                similar_games.name,
+                similar_games.slug,
+                similar_games.genres.name,
+                similar_games.cover.url,
 
+                bundles.name,
+                bundles.slug,
+                bundles.genres.name,
+                bundles.cover.url,
+
+                dlcs.name,
+                dlcs.slug,
+                dlcs.genres.name,
+                dlcs.cover.url,
+
+                expanded_games.name,
+                expanded_games.slug,
+                expanded_games.genres.name,
+                expanded_games.cover.url,
+
+                expansions.name,
+                expansions.slug,
+                expansions.genres.name,
+                expansions.cover.url,
+
+                forks.name,
+                forks.slug,
+                forks.genres.name,
+                forks.cover.url,
+
+                parent_game.name,
+                parent_game.slug,
+                parent_game.genres.name,
+                parent_game.cover.url,
+
+                remakes.name,
+                remakes.slug,
+                remakes.genres.name,
+                remakes.cover.url,
+
+                remasters.name,
+                remasters.slug,
+                remasters.genres.name,
+                remasters.cover.url,
+
+                standalone_expansions.name,
+                standalone_expansions.slug,
+                standalone_expansions.genres.name,
+                standalone_expansions.cover.url,
 
                 version_title,
                 involved_companies;

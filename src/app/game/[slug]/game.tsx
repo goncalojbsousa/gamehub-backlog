@@ -39,7 +39,7 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
 
     const mainStyle = selectedScreenshot ? {
         backgroundImage: `
-            linear-gradient(to bottom, var(--gradient-start), var(--gradient-end)),
+            linear-gradient(to bottom, var(--gradient-start), var(--background)),
             url(${getScreenShotImageUrl(selectedScreenshot.url)})
         `,
         backgroundSize: '100% 1200px',

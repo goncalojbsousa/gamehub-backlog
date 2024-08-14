@@ -1,56 +1,47 @@
-'use client';
+'use server'
 
-import { useParams } from "next/navigation";
+import { getUserData } from "@/src/lib/getUserData";
 import { ProfilePage } from "./profile";
-import { useEffect, useState } from "react";
-import { Loading } from '@/src/components/loading';
+import { getGameStatusByUserId } from "@/src/lib/getGameStatusByUserId";
+import { cache } from "react";
+import { Metadata } from "next";
 
-interface UserData {
-  id: string;
-  name: string;
-  image: string;
-  createdAt: string;
-  username: string;
+interface Props {
+  params: { username: string };
 }
 
-const Profile = () => {
-    const { username } = useParams();
-    const [userData, setUserData] = useState<UserData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+const getUserDataServer = cache(async (username: string) => {
+  console.log("fetching user data");
+  const userData = await getUserData(username);
+  return userData;
+});
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            if (!username) return;
+// CHANGE TITLE IN THE BROWSER TAB
+export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+  const userData = await getUserDataServer(params.username);
+  return {
+      title: `${userData?.name || 'Name'} | GameHub`,
+  };
+}
 
-            try {
-                setIsLoading(true);
-                const response = await fetch(`/api/user/getUserData?username=${username}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setUserData(data);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+export default async function Profile({ params }: Props) {
+  const { username } = params;
+  const userData = await getUserDataServer(username);
 
-        fetchUserData();
-    }, [username]);
+  if (!userData) {
+    return <div>User not found</div>;
+  }
 
-    if (isLoading) {
-        return <Loading />;
-    }
+  const joinDate = new Date(userData.createdAt).toLocaleDateString();
 
-    if (!userData) {
-        return <div>User not found</div>;
-    }
-
-    const joinDate = new Date(userData.createdAt).toLocaleDateString();
-
-    return <ProfilePage userId={userData.id} userImage={userData.image} name={userData.name}  userName={userData.username} joinDate={joinDate} />;
-};
-
-export default Profile;
+  return (
+    <ProfilePage
+      userId={userData.id}
+      userImage={userData.image}
+      name={userData.name}
+      userName={userData.username}
+      joinDate={joinDate}
+      getUserGames={getGameStatusByUserId}
+    />
+  );
+}
