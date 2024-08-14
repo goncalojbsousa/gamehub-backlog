@@ -65,7 +65,7 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                     <div className="flex">
                         {
                             currentOption && currentProgress && (
-                                <div className="flex">
+                                <div className="hidden md:flex">
                                     <div className="flex items-center mr-4 px-4 py-2 rounded-lg border border-border_detail bg-color_sec hover:bg-color_main">
                                         <StatusIcon className='fill-color_icons mr-2' />
                                         <p className="text-color_text">{currentOption}</p>

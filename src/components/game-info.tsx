@@ -9,7 +9,6 @@ interface GameInfoProps {
 
 export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 
-
     const [isLanguageExpanded, setIsLanguageExpanded] = useState(false);
     const [languageFilter, setLanguageFilter] = useState("");
 
@@ -22,8 +21,6 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
             language_support.language.native_name.toLowerCase().includes(languageFilter.toLowerCase())
         ) || [];
     }, [game.language_supports, languageFilter]);
-
-
 
     return (
         <>
