@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { SignOutButton } from "../sign-out-button";
 import Link from "next/link";
 import Image from "next/image";
+import ThemeToggle from "@/src/components/theme-toggle";
 
 interface UserProps {
     usernameSlug: string;
@@ -44,6 +45,10 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
 
     return (
         <>
+            <div className="mr-4">
+                <ThemeToggle />
+            </div>
+
             <Image
                 ref={profilePicRef}
                 width={200}

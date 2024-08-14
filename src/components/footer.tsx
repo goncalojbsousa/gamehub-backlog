@@ -2,6 +2,7 @@ import Link from "next/link"
 import { LinkedinIcon } from "./svg/social/linkedin-icon"
 import { GithubIcon } from "./svg/social/github-icon"
 import Image from "next/image";
+import { WebsiteIcon } from "./svg/social/website-icon";
 
 export const Footer = () => {
     return (
@@ -19,8 +20,8 @@ export const Footer = () => {
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">ABOUT US</h3>
                     <ul className="text-color_text_sec flex flex-col">
-                        <Link className="hover:underline" href="">About Us</Link>
-                        <Link className="hover:underline" href="">Repository</Link>
+                        <Link className="hover:underline" href="/about">About Us</Link>
+
                     </ul>
                 </div>
 
@@ -48,11 +49,14 @@ export const Footer = () => {
                                 Gonçalo Sousa
                             </div>
                             <div className="flex">
+                                <Link href="https://goncalosousa.netlify.app" target="_blank">
+                                    <WebsiteIcon className="fill-color_icons"/>
+                                </Link>
                                 <Link href="https://github.com/goncalojbsousa" target="_blank">
-                                    <GithubIcon />
+                                    <GithubIcon className="fill-color_icons"/>
                                 </Link>
                                 <Link href="https://www.linkedin.com/in/goncalojbsousa/" target="_blank">
-                                    <LinkedinIcon />
+                                    <LinkedinIcon className="fill-color_icons"/>
                                 </Link>
                             </div>
                         </div>

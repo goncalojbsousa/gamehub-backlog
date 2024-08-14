@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import UserDataFetcher from "@/src/context/userDataFetcher";
+import { ThemeProvider } from "@/src/context/themeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +19,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <SessionProvider>
-        <UserDataFetcher>
-          <body className={`${inter.className} bg-background transition-colors duration-200`}>{children}</body>
-        </UserDataFetcher>
-      </SessionProvider>
+      <ThemeProvider>
+        <SessionProvider>
+          <UserDataFetcher>
+            <body className={`${inter.className} bg-background text-color_text transition-colors duration-200`}>
+              {children}
+            </body>
+          </UserDataFetcher>
+        </SessionProvider>
+      </ThemeProvider>
     </html>
   );
 }

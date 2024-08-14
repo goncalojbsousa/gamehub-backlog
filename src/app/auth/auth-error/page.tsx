@@ -4,7 +4,7 @@ const AuthErrorPage: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-screen text-color_text"
       style={{
-        backgroundImage: 'url(/login-bg.jpg)', // Substitua com o caminho da sua imagem
+        backgroundImage: 'url(/login-bg.webp)', // Substitua com o caminho da sua imagem
         backgroundSize: 'cover', // Ajusta a imagem para cobrir toda a área
         backgroundPosition: 'center', // Centraliza a imagem
         backgroundRepeat: 'no-repeat' // Não repete a imagem

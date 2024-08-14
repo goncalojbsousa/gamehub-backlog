@@ -28,8 +28,7 @@
   --login-bg: rgba(255, 255, 255, 0.3);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+[data-theme='dark'] {
     --background: theme('colors.stone.800');
     --color_main: theme('colors.stone.900');
     --color_sec: theme('colors.stone.800');
@@ -52,7 +51,6 @@
     --gradient-end: rgba(41, 37, 36, 1);
 
     --login-bg: rgba(41, 37, 36, 0.5);
-  }
 }
 
 ::-webkit-scrollbar {
