@@ -33,7 +33,7 @@ export const SignInPage: React.FC = () => {
         <>
             <div className="flex justify-center items-center h-screen"
                 style={{
-                    backgroundImage: 'url(/login-bg.jpg)', // Substitua com o caminho da sua imagem
+                    backgroundImage: 'url(/login-bg.webp)', // Substitua com o caminho da sua imagem
                     backgroundSize: 'cover', // Ajusta a imagem para cobrir toda a área
                     backgroundPosition: 'center', // Centraliza a imagem
                     backgroundRepeat: 'no-repeat' // Não repete a imagem
@@ -77,8 +77,8 @@ export const SignInPage: React.FC = () => {
 
                         <small className="flex flex-col text-color_text_sec text-xs mt-6">This site is protected by reCAPTCHA and the Google.
                             <div>
-                                <a href="https://policies.google.com/privacy">Privacy Policy</a> and
-                                <a href="https://policies.google.com/terms"> Terms of Service</a> apply.
+                                <a href="https://policies.google.com/privacy" className="hover:underline">Privacy Policy</a> and
+                                <a href="https://policies.google.com/terms" className="hover:underline"> Terms of Service</a> apply.
                             </div>
                         </small>
                     </div>
