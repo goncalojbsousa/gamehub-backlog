@@ -19,15 +19,39 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ThemeProvider>
-        <SessionProvider>
-          <UserDataFetcher>
-            <body className={`${inter.className} bg-background text-color_text transition-colors duration-200`}>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              function getInitialColorMode() {
+                const persistedColorPreference = window.localStorage.getItem('darkMode');
+                const hasPersistedPreference = typeof persistedColorPreference === 'string';
+                if (hasPersistedPreference) {
+                  return persistedColorPreference === 'true' ? 'dark' : 'light';
+                }
+                const mql = window.matchMedia('(prefers-color-scheme: dark)');
+                const hasMediaQueryPreference = typeof mql.matches === 'boolean';
+                if (hasMediaQueryPreference) {
+                  return mql.matches ? 'dark' : 'light';
+                }
+                return 'light';
+              }
+              const colorMode = getInitialColorMode();
+              document.documentElement.setAttribute('data-theme', colorMode);
+            })();
+          `
+        }} />
+      </head>
+      <body className={`${inter.className} bg-background text-color_text transition-colors duration-200`}>
+        <ThemeProvider>
+          <SessionProvider>
+            <UserDataFetcher>
               {children}
-            </body>
-          </UserDataFetcher>
-        </SessionProvider>
-      </ThemeProvider>
+            </UserDataFetcher>
+          </SessionProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
+

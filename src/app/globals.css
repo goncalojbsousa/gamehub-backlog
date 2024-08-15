@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --background: theme('colors.white');
   --color_main: theme('colors.zinc.100');
@@ -53,28 +52,10 @@
     --login-bg: rgba(41, 37, 36, 0.5);
 }
 
-::-webkit-scrollbar {
-  width: 12px;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 var(--background);
 }
-
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 10px;
-  border: 3px solid var(--background);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Estilos para Firefox */
-scrollbar-width: thin;
-scrollbar-color: #888 #f1f1f1;
-
 
 .bg-cover {
   position: relative;
