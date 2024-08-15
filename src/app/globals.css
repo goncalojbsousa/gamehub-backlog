@@ -28,13 +28,13 @@
 }
 
 [data-theme='dark'] {
-    --background: theme('colors.stone.800');
-    --color_main: theme('colors.stone.900');
-    --color_sec: theme('colors.stone.800');
+    --background: theme('colors.stone.900');
+    --color_main: theme('colors.stone.950');
+    --color_sec: theme('colors.stone.900');
     --color_reverse: theme('colors.zinc.200');
     --color_reverse_sec: theme('colors.white');
 
-    --color_click: theme('colors.stone.950');
+    --color_click: theme('colors.stone.900');
 
     --color_text: theme('colors.white');
     --color_text_sec: theme('colors.gray.400');
