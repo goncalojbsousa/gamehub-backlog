@@ -8,10 +8,6 @@ interface GameInfoProps {
 export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
     return (
         <div>
-            {(game.summary || game.storyline) &&
-                <hr className="mt-6 mb-6 border-border_detail" />
-            }
-
             {game.summary &&
                 <>
                     <h1 className="text-color_text text-2xl">Summary</h1>

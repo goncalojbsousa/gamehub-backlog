@@ -18,7 +18,7 @@ interface GamePageProps {
 }
 
 export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
-    const [selectedScreenshot, setSelectedScreenshot] = useState(game.screenshots[0]);
+    const [selectedScreenshot, setSelectedScreenshot] = useState(game.screenshots?.[0] || null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(userGameStatus?.status || '');
     const [selectedProgress, setSelectedProgress] = useState(userGameStatus?.progress || '');
@@ -93,12 +93,17 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                         <GameInfo game={game} />
 
                         <div className="w-full md:w-2/2 px-2 flex flex-col justify-start items-center">
-                            <ScreenshotViewer
-                                screenshots={game.screenshots}
-                                selectedScreenshot={selectedScreenshot}
-                                onSelectScreenshot={setSelectedScreenshot}
-                            />
-
+                            {selectedScreenshot && (
+                                <>
+                                    <ScreenshotViewer
+                                        screenshots={game.screenshots}
+                                        selectedScreenshot={selectedScreenshot}
+                                        onSelectScreenshot={setSelectedScreenshot}
+                                    />
+                                    <hr className="mt-6 mb-6 border-border_detail" />
+                                </>
+                            )
+                            }
                             <GamePageContent game={game} />
                         </div>
                     </div>

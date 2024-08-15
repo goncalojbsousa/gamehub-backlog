@@ -51,12 +51,12 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                         query = `
                             fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url;
                             where first_release_date < ${Math.floor(Date.now() / 1000)}
+                                & first_release_date > ${Math.floor(Date.now() / 1000) - (365 * 24 * 60 * 60)}
                                 & cover.url != null
-                                & slug != null
-                                & cover.url != null;
+                                & slug != null;
                             sort first_release_date desc;
                             limit ${limit / listTypes.length};
-                        `;
+                            `;
                         break;
                     case 'popular':
                         query = `
