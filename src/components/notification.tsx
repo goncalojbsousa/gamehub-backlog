@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { ErrorIcon } from './svg/error-icon';
-import { SuccessIcon } from './svg/success-icon';
+import { ErrorIcon } from './svg/alert/error-icon';
+import { SuccessIcon } from './svg/alert/success-icon';
 
 interface NotificationProps {
     message: string;

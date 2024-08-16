@@ -7,6 +7,7 @@ import { NoResults } from "./no-results";
 import { SearchResults } from "./search-results";
 import { ViewMoreButton } from "./view-more-button";
 import { sanitizeInput } from "@/src/utils/sanitizeInput";
+import { useRouter } from 'next/navigation';
 
 export const SearchInput: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +19,7 @@ export const SearchInput: React.FC = () => {
     const inputRef = useRef<HTMLInputElement>(null);
     const lastRequestTime = useRef<number>(0);
     const requestCount = useRef<number>(0);
+    const router = useRouter();
 
     const throttledFetchGames = useCallback(async (term: string) => {
         const now = Date.now();
@@ -94,10 +96,18 @@ export const SearchInput: React.FC = () => {
         }
     };
 
+    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const sanitizedTerm = sanitizeInput(searchTerm);
+        if (sanitizedTerm.length >= 1) {
+            router.push(`/search?term=${sanitizedTerm}`);
+        }
+    };
+
     return (
         <>
             <div className="relative w-full max-w-sm md:max-w-5xl text-color_text" ref={dropdownRef}>
-                <form action="" className="">
+                <form onSubmit={handleFormSubmit} className="">
                     <svg xmlns="http://www.w3.org/2000/svg" className="absolute fill-color_icons left-2 top-1/2 transform -translate-y-1/2 w-5 h-5 ml-1" width="1em" height="1em" viewBox="0 0 24 24">
                         <path d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14" />
                     </svg>
@@ -135,7 +145,7 @@ export const SearchInput: React.FC = () => {
                             ) : searchGames.length > 0 ? (
                                 <>
                                     <SearchResults games={searchGames} />
-                                    <ViewMoreButton />
+                                    <ViewMoreButton searchTerm={sanitizeInput(searchTerm)} />
                                 </>
                             ) : null}
                     </div>
