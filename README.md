@@ -1,14 +1,14 @@
 <p align="center">
   <a href="https://gamehub-project-navy.vercel.app">
-    <table align="center" cellpadding="0" cellspacing="0">
+    <table align="center" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
       <tr>
-        <td style="border: none;"><img src="https://github.com/goncalojbsousa/gamehub-project/blob/main/src/app/favicon.ico" height="96" /></td>
-        <td style="border: none; padding-left: 10px;"><h3 style="margin: 0;">GameHub Backlog</h3></td>
+        <td><img src="https://github.com/goncalojbsousa/gamehub-project/blob/main/src/app/favicon.ico" height="96" /></td>
+        <td>&nbsp;&nbsp;</td>
+        <td><h3>GameHub Backlog</h3></td>
       </tr>
     </table>
   </a>
 </p>
-
 
 # About
 
