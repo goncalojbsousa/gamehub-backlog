@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   // CHECK IS AUTHENTICATED
   const isAuthenticated = await checkIsAuthenticated();
   if (!isAuthenticated) {
-    redirect("/auth/sign-in")
+    redirect("/auth/sign-in");
   }
 
   // GET CLIENT IP
