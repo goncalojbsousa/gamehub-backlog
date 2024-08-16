@@ -1,7 +1,7 @@
 <p align="center">
-  <a href="https://gamehub-project-navy.vercel.app" style="display: flex; align-items: center;">
-    <img src="https://github.com/goncalojbsousa/gamehub-project/blob/main/src/app/favicon.ico" height="96" style="margin-right: 10px;">
-    <h3 align="left">GameHub Backlog</h3>
+  <a href="https://gamehub-project-navy.vercel.app">
+    <img src="https://github.com/goncalojbsousa/gamehub-project/blob/main/src/app/favicon.ico" height="96" style="float: left; margin-right: 10px;">
+    <h3 align="left" style="margin: 0;">GameHub Backlog</h3>
   </a>
 </p>
 
