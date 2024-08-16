@@ -122,7 +122,7 @@ export const SearchInput: React.FC = () => {
                         maxLength={100}
                         onFocus={handleInputFocus}
                         placeholder="Search games..."
-                        className="w-full p-2 pl-10 rounded-md bg-color_sec border border-border_detail transition-colors duration-200"
+                        className="w-full p-2 pl-10 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail"
                     />
                 </form>
                 {isDropdownOpen && searchTerm.length >= 1 && (

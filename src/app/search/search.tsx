@@ -83,7 +83,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({ term, games, initialFilt
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 placeholder="Search games..."
-                                className="w-full p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 mr-2"
+                                className="w-full p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 mr-2 focus:outline-none focus:border-input_detail"
                             />
                             <button type="submit" className="px-4 py-2 bg-color_reverse_sec text-color_main rounded-md">
                                 <SearchIcon width="1.5rem" height="1.5rem" className="fill-color_main" />

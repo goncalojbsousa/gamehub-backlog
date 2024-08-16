@@ -27,14 +27,33 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [selectedCategory, setSelectedCategory] = useState<string>("Played");
     const [selectedProgress, setSelectedProgress] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOption, setSortOption] = useState("rating_desc");
     const itemsPerPage = 48;
 
     const filteredGames = useMemo(() => {
-        return allUserGames.filter(game => 
-            game.status === selectedCategory && 
-            (selectedProgress ? game.progress === selectedProgress : true)
+        let filtered = allUserGames.filter(game =>
+            game.status === selectedCategory &&
+            (selectedProgress ? game.progress === selectedProgress : true) &&
+            game.gameDetails.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
-    }, [allUserGames, selectedCategory, selectedProgress]);
+
+        switch (sortOption) {
+            case "rating_desc":
+                filtered.sort((a, b) => (b.gameDetails.total_rating || 0) - (a.gameDetails.total_rating || 0));
+                break;
+            case "rating_asc":
+                filtered.sort((a, b) => (a.gameDetails.total_rating || 0) - (b.gameDetails.total_rating || 0));
+                break;
+            case "name_asc":
+                filtered.sort((a, b) => a.gameDetails.name.localeCompare(b.gameDetails.name));
+                break;
+            case "name_desc":
+                filtered.sort((a, b) => b.gameDetails.name.localeCompare(a.gameDetails.name));
+                break;
+        }
+        return filtered;
+    }, [allUserGames, selectedCategory, selectedProgress, searchTerm, sortOption]);
 
     const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
     const currentGames = filteredGames.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -95,9 +114,15 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                     </div>
 
                     {/* Progress buttons */}
-                    <div className="flex justify-center">
-                        <div className="px-4 gap-x-2 sm:gap-x-10 md:gap-x-20 text-center text-color_text_sec bg-color_main rounded-lg mt-4">
-                            <input type="text" />
+                    <div className="flex justify-center flex-wrap">
+                        <div className="px-4 py-2 gap-x-2 sm:gap-x-10 md:gap-x-20 text-center text-color_text_sec bg-color_main rounded-lg mt-4">
+                            <input
+                                type="text"
+                                placeholder="Search games..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 mr-4 focus:outline-none focus:border-input_detail"
+                            />
                             {progressOptions.map(progress => (
                                 <button
                                     key={progress}
@@ -107,6 +132,16 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                     {progress}
                                 </button>
                             ))}
+                            <select
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value)}
+                                className="p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 ml-4 focus:outline-none focus:border-input_detail"
+                            >
+                                <option value="rating_desc">Rating (High to Low)</option>
+                                <option value="rating_asc">Rating (Low to High)</option>
+                                <option value="name_asc">Name (A-Z)</option>
+                                <option value="name_desc">Name (Z-A)</option>
+                            </select>
                         </div>
                     </div>
 

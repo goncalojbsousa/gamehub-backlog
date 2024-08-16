@@ -18,6 +18,8 @@
   --border_detail: theme('colors.zinc.200');
   --border_detail_sec: theme('colors.blue.500');
 
+  --input_detail: theme('colors.zinc.400');
+
   --color_error: theme('colors.red.500');
   --color_success: theme('colors.green.500');
 
@@ -28,28 +30,30 @@
 }
 
 [data-theme='dark'] {
-    --background: theme('colors.stone.900');
-    --color_main: theme('colors.stone.950');
-    --color_sec: theme('colors.stone.900');
-    --color_reverse: theme('colors.zinc.200');
-    --color_reverse_sec: theme('colors.white');
+  --background: theme('colors.stone.900');
+  --color_main: theme('colors.stone.950');
+  --color_sec: theme('colors.stone.900');
+  --color_reverse: theme('colors.zinc.200');
+  --color_reverse_sec: theme('colors.white');
 
-    --color_click: theme('colors.stone.900');
+  --color_click: theme('colors.stone.900');
 
-    --color_text: theme('colors.white');
-    --color_text_sec: theme('colors.gray.400');
-    --color_icons: theme('colors.white');
-    --btn_logout: theme('colors.red.500');
-    --border_detail: theme('colors.neutral.700');
-    --border_detail_sec: theme('colors.blue.500');
+  --color_text: theme('colors.white');
+  --color_text_sec: theme('colors.gray.400');
+  --color_icons: theme('colors.white');
+  --btn_logout: theme('colors.red.500');
+  --border_detail: theme('colors.neutral.700');
+  --border_detail_sec: theme('colors.blue.500');
 
-    --color_error: theme('colors.red.500');
-    --color_success: theme('colors.green.500');
+  --input_detail: theme('colors.stone.500');
 
-    --gradient-start: rgba(41, 37, 36, 0.7);
-    --gradient-end: rgba(41, 37, 36, 1);
+  --color_error: theme('colors.red.500');
+  --color_success: theme('colors.green.500');
 
-    --login-bg: rgba(41, 37, 36, 0.5);
+  --gradient-start: rgba(41, 37, 36, 0.7);
+  --gradient-end: rgba(41, 37, 36, 1);
+
+  --login-bg: rgba(41, 37, 36, 0.5);
 }
 
 * {
