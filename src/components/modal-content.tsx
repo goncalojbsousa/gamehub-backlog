@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Modal from '@/src/components/modal';
-import { ProgressIcon } from './svg/progress';
-import { StatusIcon } from './svg/status';
-import { GameControlerIcon } from './svg/game-controler';
-import { checkIsAuthenticated } from '../lib/auth/checkIsAuthenticated';
-import { getUserId } from '../lib/auth/getUserIdServerAction';
+import { ProgressIcon } from '@/src/components/svg/progress';
+import { StatusIcon } from '@/src/components/svg/status';
+import { GameControlerIcon } from '@/src/components/svg/game-controler';
+import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
+import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
 import { Notification } from '@/src/components/notification'
 import { useRouter } from 'next/navigation';
 

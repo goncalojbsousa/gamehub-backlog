@@ -6,7 +6,7 @@ import { Logo } from "@/src/components/svg/logo";
 import { MenuOpen } from "@/src/components/svg/menu/menu-open";
 import { MenuClose } from "@/src/components/svg/menu/menu-close";
 import { HomeIcon } from "@/src/components/svg/navigation/home-icon";
-import { SearchIcon } from "../svg/search-icon";
+import { SearchIcon } from "@/src/components/svg/search-icon";
 
 export const NavbarLinks = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

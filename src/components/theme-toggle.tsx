@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useTheme } from '@/src/context/themeContext';
-import { DarkModeIcon } from './svg/theme/dark-mode-icon';
-import { LightModeIcon } from './svg/theme/light-mode-icon';
+import { DarkModeIcon } from '@/src/components/svg/theme/dark-mode-icon';
+import { LightModeIcon } from '@/src/components/svg/theme/light-mode-icon';
 
 const ThemeToggle: React.FC = () => {
     const { darkMode, toggleDarkMode } = useTheme();

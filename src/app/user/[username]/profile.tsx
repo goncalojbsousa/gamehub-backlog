@@ -4,8 +4,8 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
 import Image from "next/image";
-import { useState, useEffect, useMemo } from "react";
-import { LoadingIcon } from "@/src/components/svg/loading";
+import { useState, useMemo } from "react";
+
 
 interface UserProps {
     userId: string;

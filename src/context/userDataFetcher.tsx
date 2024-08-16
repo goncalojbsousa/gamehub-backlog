@@ -3,7 +3,7 @@ import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
 import { getUserName } from '@/src/lib/auth/getUserNameServerAction';
 import { getUserImage } from '@/src/lib/auth/getUserImageServerAction';
 import { getUserNameSlug } from '@/src/lib/auth/getUserNameSlugServerAction';
-import { UserProvider } from './userContext';
+import { UserProvider } from '@/src/context/userContext';
 
 
 /**

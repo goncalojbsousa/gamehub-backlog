@@ -1,10 +1,10 @@
 'use client'
 
 import { SignInButton } from "@/src/components/sign-in-button";
-import { SearchInput } from "./search/navbar-search";
-import { NavbarUser } from "./navbar-user";
+import { SearchInput } from "@/src/components/navbar/search/navbar-search";
+import { NavbarUser } from "@/src/components/navbar/navbar-user";
 import { useUser } from "@/src/context/userContext";
-import { NavbarLinks } from "./navbar-links";
+import { NavbarLinks } from "@/src/components/navbar/navbar-links";
 
 export const Navbar = () => {
     const { username, usernameSlug, userImage, isAuthenticated } = useUser();

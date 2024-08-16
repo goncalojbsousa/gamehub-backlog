@@ -1,5 +1,5 @@
-import { GameCard } from "./game-card";
-import { LoadingIcon } from "./svg/loading";
+import { GameCard } from "@/src/components/game-card";
+import { LoadingIcon } from "@/src/components/svg/loading";
 
 interface GameInfoProps {
     game: Game;

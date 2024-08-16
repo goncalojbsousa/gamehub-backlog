@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { RatingCircle } from "@/src/components/rating-circle";
-import { getCoverImageUrl } from "../utils/utils";
+import { getCoverImageUrl } from "@/src/utils/utils";
 
 interface GameCardProps {
     game: Game;

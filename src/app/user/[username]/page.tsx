@@ -1,7 +1,7 @@
 'use server'
 
 import { getUserData } from "@/src/lib/getUserData";
-import { ProfilePage } from "./profile";
+import { ProfilePage } from "@/src/app/user/[username]/profile";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
 import { cache } from "react";
 import { Metadata } from "next";

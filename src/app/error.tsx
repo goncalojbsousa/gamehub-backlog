@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Navbar } from '../components/navbar/navbar';
-import { Footer } from '../components/footer';
+import { Navbar } from '@/src/components/navbar/navbar';
+import { Footer } from '@/src/components/footer';
 
 interface ErrorProps {
     error: Error;

@@ -1,9 +1,9 @@
 import Link from "next/link"
-import { LinkedinIcon } from "./svg/social/linkedin-icon"
-import { GithubIcon } from "./svg/social/github-icon"
+import { LinkedinIcon } from "@/src/components/svg/social/linkedin-icon"
+import { GithubIcon } from "@/src/components/svg/social/github-icon"
 import Image from "next/image";
-import { WebsiteIcon } from "./svg/social/website-icon";
-import { IGDBIcon } from "./svg/igdb";
+import { WebsiteIcon } from "@/src/components/svg/social/website-icon";
+import { IGDBIcon } from "@/src/components/svg/igdb";
 
 export const Footer = () => {
     return (

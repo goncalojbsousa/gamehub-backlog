@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
-import { SignOutButton } from "../sign-out-button";
+import { SignOutButton } from "@/src/components/sign-out-button";
 import Link from "next/link";
 import Image from "next/image";
 import ThemeToggle from "@/src/components/theme-toggle";

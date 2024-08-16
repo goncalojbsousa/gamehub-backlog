@@ -1,5 +1,5 @@
 import { fetchGamesBySearchFilter } from "@/src/services/igdbServices/searchGamesFilters";
-import { SearchPage } from "./search";
+import { SearchPage } from "@/src/app/search/search";
 
 interface SearchProps {
     searchParams: {
