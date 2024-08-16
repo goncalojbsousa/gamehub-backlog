@@ -108,7 +108,9 @@ export const SearchPage: React.FC<SearchPageProps> = ({ term, games, initialFilt
                         ) : (
                             <div className="flex items-center">
                                 <ErrorIcon className="fill-color_icons ml-4" />
-                                <p className="text-color_text text-lg p-4 px-2">No games found for "{term}". Try adjusting your filters or search terms.</p>
+                                <p className="text-color_text text-lg p-4 px-2">
+                                    No games found for &quot;{term}&quot;. Try adjusting your filters or search terms.
+                                </p>
                             </div>
                         )}
                     </div>
