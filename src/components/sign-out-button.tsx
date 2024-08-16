@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from "next/navigation"
-import { useLogout } from "../lib/auth/useLogout";
+import { useLogout } from "@/src/lib/auth/useLogout";
 
 export const SignOutButton = (props: {
     children?: React.ReactNode;

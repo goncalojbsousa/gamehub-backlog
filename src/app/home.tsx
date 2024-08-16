@@ -34,12 +34,12 @@ export default function HomePage({
           games={gamesPopularYear}
           coverImageUrl={getCoverImageUrl(`https://${gamesPopularYear[0]?.screenshots[0]?.url}`)}
         />
-        <GameSection
+        {<GameSection
           className="pt-6"
           title="Recent Games"
           games={gamesRecent}
-          coverImageUrl={getCoverImageUrl(`https://${gamesRecent[0]?.screenshots[0]?.url}`)}
-        />
+          coverImageUrl={getCoverImageUrl(`https://${gamesRecent[0]?.screenshots?.[0]?.url || ''}`)}
+        />}
         <GameSection
           className="pt-6"
           title="Upcoming Games"

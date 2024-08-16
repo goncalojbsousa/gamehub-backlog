@@ -46,6 +46,9 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
               id,
               name, 
               cover.url,
+              aggregated_rating,
+                rating,
+                total_rating, 
               slug;
             where id = (${gameIds.join(', ')});
             limit ${numberOfGames};

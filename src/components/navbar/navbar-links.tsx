@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Logo } from "../svg/logo";
+import { Logo } from "@/src/components/svg/logo";
+import { MenuOpen } from "@/src/components/svg/menu/menu-open";
+import { MenuClose } from "@/src/components/svg/menu/menu-close";
+import { HomeIcon } from "@/src/components/svg/navigation/home-icon";
+import { SearchIcon } from "@/src/components/svg/search-icon";
 
 export const NavbarLinks = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -40,8 +44,7 @@ export const NavbarLinks = () => {
             <div className="hidden md:flex items-center">
                 <Link href="/" ><Logo className="fill-color_icons mr-8" /> </Link>
 
-                <Link href="/" className="text-color_text text-base mr-4">Home</Link>
-                <Link href="/dashboard" className="text-color_text text-md">Dashboard</Link>
+                <Link href="/" className="text-color_text text-base mr-4 select-none">Home</Link>
             </div>
 
             {/* MENU BUTTON */}
@@ -51,14 +54,9 @@ export const NavbarLinks = () => {
                     onClick={toggleMobileMenu}
                 >
                     {isMobileMenuOpen ? (
-
-                        <svg xmlns="http://www.w3.org/2000/svg" className="fill-color_icons" width="2em" height="2em" viewBox="0 0 24 24">
-                            <path d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6z" />
-                        </svg>
+                        <MenuOpen className="fill-color_icons" />
                     ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="fill-color_icons" width="2em" height="2em" viewBox="0 0 24 24">
-                            <path d="M4 18h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1m0-5h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1M3 7c0 .55.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1" />
-                        </svg>
+                        <MenuClose className="fill-color_icons" />
                     )
                     }
                 </button>
@@ -68,17 +66,13 @@ export const NavbarLinks = () => {
             {isMobileMenuOpen && (
                 <div className="md:hidden absolute mt-36 bg-color_sec shadow-md border border-border_detail rounded-md w-48 p-2" ref={menuRef}>
                     <div className="flex flex-col">
-                        <Link href="/" onClick={toggleMobileMenu} className="flex px-4 py-2 text-color_text hover:bg-color_main rounded-md transition-colors duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 mt-1 fill-color_icons" width="1em" height="1em" viewBox="0 0 24 24">
-                                <path d="M6 19h3v-6h6v6h3v-9l-6-4.5L6 10zm-2 2V9l8-6l8 6v12h-7v-6h-2v6zm8-8.75" />
-                            </svg>
+                        <Link href="/" onClick={toggleMobileMenu} className="flex px-4 py-2 text-color_text hover:bg-color_main rounded-md transition-colors duration-200 select-none">
+                            <HomeIcon className="mr-2 mt-1 fill-color_icons"/>
                             Home
                         </Link>
-                        <Link href="/dashboard" onClick={toggleMobileMenu} className="flex px-4 py-2 text-color_text hover:bg-color_main rounded-md transition-colors duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 mt-1 fill-color_icons" width="1em" height="1em" viewBox="0 0 24 24">
-                                <path d="M6 19h3v-6h6v6h3v-9l-6-4.5L6 10zm-2 2V9l8-6l8 6v12h-7v-6h-2v6zm8-8.75" />
-                            </svg>
-                            Dashboard
+                        <Link href="/search" onClick={toggleMobileMenu} className="flex px-4 py-2 text-color_text hover:bg-color_main rounded-md transition-colors duration-200 select-none">
+                            <SearchIcon className="mr-2 mt-1 fill-color_icons" />
+                            Search
                         </Link>
                     </div>
                 </div>

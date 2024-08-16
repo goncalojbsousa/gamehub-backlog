@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import Modal from '@/src/components/modal';
-import { ProgressIcon } from './svg/progress';
-import { StatusIcon } from './svg/status';
-import { GameControlerIcon } from './svg/game-controler';
-import { checkIsAuthenticated } from '../lib/auth/checkIsAuthenticated';
-import { getUserId } from '../lib/auth/getUserIdServerAction';
+import { ProgressIcon } from '@/src/components/svg/progress';
+import { StatusIcon } from '@/src/components/svg/status';
+import { GameControlerIcon } from '@/src/components/svg/game-controler';
+import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
+import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
 import { Notification } from '@/src/components/notification'
+import { useRouter } from 'next/navigation';
 
 interface ButtonProps {
     text: string;
@@ -41,6 +42,7 @@ interface ModalProps {
 export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, selectedOption, handleOptionClick, selectedProgress, handleProgressClick, gameId, setCurrentOption, setCurrentProgress }) => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const router = useRouter();
 
     const handleUpdate = async () => {
         if (!selectedOption || !selectedProgress) {
@@ -50,7 +52,7 @@ export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, se
 
         const isAuthenticated = await checkIsAuthenticated();
         if (!isAuthenticated) {
-            setNotification({ message: 'Please authenticate', type: 'error' });
+            router.push('/auth/sign-in');
             return;
         }
         setIsUpdating(true);

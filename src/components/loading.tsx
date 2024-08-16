@@ -1,5 +1,5 @@
-import { Footer } from "./footer";
-import { Navbar } from "./navbar/navbar"
+import { Footer } from "@/src/components/footer";
+import { Navbar } from "@/src/components/navbar/navbar"
 
 export const Loading = () => {
 

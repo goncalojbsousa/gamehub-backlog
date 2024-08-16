@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { RatingCircle } from "@/src/components/rating-circle";
-import { getCoverImageUrl } from "../utils/utils";
+import { getCoverImageUrl } from "@/src/utils/utils";
 
 interface GameCardProps {
     game: Game;
@@ -20,7 +20,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, progress }) => {
                 alt={game.name}
                 width={200}
                 height={300}
-                className="rounded-lg w-full h-auto object-cover"
+                className="rounded-lg w-full h-auto object-cover shadow-lg"
                 draggable={false}
             />
             <div className="mt-2 w-full">
