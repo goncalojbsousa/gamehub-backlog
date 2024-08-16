@@ -61,7 +61,7 @@ export const SignInPage: React.FC = () => {
                         <p className="p-4 pt-0">Temporarily unavailable</p>
                         <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center">
                             <input
-                                className="mb-4 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none"
+                                className="mb-4 px-4 py-2 rounded-lg bg-color_sec border border-border_detail focus:outline-none"
                                 type="email"
                                 maxLength={320}
                                 placeholder="Email"
@@ -72,7 +72,7 @@ export const SignInPage: React.FC = () => {
                                 disabled={true}
                                 required
                             />
-                            <button disabled={true} type="submit" className="w-full flex justify-center items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none">Sign in with email</button>
+                            <button disabled={true} type="submit" className="w-full flex justify-center items-center gap-2 px-4 py-2 rounded-lg border border-border_detail  focus:outline-none">Sign in with email</button>
                         </form>
 
                         <small className="flex flex-col text-color_text_sec text-xs mt-6">This site is protected by reCAPTCHA and the Google.

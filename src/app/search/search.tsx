@@ -42,7 +42,6 @@ export const SearchPage: React.FC<SearchPageProps> = ({ term, games, initialFilt
                 .map(([key, values]) => `${key}=${values.join(',')}`)
                 .join('&');
             const searchUrl = `/search?term=${encodeURIComponent(searchTerm.trim())}${filterParams ? '&' + filterParams : ''}`;
-            console.log('Search URL:', searchUrl);
             router.push(searchUrl);
         }
     };

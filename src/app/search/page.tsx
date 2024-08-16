@@ -35,8 +35,6 @@ const Search: React.FC<SearchProps> = async ({ searchParams }) => {
     if (term) {
         games = await fetchGamesBySearchFilter(term, filters);
     }
-    console.log('Search params:', searchParams);
-    console.log('Filters:', filters);
     return <SearchPage term={term} games={games} initialFilters={filters} />;
 };
 

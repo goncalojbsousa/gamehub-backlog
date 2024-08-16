@@ -2,9 +2,9 @@
 
 export async function getAllGameStatusByUserId(userId: string) {
     try {
-        const url = `/api/game/getAllGameStatusByUserId?userId=${userId}`;
+        const url = `${process.env.NEXTAUTH_URL}/api/game/getAllGameStatusByUserId?userId=${userId}`;
 
-        const response = await fetch(url, { method: 'GET' });
+        const response = await fetch(url);
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -16,6 +16,6 @@ export async function getAllGameStatusByUserId(userId: string) {
         return data;
     } catch (error) {
         console.error('Error in getAllGameStatusByUserId:', error);
-        throw error; 
+        throw error;
     }
 }
