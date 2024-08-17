@@ -30,6 +30,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOption, setSortOption] = useState("rating_desc");
     const itemsPerPage = 48;
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
     const filteredGames = useMemo(() => {
         let filtered = allUserGames.filter(game =>
@@ -101,7 +102,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                     </div>
 
                     {/* Category buttons */}
-                    <div className="grid grid-cols-4 gap-4 pt-6 text-color_text_sec">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-6 text-color_text_sec">
                         {['Played', 'Playing', 'Plan to play', 'Dropped'].map(category => (
                             <button
                                 key={category}
@@ -113,35 +114,52 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                         ))}
                     </div>
 
-                    {/* Progress buttons */}
-                    <div className="flex justify-center flex-wrap">
-                        <div className="px-4 py-2 gap-x-2 sm:gap-x-10 md:gap-x-20 text-center text-color_text_sec bg-color_main rounded-lg mt-4">
-                            <input
-                                type="text"
-                                placeholder="Search games..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 mr-4 focus:outline-none focus:border-input_detail"
-                            />
-                            {progressOptions.map(progress => (
-                                <button
-                                    key={progress}
-                                    onClick={() => handleProgressClick(progress)}
-                                    className={`p-2 ${selectedProgress === progress ? 'border-b-2 border-color_reverse text-color_text' : 'hover:text-color_text'}`}
-                                >
-                                    {progress}
-                                </button>
-                            ))}
-                            <select
-                                value={sortOption}
-                                onChange={(e) => setSortOption(e.target.value)}
-                                className="p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 ml-4 focus:outline-none focus:border-input_detail"
-                            >
-                                <option value="rating_desc">Rating (High to Low)</option>
-                                <option value="rating_asc">Rating (Low to High)</option>
-                                <option value="name_asc">Name (A-Z)</option>
-                                <option value="name_desc">Name (Z-A)</option>
-                            </select>
+                    {/* Filters section */}
+                    <div className="mt-4">
+                        <button
+                            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+                            className="w-full md:hidden bg-color_main text-color_text p-2 rounded-lg mb-2"
+                        >
+                            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+                        </button>
+
+                        <div className={`md:block ${isFiltersOpen ? 'block' : 'hidden'}`}>
+                            <div className="flex flex-col md:flex-row justify-between items-center bg-color_main rounded-lg p-2">
+                                <div className="w-full md:w-auto mb-4 md:mb-0">
+                                    <input
+                                        type="text"
+                                        placeholder="Search games..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="w-full md:w-auto p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail"
+                                    />
+                                </div>
+
+                                <div className="flex flex-wrap justify-center gap-2 mb-4 md:mb-0">
+                                    {progressOptions.map(progress => (
+                                        <button
+                                            key={progress}
+                                            onClick={() => handleProgressClick(progress)}
+                                            className={`p-2 ${selectedProgress === progress ? 'border-b-2 border-color_reverse text-color_text' : 'hover:text-color_text'}`}
+                                        >
+                                            {progress}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="w-full md:w-auto">
+                                    <select
+                                        value={sortOption}
+                                        onChange={(e) => setSortOption(e.target.value)}
+                                        className="w-full md:w-auto p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail"
+                                    >
+                                        <option value="rating_desc">Rating (High to Low)</option>
+                                        <option value="rating_asc">Rating (Low to High)</option>
+                                        <option value="name_asc">Name (A-Z)</option>
+                                        <option value="name_desc">Name (Z-A)</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
