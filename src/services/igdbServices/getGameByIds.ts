@@ -43,13 +43,13 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
             },
             body: `
             fields 
-              id,
-              name, 
-              cover.url,
-              aggregated_rating,
+                id,
+                name, 
+                cover.url,
+                aggregated_rating,
                 rating,
                 total_rating, 
-              slug;
+                slug;
             where id = (${gameIds.join(', ')});
             limit ${numberOfGames};
           `,

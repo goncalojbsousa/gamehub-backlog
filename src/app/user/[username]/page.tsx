@@ -10,12 +10,12 @@ interface Props {
   params: { username: string };
 }
 
-const getUserDataServer = cache(async (username: string) => {
+const getUserDataServer = (async (username: string) => {
   const userData = await getUserData(username);
   return userData;
 });
 
-const getAllUserGamesServer = cache(async (userId: string) => {
+const getAllUserGamesServer = (async (userId: string) => {
   const allGames = await getAllGameStatusByUserId(userId);
   return allGames;
 });
@@ -51,6 +51,7 @@ export default async function Profile({ params }: Props) {
         allUserGames={allUserGames}
       />
     );
+
   } catch (error) {
     console.error('Error in Profile component:', error);
     return <div>An error occurred while loading the profile. Please try again later.</div>;
