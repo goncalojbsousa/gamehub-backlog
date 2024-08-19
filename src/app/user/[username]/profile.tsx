@@ -6,7 +6,6 @@ import { GameCard } from "@/src/components/game-card";
 import Image from "next/image";
 import { useState, useMemo } from "react";
 
-
 interface UserProps {
     userId: string;
     userImage: string;

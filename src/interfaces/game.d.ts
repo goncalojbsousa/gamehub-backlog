@@ -62,4 +62,9 @@ declare interface Game {
     parent_game: Game;
     standalone_expansions: Game[];
     forks: Game[];
+    websites: {
+        url: string;
+        category: number;
+    }[];
+    price: string;
 }
