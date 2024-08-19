@@ -2,6 +2,7 @@
 
 import { checkRateLimit } from "@/src/utils/rateLimit";
 import { headers } from "next/headers";
+import { fetchAllDeals } from "@/src/services/cheapsharkServices/getAllDeals";
 
 interface Website {
     url: string;
@@ -12,36 +13,6 @@ interface Deal {
     steamAppID: string;
     salePrice: string;
 }
-
-async function fetchAllDeals(steamIds: string[]): Promise<Deal[]> {
-    const ITEMS_PER_PAGE = 60; // CHEAPSHARK LIMIT
-    let allDeals: Deal[] = [];
-    let pageNumber = 0;
-    let hasMorePages = true;
-
-    while (hasMorePages) {
-        const cheapSharkUrl = `https://www.cheapshark.com/api/1.0/deals?steamAppID=${steamIds.join(',')}&pageNumber=${pageNumber}&pageSize=${ITEMS_PER_PAGE}`;
-        console.log(`Fetching prices from CheapShark: ${cheapSharkUrl}`);
-
-        const priceResponse = await fetch(cheapSharkUrl);
-        if (priceResponse.ok) {
-            const priceData: Deal[] = await priceResponse.json();
-            allDeals = allDeals.concat(priceData);
-
-            // CHECK IF THERE IS MORE PAGES
-            const totalPageCount = parseInt(priceResponse.headers.get('X-Total-Page-Count') || '0');
-
-            hasMorePages = pageNumber < totalPageCount;
-            pageNumber++;
-        } else {
-            console.error(`Failed to fetch prices from CheapShark for page ${pageNumber}`);
-            hasMorePages = false;
-        }
-    }
-
-    return allDeals;
-}
-
 
 export const fetchGameDetailsByIds = async (gameIds: number[]) => {
 
@@ -107,8 +78,13 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
         const steamIds = data.flatMap((game: Game) => {
             const steamSite = game.websites?.find((site: Website) => site.category === 13);
             if (steamSite) {
-                const match = steamSite.url.match(/\/app\/(\d+)/i);
-                return match ? match[1].toLowerCase() : [];
+                console.log(steamSite.url);
+                // MATCH THE STEAM APP ID FROM THE URL
+                const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
+                console.log(match);
+
+                // RETURN THE STEAM APP ID ONLY
+                return match ? match[2].toLowerCase() : [];
             }
             return [];
         });
@@ -140,10 +116,10 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
             }
             return game;
         });
-
-        enhancedData.forEach(game => {
-            console.log(`Game ${game.name}: , Price = ${game.price}`);
-        });
+        /*
+                enhancedData.forEach(game => {
+                    console.log(`Game ${game.name}: , Price = ${game.price}`);
+                });*/
 
         return enhancedData;
 
