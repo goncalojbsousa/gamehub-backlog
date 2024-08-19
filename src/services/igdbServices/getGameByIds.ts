@@ -14,7 +14,7 @@ interface Deal {
 }
 
 async function fetchAllDeals(steamIds: string[]): Promise<Deal[]> {
-    const ITEMS_PER_PAGE = 60; // Limite do CheapShark
+    const ITEMS_PER_PAGE = 60; // CHEAPSHARK LIMIT
     let allDeals: Deal[] = [];
     let pageNumber = 0;
     let hasMorePages = true;
@@ -28,10 +28,9 @@ async function fetchAllDeals(steamIds: string[]): Promise<Deal[]> {
             const priceData: Deal[] = await priceResponse.json();
             allDeals = allDeals.concat(priceData);
 
-            // Verifica se há mais páginas
+            // CHECK IF THERE IS MORE PAGES
             const totalPageCount = parseInt(priceResponse.headers.get('X-Total-Page-Count') || '0');
 
-            // Ajuste para considerar o X-Total-Page-Count começando em 0
             hasMorePages = pageNumber < totalPageCount;
             pageNumber++;
         } else {
@@ -104,7 +103,7 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
 
         const data: Game[] = await response.json();
 
-        // Extract Steam App IDs
+        // EXTRACT STEAM APP IDS
         const steamIds = data.flatMap((game: Game) => {
             const steamSite = game.websites?.find((site: Website) => site.category === 13);
             if (steamSite) {
@@ -127,7 +126,7 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
         }
 
 
-        // Add prices to game data
+        // ADD PRICES TO GAME DATA
         const enhancedData = data.map((game: Game) => {
             const steamSite = game.websites?.find((site: Website) => site.category === 13);
             if (steamSite) {
