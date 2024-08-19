@@ -81,6 +81,7 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
                 console.log(steamSite.url);
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
+                console.log(`Matched groups: ${match}`);
                 console.log(match);
 
                 // RETURN THE STEAM APP ID ONLY
@@ -116,10 +117,6 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
             }
             return game;
         });
-        /*
-                enhancedData.forEach(game => {
-                    console.log(`Game ${game.name}: , Price = ${game.price}`);
-                });*/
 
         return enhancedData;
 

@@ -2,8 +2,19 @@
 
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
+import { fetchAllDeals } from '../cheapsharkServices/getAllDeals';
 
 type ListType = 'popular' | 'recent' | 'popular2024' | 'upcoming';
+
+interface Website {
+    url: string;
+    category: number;
+}
+
+interface Deal {
+    steamAppID: string;
+    salePrice: string;
+}
 
 export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) => {
     // GET CLIENT IP
@@ -39,7 +50,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                 switch (listType) {
                     case 'popular2024':
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url;
                             where cover.url != null
                                 & first_release_date >= ${new Date(currentYear, 0, 1).getTime() / 1000} 
                                 & first_release_date < ${new Date(currentYear + 1, 0, 1).getTime() / 1000};
@@ -49,7 +60,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                         break;
                     case 'recent':
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url;
                             where first_release_date < ${Math.floor(Date.now() / 1000)}
                                 & first_release_date > ${Math.floor(Date.now() / 1000) - (365 * 24 * 60 * 60)}
                                 & cover.url != null
@@ -60,7 +71,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                         break;
                     case 'popular':
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url, websites;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url;
                             where first_release_date > ${oneYearAgo};
                             sort total_rating_count desc;
                             limit ${limit / listTypes.length};
@@ -68,7 +79,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                         break;
                     case 'upcoming':
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, screenshots.url, hypes;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url, hypes;
                             where first_release_date > ${Math.floor(Date.now() / 1000)}
                                 & cover.url != null;
                             sort total_rating_count asc;
@@ -91,7 +102,62 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
             })
         );
 
-        return responses;
+        console.log(responses);
+        const data: Game[] = responses;
+
+        const flattenedData: Game[] = data.flat();
+
+        // EXTRACT STEAM APP IDS
+        const steamIds = flattenedData.flatMap((game: Game) => {
+            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            if (steamSite) {
+                console.log(steamSite.url);
+                // MATCH THE STEAM APP ID FROM THE URL
+                const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
+                console.log(match);
+
+                // RETURN THE STEAM APP ID ONLY
+                return match ? match[2].toLowerCase() : [];
+            }
+            return [];
+        });
+
+        let prices: Record<string, string> = {};
+        if (steamIds.length > 0) {
+            const allDeals = await fetchAllDeals(steamIds);
+            prices = allDeals.reduce((acc: Record<string, string>, deal: Deal) => {
+                const steamAppID = deal.steamAppID.toLowerCase();
+                if (!acc[steamAppID] || parseFloat(deal.salePrice) < parseFloat(acc[steamAppID])) {
+                    acc[steamAppID] = deal.salePrice;
+                }
+                return acc;
+            }, {});
+        }
+
+        // ADD PRICES TO GAME DATA
+        const enhancedData = flattenedData.map((game: Game) => {
+            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            if (steamSite) {
+                const match = steamSite.url.match(/\/app\/(\d+)/i);
+                if (match) {
+                    const steamId = match[1].toLowerCase();
+                    if (prices[steamId]) {
+                        return { ...game, price: prices[steamId] };
+                    }
+                }
+            }
+            return game;
+        });
+
+        const groupSize = 12;
+        const groupedData = [];
+        
+        for (let i = 0; i < enhancedData.length; i += groupSize) {
+            groupedData.push(enhancedData.slice(i, i + groupSize));
+        }
+        
+        console.log(groupedData);
+        return groupedData;
 
     } catch (error) {
         console.error('Error fetching games list from IGDB:', error);
