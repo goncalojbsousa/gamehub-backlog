@@ -2,6 +2,17 @@
 
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
+import { fetchAllDeals } from '@/src/services/cheapsharkServices/getAllDeals';
+
+interface Website {
+    url: string;
+    category: number;
+}
+
+interface Deal {
+    steamAppID: string;
+    salePrice: string;
+}
 
 /**
  * 
@@ -60,16 +71,11 @@ export const fetchGamesBySearchFilter = async (
             }
         };
 
-        console.log('Filters:', filters);
-        console.log('Where clause:', whereClause);
-
         addFilterCondition('genres', filters.genres);
         addFilterCondition('themes', filters.themes);
         addFilterCondition('platforms', filters.platforms);
         addFilterCondition('player_perspectives', filters.perspectives);
         addFilterCondition('game_modes', filters.gameModes);
-
-        console.log(`Query being sent to IGDB: search "${query}"; fields ...; where ${whereClause}; limit 20;`);
 
         const response = await fetch(IGDB_API_URL, {
             method: 'POST',
@@ -91,6 +97,8 @@ export const fetchGamesBySearchFilter = async (
                     total_rating, aggregated_rating, rating,
                     category,
                     first_release_date,
+                    websites.url,
+                    websites.category,
                     slug;
                 where ${whereClause};
                 limit 20;
@@ -102,8 +110,50 @@ export const fetchGamesBySearchFilter = async (
             throw new Error('Failed to fetch games from IGDB');
         }
 
-        const data = await response.json();
-        return data;
+        const data: Game[] = await response.json();
+
+        // EXTRACT STEAM APP IDS
+        const steamIds = data.flatMap((game: Game) => {
+            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            if (steamSite) {
+                // MATCH THE STEAM APP ID FROM THE URL
+                const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
+
+                // RETURN THE STEAM APP ID ONLY
+                return match ? match[2].toLowerCase() : [];
+            }
+            return [];
+        });
+
+        let prices: Record<string, string> = {};
+        if (steamIds.length > 0) {
+            const allDeals = await fetchAllDeals(steamIds);
+            prices = allDeals.reduce((acc: Record<string, string>, deal: Deal) => {
+                const steamAppID = deal.steamAppID.toLowerCase();
+                if (!acc[steamAppID] || parseFloat(deal.salePrice) < parseFloat(acc[steamAppID])) {
+                    acc[steamAppID] = deal.salePrice;
+                }
+                return acc;
+            }, {});
+        }
+
+
+        // ADD PRICES TO GAME DATA
+        const enhancedData = data.map((game: Game) => {
+            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            if (steamSite) {
+                const match = steamSite.url.match(/\/app\/(\d+)/i);
+                if (match) {
+                    const steamId = match[1].toLowerCase();
+                    if (prices[steamId]) {
+                        return { ...game, price: prices[steamId] };
+                    }
+                }
+            }
+            return game;
+        });
+
+        return enhancedData;
 
     } catch (error) {
         console.error('Error fetching games from IGDB:', error);

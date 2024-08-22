@@ -78,11 +78,8 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
         const steamIds = data.flatMap((game: Game) => {
             const steamSite = game.websites?.find((site: Website) => site.category === 13);
             if (steamSite) {
-                console.log(steamSite.url);
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
-                console.log(`Matched groups: ${match}`);
-                console.log(match);
 
                 // RETURN THE STEAM APP ID ONLY
                 return match ? match[2].toLowerCase() : [];

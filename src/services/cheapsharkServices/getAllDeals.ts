@@ -1,6 +1,7 @@
 interface Deal {
     steamAppID: string;
     salePrice: string;
+    storeID?: string;
 }
 
 export async function fetchAllDeals(steamIds: string[]): Promise<Deal[]> {

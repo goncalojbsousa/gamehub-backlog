@@ -1,5 +1,7 @@
 import { GameCard } from "@/src/components/game-card";
 import { LoadingIcon } from "@/src/components/svg/loading";
+import Image from 'next/image';
+import Link from "next/link";
 
 interface GameInfoProps {
     game: Game;
@@ -10,18 +12,55 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
         <div className="p-2">
             {game.summary &&
                 <>
-                    <h1 className="text-color_text text-2xl">Summary</h1>
+                    <h1 className="text-color_text text-2xl mb-2">Summary</h1>
                     <p className="text-color_text_sec text-lg">{game.summary}</p>
                 </>
             }
             {game.storyline &&
                 <>
-                    <h1 className="mt-4 text-color_text text-2xl">History</h1>
+                    <h1 className={`mt-4 text-color_text text-2xl mb-2 ${game.summary ? "mt-8" : ""}`}>History</h1>
                     <p className="text-color_text_sec text-lg">{game.storyline}</p>
                 </>
             }
 
-            <hr className="mt-6 mb-6 border-border_detail" />
+
+            {game.deals && (
+                <div>
+                    <hr className="mt-8 mb-8 border-border_detail" />
+                    <h1 className="mt-4 mb-4 text-color_text text-2xl">Best Deals</h1>
+                    <div className="space-y-2">
+                        {game.deals
+                            .sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice))
+                            .map((deal) => (
+                                <div key={deal.dealID} className="p-4 bg-color_main rounded-lg flex items-center">
+                                    <Image
+                                        src={`https://www.cheapshark.com${deal.store.images.logo}`}
+                                        alt="Store logo"
+                                        width={80}
+                                        height={80}
+                                        className="w-16 h-16 rounded-full mr-4"
+                                        draggable={false}
+                                    />
+                                    <div className="flex-col flex-grow">
+                                        <p>{deal.title}</p>
+                                        <p>{deal.store.storeName}</p>
+                                    </div>
+                                    <Link href={`https://www.cheapshark.com/redirect?dealID=${deal.dealID}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="bg-color_reverse_sec px-2 py-1.5 rounded-lg ml-auto">
+                                        <p className="text-md text-color_main">
+                                            <b>{deal.salePrice}$</b>
+                                        </p>
+                                    </Link>
+                                </div>
+
+                            ))}
+                    </div>
+                </div>
+            )}
+
+            <hr className="mt-8 mb-8 border-border_detail" />
 
             {game.expanded_games &&
                 <>

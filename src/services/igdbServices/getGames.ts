@@ -102,7 +102,6 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
             })
         );
 
-        console.log(responses);
         const data: Game[] = responses;
 
         const flattenedData: Game[] = data.flat();
@@ -111,10 +110,8 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
         const steamIds = flattenedData.flatMap((game: Game) => {
             const steamSite = game.websites?.find((site: Website) => site.category === 13);
             if (steamSite) {
-                console.log(steamSite.url);
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
-                console.log(match);
 
                 // RETURN THE STEAM APP ID ONLY
                 return match ? match[2].toLowerCase() : [];
@@ -156,7 +153,6 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
             groupedData.push(enhancedData.slice(i, i + groupSize));
         }
         
-        console.log(groupedData);
         return groupedData;
 
     } catch (error) {

@@ -4,6 +4,7 @@ const nextConfig = {
         domains: [
             'images.igdb.com',
             'lh3.googleusercontent.com',
+            'www.cheapshark.com',
         ],
     },
 };

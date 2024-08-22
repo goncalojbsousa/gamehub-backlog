@@ -2,7 +2,19 @@
 
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
+import { fetchAllDeals } from '../cheapsharkServices/getAllDeals';
+import { fetchAllStores } from '../cheapsharkServices/getAllStores';
 
+interface Website {
+    url: string;
+    category: number;
+}
+
+interface Deal {
+    steamAppID: string;
+    salePrice: string;
+    storeID?: string;
+}
 
 export const fetchGameDetails = async (query: string) => {
 
@@ -131,6 +143,9 @@ export const fetchGameDetails = async (query: string) => {
                 standalone_expansions.genres.name,
                 standalone_expansions.cover.url,
 
+                websites.url,
+                websites.category,
+
                 version_title,
                 involved_companies;
             where slug = "${query}";
@@ -142,6 +157,42 @@ export const fetchGameDetails = async (query: string) => {
         }
 
         const data = await response.json();
+
+        // EXTRACT STEAM APP IDS
+        const steamId = data.flatMap((game: Game) => {
+            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            if (steamSite) {
+                // MATCH THE STEAM APP ID FROM THE URL
+                const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
+
+                // RETURN THE STEAM APP ID ONLY
+                return match ? match[2].toLowerCase() : [];
+            }
+            return [];
+        });
+
+        const deals = await fetchAllDeals(steamId);
+        console.log(deals);
+
+        const allStores = await fetchAllStores();
+
+        if (data.length === 1) {
+            // ADD STORE INFO TO DEAL
+            data[0].deals = deals.map((deal: Deal) => {
+                const store = allStores.find(store => store.storeID === deal.storeID);
+                return {
+                    ...deal,
+                    store: store ? {
+                        storeName: store.storeName,
+                        isActive: store.isActive,
+                        images: store.images,
+                    } : null
+                };
+            });
+        }
+
+        console.log(data);
+
         return data;
 
     } catch (error) {
