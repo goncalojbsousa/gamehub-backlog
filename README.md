@@ -5,7 +5,7 @@
   </a>
 </p>
 
-# About
+## About
 
 GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games.
 
