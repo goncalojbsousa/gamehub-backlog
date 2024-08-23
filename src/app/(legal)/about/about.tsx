@@ -6,7 +6,7 @@ export const AboutPage: React.FC = () => {
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
-            <div className="flex flex-col flex-grow mt-2 xl:px-24 pt-24 text-color_text">
+            <div className="flex flex-col flex-grow mt-2 pt-24 text-color_text mx-auto max-w-4xl">
                 <main className="flex-grow p-4 pt-0">
                     <div className="flex items-center mb-4">
                         <Logo className="fill-color_icons mr-4" />
