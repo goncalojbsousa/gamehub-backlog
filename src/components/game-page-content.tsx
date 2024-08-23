@@ -10,7 +10,7 @@ interface GameInfoProps {
 
 export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
     const [showAllDeals, setShowAllDeals] = useState(false);
-    
+
     return (
         <div className="p-2">
             {game.summary &&
@@ -27,7 +27,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
             }
 
 
-            {game.deals && (
+            {game.deals && game.deals.length > 0 && (
                 <div>
                     <hr className="mt-8 mb-8 border-border_detail" />
                     <h1 className="mt-4 mb-4 text-color_text text-2xl">Best Deals</h1>
