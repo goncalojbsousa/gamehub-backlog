@@ -2,12 +2,15 @@ import { GameCard } from "@/src/components/game-card";
 import { LoadingIcon } from "@/src/components/svg/loading";
 import Image from 'next/image';
 import Link from "next/link";
+import { useState } from "react";
 
 interface GameInfoProps {
     game: Game;
 }
 
 export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
+    const [showAllDeals, setShowAllDeals] = useState(false);
+    
     return (
         <div className="p-2">
             {game.summary &&
@@ -31,6 +34,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="space-y-2">
                         {game.deals
                             .sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice))
+                            .slice(0, showAllDeals ? game.deals.length : 5)
                             .map((deal) => (
                                 <div key={deal.dealID} className="p-4 bg-color_main rounded-lg flex items-center">
                                     <Image
@@ -48,15 +52,22 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                                     <Link href={`https://www.cheapshark.com/redirect?dealID=${deal.dealID}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="bg-color_reverse_sec px-2 py-1.5 rounded-lg ml-auto">
-                                        <p className="text-md text-color_main">
+                                        className="bg-color_reverse_sec px-2 py-1.5 rounded-lg ml-auto transition-transform hover:scale-105">
+                                        <p className="text-md text-color_main ">
                                             <b>{deal.salePrice}$</b>
                                         </p>
                                     </Link>
                                 </div>
-
                             ))}
                     </div>
+                    {game.deals.length > 5 && !showAllDeals && (
+                        <button
+                            onClick={() => setShowAllDeals(true)}
+                            className="mt-4 bg-color_reverse_sec text-color_main w-full px-4 py-2 rounded-lg"
+                        >
+                            See More
+                        </button>
+                    )}
                 </div>
             )}
 
