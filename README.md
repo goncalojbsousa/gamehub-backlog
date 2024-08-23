@@ -14,13 +14,13 @@ GameHub Backlog is a game backlog tracker designed to help you keep track of you
 Clone the project
 
 ```bash
-  git clone https://github.com/goncalojbsousa/gamehub-project.git
+  git clone https://github.com/goncalojbsousa/gamehub-backlog.git
 ```
 
 Enter the project directory
 
 ```bash
-  cd gamehub-project
+  cd gamehub-backlog
 ```
 
 Install dependencies
@@ -37,41 +37,66 @@ Start the server
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Database
+
+Enter the database directory
+
+```bash
+  cd database
+```
+
+Run Docker Compose
+
+```bash
+  docker compose up -d
+```
+
+Edit the .env file in the root directory
+
+- `DATABASE_URL="postgresql://user:password@localhost:5432/auth_db"`
+
+Run Prisma migrations
+
+```bash
+  npx prisma migrate dev
+```
+
+Generate Prisma client
+
+```bash
+  npx prisma generate
+```
+
+Your database is now ready to use.
+
 
 ## Environment Variables
 
-To run this project, you need to configure the following environment variables in your `.env` file:
+Enter the project directory
 
-### Website URL (Domain)
-- `NEXTAUTH_URL`
+```bash
+  cd gamehub-backlog
+```
 
-### Email Provider (Magic Link)
-- `EMAIL_FROM`
-- `EMAIL_SERVER_HOST`
-- `EMAIL_SERVER_PORT`
-- `EMAIL_SERVER_USER`
-- `EMAIL_SERVER_PASSWORD`
+Copy .env.example to .env
 
-### Google
-#### Authentication Google Provider Credentials
-- `AUTH_GOOGLE_ID`
-- `AUTH_GOOGLE_SECRET`
+```bash
+  cp .env.example .env
+```
 
-#### reCAPTCHA
-- `NEXT_PUBLIC_reCAPTCHA_SITE_KEY`
-- `reCAPTCHA_SECRET_KEY`
+Update the .env file with the necessary configuration values.
 
-### JWT Secret
-- `AUTH_SECRET`
+## Features
 
-### IGDB Service
-- `IGDB_PROXY_URL`
-- `IGDB_SECRET`
+- **Google Authentication:** Securely sign in using your Google account.
+- **Comprehensive Game Database:** Browse and view details of games worldwide using the IGDB API.
+- **Advanced Search and Filtering:** Search for games with various filters including Genres, Themes, Platforms, Perspectives, and Game Modes.
+- **Game Backlog Management:** Track your game progress by adding games to your backlog with status options ('Played', 'Playing', 'Dropped', 'Plan to Play') and progress indicators ('Unfinished', 'Beaten', 'Completed', 'Continuous').
+- **Price Comparison:** View and compare the prices of Steam games across several trusted stores to find the best deals.
+- **User Profiles:** Access and manage your profile to view and organize your tracked games. Search for games by name, filter by status and progress, and sort by rating and name. Share your profile with friends and explore other users' profiles to see their game collections.
+- **Light and Dark Modes:** Switch between light and dark themes for a customizable viewing experience.
 
-### Database Configuration
-- `DATABASE_URL`
-
-## API documentation
+## API documentation (outdated)
 
 ### Create/update user game status
 
