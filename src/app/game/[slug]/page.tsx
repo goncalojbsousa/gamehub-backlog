@@ -8,7 +8,6 @@ import { getUserId } from "@/src/lib/auth/getUserIdServerAction";
 
 // USE CACHE TO REQUEST IGDB ONLY 1 TIME
 const getGameData = cache(async (slug: string) => {
-    console.log("Fetching data for slug:", slug);
     const gameData = await fetchGameDetails(slug);
     return gameData[0];
 });
@@ -44,6 +43,5 @@ export default async function GamePageServer({ params }: { params: { slug: strin
     }
 
     const userGameStatus = game.id ? await getGameStatus(game.id) : null;
-    console.log(userGameStatus);
     return <GamePage game={game} userGameStatus={userGameStatus} />;
 }

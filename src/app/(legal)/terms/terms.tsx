@@ -6,9 +6,9 @@ import Terms from "@/src/components/legal/terms";
 export const TermsPage: React.FC = () => {
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen ">
             <Navbar />
-            <div className="flex flex-col mt-2 xl:px-24 pt-24 text-color_text">
+            <div className="flex flex-col mt-2 pt-24 text-color_text mx-auto max-w-4xl">
 
                 <LegalNavbar />
                 <main className="flex-grow p-4">

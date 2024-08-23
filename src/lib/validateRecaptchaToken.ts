@@ -13,7 +13,6 @@ export const validateRecaptchaToken = async (token: string): Promise<Boolean> =>
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (data.success && data.score >= 0.6){ // 60% CHANCE OF BEING HUMAN
         return true;

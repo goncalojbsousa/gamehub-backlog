@@ -36,7 +36,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
                             width={240}
                             height={135}
                             alt="Game screenshot"
-                            className="w-20 object-cover mr-2 cursor-pointer rounded"
+                            className={`h-20 object-cover mr-2 cursor-pointer rounded ${selectedScreenshot?.url === screenshot.url ? '' : 'grayscale hover:grayscale-0'}`}
                             onClick={() => onSelectScreenshot(screenshot)}
                             draggable={false}
                         />
