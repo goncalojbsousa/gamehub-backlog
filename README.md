@@ -9,6 +9,16 @@
 
 GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games.
 
+## Features
+
+- **Google Authentication:** Securely sign in using your Google account.
+- **Comprehensive Game Database:** Browse and view details of games worldwide using the IGDB API.
+- **Advanced Search and Filtering:** Search for games with various filters including Genres, Themes, Platforms, Perspectives, and Game Modes.
+- **Game Backlog Management:** Track your game progress by adding games to your backlog with status options ('Played', 'Playing', 'Dropped', 'Plan to Play') and progress indicators ('Unfinished', 'Beaten', 'Completed', 'Continuous').
+- **Price Comparison:** View and compare the prices of Steam games across several trusted stores to find the best deals.
+- **User Profiles:** Access and manage your profile to view and organize your tracked games. Search for games by name, filter by status and progress, and sort by rating and name. Share your profile with friends and explore other users' profiles to see their game collections.
+- **Light and Dark Modes:** Switch between light and dark themes for a customizable viewing experience.
+
 ## Running locally
 
 Clone the project
@@ -85,16 +95,6 @@ Copy .env.example to .env
 ```
 
 Update the .env file with the necessary configuration values.
-
-## Features
-
-- **Google Authentication:** Securely sign in using your Google account.
-- **Comprehensive Game Database:** Browse and view details of games worldwide using the IGDB API.
-- **Advanced Search and Filtering:** Search for games with various filters including Genres, Themes, Platforms, Perspectives, and Game Modes.
-- **Game Backlog Management:** Track your game progress by adding games to your backlog with status options ('Played', 'Playing', 'Dropped', 'Plan to Play') and progress indicators ('Unfinished', 'Beaten', 'Completed', 'Continuous').
-- **Price Comparison:** View and compare the prices of Steam games across several trusted stores to find the best deals.
-- **User Profiles:** Access and manage your profile to view and organize your tracked games. Search for games by name, filter by status and progress, and sort by rating and name. Share your profile with friends and explore other users' profiles to see their game collections.
-- **Light and Dark Modes:** Switch between light and dark themes for a customizable viewing experience.
 
 ## API documentation (outdated)
 
