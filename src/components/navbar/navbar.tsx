@@ -5,6 +5,7 @@ import { SearchInput } from "@/src/components/navbar/search/navbar-search";
 import { NavbarUser } from "@/src/components/navbar/navbar-user";
 import { useUser } from "@/src/context/userContext";
 import { NavbarLinks } from "@/src/components/navbar/navbar-links";
+import ThemeToggle from "../theme-toggle";
 
 export const Navbar = () => {
     const { username, usernameSlug, userImage, isAuthenticated } = useUser();
@@ -20,6 +21,9 @@ export const Navbar = () => {
             </div>
 
             <div className="flex items-center justify-center">
+                <div className="mr-4">
+                    <ThemeToggle />
+                </div>
                 {isAuthenticated ? (
                     <NavbarUser userImage={userImage} usernameSlug={usernameSlug} />
                 ) : (
