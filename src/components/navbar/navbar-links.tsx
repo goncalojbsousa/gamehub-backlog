@@ -42,7 +42,7 @@ export const NavbarLinks = () => {
     return (
         <>
             <div className="hidden md:flex items-center">
-                <Link href="/" ><Logo className="fill-color_icons mr-8" /> </Link>
+                <Link href="/" aria-label="Go to home page"><Logo className="fill-color_icons mr-8" /> </Link>
 
                 <Link href="/" className="text-color_text text-base mr-4 select-none">Home</Link>
             </div>

@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { LinkedinIcon } from "@/src/components/svg/social/linkedin-icon"
-import { GithubIcon } from "@/src/components/svg/social/github-icon"
+import Link from "next/link";
+import { LinkedinIcon } from "@/src/components/svg/social/linkedin-icon";
+import { GithubIcon } from "@/src/components/svg/social/github-icon";
 import Image from "next/image";
 import { WebsiteIcon } from "@/src/components/svg/social/website-icon";
 import { IGDBIcon } from "@/src/components/svg/igdb";
@@ -13,30 +13,39 @@ export const Footer = () => {
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">EXPLORE</h3>
                     <ul className="text-color_text_sec flex flex-col">
-                        <Link className="hover:underline" href="/">Home</Link>
-                        <Link className="hover:underline" href="/search">Search</Link>
+                        <li>
+                            <Link className="hover:underline" href="/">Home</Link>
+                        </li>
+                        <li>
+                            <Link className="hover:underline" href="/search">Search</Link>
+                        </li>
                     </ul>
                 </div>
 
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">GAME HUB</h3>
                     <ul className="text-color_text_sec flex flex-col">
-                        <Link className="hover:underline" href="/about">About Us</Link>
-
+                        <li>
+                            <Link className="hover:underline" href="/about">About Us</Link>
+                        </li>
                     </ul>
                 </div>
 
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">LEGAL</h3>
                     <ul className="text-color_text_sec flex flex-col">
-                        <Link className="hover:underline" href="/terms">Terms of Service</Link>
-                        <Link className="hover:underline" href="/privacy">Privacy Policy</Link>
+                        <li>
+                            <Link className="hover:underline" href="/terms">Terms of Service</Link>
+                        </li>
+                        <li>
+                            <Link className="hover:underline" href="/privacy">Privacy Policy</Link>
+                        </li>
                     </ul>
                 </div>
 
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">DEVELOPED BY</h3>
-                    <div className="flex itens-center">
+                    <div className="flex items-center">
                         <Image
                             src="/gjbs.jpeg"
                             alt="User profile image"
@@ -50,13 +59,22 @@ export const Footer = () => {
                                 Gonçalo Sousa
                             </div>
                             <div className="flex">
-                                <Link href="https://goncalosousa.netlify.app" target="_blank">
+                                <Link href="https://goncalosousa.netlify.app"
+                                    target="_blank"
+                                    aria-label="Go to Gonçalo Sousa website"
+                                >
                                     <WebsiteIcon className="fill-color_icons" />
                                 </Link>
-                                <Link href="https://github.com/goncalojbsousa" target="_blank">
+                                <Link href="https://github.com/goncalojbsousa"
+                                    target="_blank"
+                                    aria-label="Go to Gonçalo Sousa github"
+                                >
                                     <GithubIcon className="fill-color_icons" />
                                 </Link>
-                                <Link href="https://www.linkedin.com/in/goncalojbsousa/" target="_blank">
+                                <Link href="https://www.linkedin.com/in/goncalojbsousa/"
+                                    target="_blank"
+                                    aria-label="Go to Gonçalo Sousa linkedin"
+                                >
                                     <LinkedinIcon className="fill-color_icons" />
                                 </Link>
                             </div>
@@ -69,8 +87,7 @@ export const Footer = () => {
                     <p className="text-color_text mr-2">Games data is powered by</p>
                     <IGDBIcon className="fill-color_icons" />
                 </Link>
-
             </div>
         </footer>
-    )
-}
+    );
+};
