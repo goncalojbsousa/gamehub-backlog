@@ -153,7 +153,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 
                         <hr className="m-2 border border-border_detail" />
 
-                        {game.involved_companies && (
+                        {game.involved_companies && game.involved_companies.length > 0 && (
                             <div className="flex flex-col mt-2">
                                 <p className="text-color_text p-2">Involved Companies:</p>
                                 {game.involved_companies.map(involved_companie => (

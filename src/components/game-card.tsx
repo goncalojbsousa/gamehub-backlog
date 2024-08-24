@@ -23,7 +23,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, progress }) => {
                 )}
                 <Image
                     src={"https:" + getCoverImageUrl(game.cover.url)}
-                    alt={game.name}
+                    alt="Game cover image"
                     width={200}
                     height={300}
                     className="rounded-lg w-full h-auto object-cover shadow-lg"

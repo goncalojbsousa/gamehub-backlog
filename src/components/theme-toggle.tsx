@@ -12,6 +12,7 @@ const ThemeToggle: React.FC = () => {
         <button
             onClick={toggleDarkMode}
             className="p-2 rounded-full bg-color_main text-color_text hover:bg-color_sec transition-colors"
+            aria-label={darkMode ? "Enable light mode" : "Enable dark mode"}
         >
             {darkMode ? <DarkModeIcon className='fill-color_icons' /> : <LightModeIcon className='fill-color_icons' />}
         </button>
