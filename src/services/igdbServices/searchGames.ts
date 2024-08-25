@@ -60,8 +60,6 @@ export const fetchGamesBySearch = async (query: string): Promise<Game[]> => {
                     platforms.name,
                     slug;
                 where 
-                    category != 14 &
-                    cover != null &
                     first_release_date != null;
                 limit 5;
             `,
