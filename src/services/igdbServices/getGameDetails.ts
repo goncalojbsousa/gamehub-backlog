@@ -172,7 +172,6 @@ export const fetchGameDetails = async (query: string) => {
         });
 
         const deals = await fetchAllDeals(steamId);
-        console.log(deals);
 
         const allStores = await fetchAllStores();
 
@@ -190,8 +189,6 @@ export const fetchGameDetails = async (query: string) => {
                 };
             });
         }
-
-        console.log(data);
 
         return data;
 
