@@ -29,7 +29,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                 game.cover && (
                     <div className="w-full md:w-1/4 px-2 mb-4 md:mb-0">
                         <Image
-                            src={"https:" + getCoverImageUrl(game.cover.url)}
+                            src={game.cover ? "https:" + getCoverImageUrl(game.cover.url) : "/cover.webp"}
                             alt={game.name}
                             width={1280}
                             height={720}
@@ -121,7 +121,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                                 {isLanguageExpanded && (
                                     <div className="text-color_text_sec bg-color_bg_sec rounded-lg p-3">
                                         <div className="relative w-full mb-2">
-                                            <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-5 h-5 fill-color_icons"/>
+                                            <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-5 h-5 fill-color_icons" />
                                             <input
                                                 type="text"
                                                 placeholder="Filter languages..."
