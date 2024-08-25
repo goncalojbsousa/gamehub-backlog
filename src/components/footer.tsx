@@ -8,7 +8,7 @@ import { IGDBIcon } from "@/src/components/svg/igdb";
 export const Footer = () => {
     return (
         <footer className="bg-color_main p-6 flex flex-col items-center justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
 
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">EXPLORE</h3>
@@ -42,7 +42,7 @@ export const Footer = () => {
                         </li>
                     </ul>
                 </div>
-
+                {/*
                 <div className="">
                     <h3 className="text-lg text-color_text font-semibold mb-2">DEVELOPED BY</h3>
                     <div className="flex items-center">
@@ -81,6 +81,7 @@ export const Footer = () => {
                         </div>
                     </div>
                 </div>
+                */}
             </div>
             <div className="mt-6">
                 <Link href="https://www.igdb.com" target="_blank" className="flex hover:underline items-center">
