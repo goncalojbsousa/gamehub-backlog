@@ -27,7 +27,7 @@ export const Navbar = () => {
                 {isAuthenticated ? (
                     <NavbarUser userImage={userImage} usernameSlug={usernameSlug} />
                 ) : (
-                    <SignInButton className="text-color_text border border-border_detail rounded-lg py-2 px-4" />
+                    <SignInButton className="text-color_main bg-color_reverse_sec border border-border_detail rounded-lg py-2 px-6 transition-transform hover:scale-105" />
                 )
                 }
             </div>

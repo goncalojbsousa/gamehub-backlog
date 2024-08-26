@@ -27,7 +27,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, progress }) => {
                     width={200}
                     height={300}
                     className="rounded-lg w-full h-auto object-cover shadow-lg"
-                    draggable={true}
+                    draggable={false}
                 />
             </div>
             <div className="mt-2 w-full">
