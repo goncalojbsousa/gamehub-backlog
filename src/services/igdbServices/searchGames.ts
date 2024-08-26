@@ -31,13 +31,12 @@ export const fetchGamesBySearch = async (query: string): Promise<Game[]> => {
     }
 
     try {
-        const IGDB_PROXY_URL = process.env.IGDB_PROXY_URL;
-        const IGDB_API_URL = `${IGDB_PROXY_URL}v4/games`;
-        const apiToken = process.env.IGDB_SECRET;
-
+        const IGDB_API_URL = `${process.env.IGDB_API_URL}v4/games`;
         const origin = process.env.NEXTAUTH_URL;
+        const clientID = process.env.IGDB_CLIENT;
+        const authorization = 'Bearer ' + process.env.IGDB_SECRET;
 
-        if (!apiToken || !origin) {
+        if (!origin || !clientID || !authorization) {
             throw new Error('Token or Origin not defined');
         }
 
@@ -45,8 +44,9 @@ export const fetchGamesBySearch = async (query: string): Promise<Game[]> => {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'x-api-key': apiToken,
                 'Origin': origin,
+                'Client-ID' : clientID,
+                'Authorization' : authorization,
             },
             body: `
                 search "${query}";
