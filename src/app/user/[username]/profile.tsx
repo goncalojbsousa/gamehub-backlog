@@ -6,6 +6,7 @@ import { GameCard } from "@/src/components/game-card";
 import Image from "next/image";
 import { useState, useMemo, useEffect } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
+import { LoadingIcon } from "@/src/components/svg/loading";
 
 interface UserProps {
     userId: string;
@@ -118,8 +119,8 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                         </button>
 
                         <div className={`md:block ${isFiltersOpen ? 'block' : 'hidden'}`}>
-                            <div className="flex flex-col md:flex-row justify-between items-center bg-color_main rounded-lg p-2">
-                                <div className="w-full md:w-auto mb-4 md:mb-0">
+                            <div className="flex flex-col md:flex-row justify-between items-center  rounded-lg p-2">
+                                <div className="w-full md:w-auto ml-2 mb-4 md:mb-0">
                                     <input
                                         type="text"
                                         placeholder="Search games..."
@@ -141,26 +142,17 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                     ))}
                                 </div>
 
-                                <div className="w-full md:w-auto">
-                                    <select
-                                        value={sortOption}
-                                        onChange={(e) => setSortOption(e.target.value)}
-                                        className="w-full md:w-auto p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail"
-                                    >
-                                        <option value="rating_desc">Rating (High to Low)</option>
-                                        <option value="rating_asc">Rating (Low to High)</option>
-                                        <option value="name_asc">Name (A-Z)</option>
-                                        <option value="name_desc">Name (Z-A)</option>
-                                    </select>
+                                <div className="mr-2">
+                                    <p>{games.length} results on page {currentPage}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <hr className=" border-border_detail" />
                     {/* Game cards */}
                     {loading ? (
                         <div className="flex justify-center items-center min-h-[200px]">
-                            <p>Loading...</p>
+                            <LoadingIcon className="fill-color_icons"/>
                         </div>
                     ) : filteredGames.length === 0 ? (
                         <div className="flex justify-center items-center min-h-[200px] text-color_text_sec">
