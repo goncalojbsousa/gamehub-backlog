@@ -9,6 +9,7 @@ interface UserContextProps {
   isAuthenticated: boolean;
   setUsername: (username: string) => void;
   setUserImage: (userImage: string) => void;
+  setUsernameSlug: (usernameSlug: string) => void;
   logout: () => void;
 }
 
@@ -19,6 +20,7 @@ const UserContext = createContext<UserContextProps>({
   isAuthenticated: false,
   setUsername: () => {},
   setUserImage: () => {},
+  setUsernameSlug: () => {},
   logout: () => {},
 });
 
@@ -41,11 +43,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children, initialDat
   const logout = () => {
     setUsername('');
     setUserImage('');
+    setUsernameSlug('');
     setIsAuthenticated(false);
   };
 
   return (
-    <UserContext.Provider value={{ username, usernameSlug, userImage, isAuthenticated, setUsername, setUserImage, logout }}>
+    <UserContext.Provider value={{ username, usernameSlug, userImage, isAuthenticated, setUsernameSlug, setUsername, setUserImage, logout }}>
       {children}
     </UserContext.Provider>
   );
