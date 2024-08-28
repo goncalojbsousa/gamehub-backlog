@@ -113,6 +113,12 @@ Copy .env.example to .env
 
 Update the .env file with the necessary configuration values.
 
+## Contribution
+
+Contributions are welcome and much appreciated! If you want to help improve the GameHub Backlog please read `CONTRIBUTING.md`
+
+Please follow the `code of conduct` of this project.
+
 ## API documentation
 
 ### Create/update user game status
