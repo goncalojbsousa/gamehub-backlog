@@ -5,6 +5,23 @@
   </a>
 </p>
 
+## Table of Contents
+
+- [About](#about)
+  - [Features](#features)
+- [Running Locally](#running-locally)
+  - [Database](#database)
+- [Environment Variables](#environment-variables)
+- [API Documentation](#api-documentation)
+  - [Create/Update User Game Status](#createupdate-user-game-status)
+  - [Get User Game Status](#get-user-game-status)
+  - [Get User Game Status by User ID](#get-user-game-status-by-user-id)
+  - [Get User Data](#get-user-data)
+- [IGDB](#igdb)
+- [Inspirations](#inspirations)
+
+
+
 ## About
 
 GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games. Organize, track, and discover - all in one place!
@@ -282,12 +299,6 @@ All game data is provided by IGDB
  - [IGDB](https://www.igdb.com)
  - [Discord](https://discord.com/invite/igdb)
  - [X (Old Twitter)](https://x.com/IGDBcom)
-
-
-## Authors
-
-- [@goncalojbsousa](https://github.com/goncalojbsousa)
-
 
 ## Inspirations
 
