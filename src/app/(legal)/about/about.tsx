@@ -9,7 +9,7 @@ export const AboutPage: React.FC = () => {
             <div className="flex flex-col flex-grow mt-2 pt-24 text-color_text mx-auto max-w-4xl">
                 <main className="flex-grow p-4 pt-0">
                     <div className="flex items-center mb-4">
-                        <Logo className="fill-color_icons mr-4" />
+                        <Logo className="fill-color_icons mr-4" width="2.5em" height="2.5em" />
                         <h1 className="text-3xl font-bold">About Us</h1>
                     </div>
                     <div>
