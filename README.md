@@ -7,9 +7,9 @@
 
 ## About
 
-GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games.
+GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games. Organize, track, and discover - all in one place!
 
-## Features
+### Features
 
 - **Google Authentication:** Securely sign in using your Google account.
 - **Comprehensive Game Database:** Browse and view details of games worldwide using the IGDB API.
@@ -96,7 +96,7 @@ Copy .env.example to .env
 
 Update the .env file with the necessary configuration values.
 
-## API documentation (outdated)
+## API documentation
 
 ### Create/update user game status
 
@@ -154,7 +154,7 @@ GET /api/game/getGameStatus
 ### Get user game status by user ID
 
 ```http
-GET /api/game/getGameStatusByUserId
+GET /api/game/getAllGameStatusByUserId
 ```
 
 ##### Query Parameters:
@@ -183,15 +183,22 @@ GET /api/game/getGameStatusByUserId
                     "url": "//images.igdb.com/igdb/image/upload/t_thumb/co1wyy.jpg"
                 },
                 "name": "The Witcher 3: Wild Hunt",
+                "rating": 70.56316318546406,
                 "slug": "the-witcher-3-wild-hunt"
+                "total_rating": 70.56316318546406,
+                "websites": [
+                    {
+                        "id": 185100,
+                        "category": 13,
+                        "url": "https://store.steampowered.com/app/1623730/Palworld"
+                    },
+                ],
+                "price": "29.99"
             }
         },
     ],
-    "pagination": {
-        "currentPage": 1,
-        "totalPages": 3,
-        "totalItems": 100
-    }
+    "totalPages": 2,
+    "currentPage": 1
 }
 ```
 
