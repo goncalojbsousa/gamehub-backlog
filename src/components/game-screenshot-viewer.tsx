@@ -1,4 +1,4 @@
-import { getScreenShotImageUrl } from '@/src/utils/utils';
+import { getCoverBigUrl, getScreenShotImageUrl } from '@/src/utils/utils';
 import Image from 'next/image';
 
 interface Screenshot {
@@ -15,7 +15,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
     return (
         <div className="w-full md:w-2/2 px-2 flex flex-col justify-start items-center">
             {selectedScreenshot &&
-                <div className="mb-4">
+                <div className="mb-4 w-full">
                     <Image
                         src={"https:" + getScreenShotImageUrl(selectedScreenshot.url)}
                         alt=""
@@ -28,19 +28,22 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
             }
 
             {screenshots &&
-                <div className="flex overflow-x-auto">
-                    {screenshots.map((screenshot, index) => (
-                        <Image
-                            key={index}
-                            src={"https:" + screenshot.url}
-                            width={240}
-                            height={135}
-                            alt="Game screenshot"
-                            className={`h-20 object-cover mr-2 cursor-pointer rounded ${selectedScreenshot?.url === screenshot.url ? '' : 'grayscale hover:grayscale-0'}`}
-                            onClick={() => onSelectScreenshot(screenshot)}
-                            draggable={false}
-                        />
-                    ))}
+                <div className="w-full overflow-x-auto">
+                    <div className="flex">
+                        {screenshots.map((screenshot, index) => (
+                            <div key={index} className="flex-shrink-0 mr-2">
+                                <Image
+                                    src={"https:" + getCoverBigUrl(screenshot.url)}
+                                    width={240}
+                                    height={135}
+                                    alt="Game screenshot"
+                                    className={`w-[120px] h-[67.5px] object-cover cursor-pointer rounded ${selectedScreenshot?.url === screenshot.url ? '' : 'grayscale hover:grayscale-0'}`}
+                                    onClick={() => onSelectScreenshot(screenshot)}
+                                    draggable={false}
+                                />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             }
         </div>

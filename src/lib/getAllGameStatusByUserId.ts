@@ -1,8 +1,8 @@
 'use server'
 
-export async function getAllGameStatusByUserId(userId: string) {
+export async function getAllGameStatusByUserId(userId: string, status: string, page: number) {
     try {
-        const url = `${process.env.NEXTAUTH_URL}/api/game/getAllGameStatusByUserId?userId=${userId}`;
+        const url = `${process.env.NEXTAUTH_URL}/api/game/getAllGameStatusByUserId?userId=${userId}&status=${status}&page=${page}`;
 
         const response = await fetch(url);
         

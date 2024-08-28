@@ -12,7 +12,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
     const [showAllDeals, setShowAllDeals] = useState(false);
 
     return (
-        <div className="p-2">
+        <div className="p-2 pt-8">
             {game.summary &&
                 <>
                     <h1 className="text-color_text text-2xl mb-2">Summary</h1>

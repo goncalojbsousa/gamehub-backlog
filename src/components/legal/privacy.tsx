@@ -124,7 +124,7 @@ const Privacy = () => {
             </p>
 
             <p className="mb-4">
-                <a href="mailto:goncalojbsousa@gmail.com" className="text-blue-600 hover:underline">goncalojbsousa@gmail.com</a>
+                <a href="mailto:gamehubbacklog@gmail.com" className="text-blue-600 hover:underline">gamehubbacklog@gmail.com</a>
             </p>
 
             <p className="mt-8 text-sm text-color_text_sec">

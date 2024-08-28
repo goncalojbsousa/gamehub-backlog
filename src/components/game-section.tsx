@@ -21,7 +21,7 @@ const GameSection: React.FC<GameSectionProps> = ({ title, games, coverImageUrl, 
         {games.length > 0 && (
           <div className="absolute top-0 right-0 w-8/12 h-full">
             <div
-              className="absolute top-0 right-0 w-full h-full bg-cover bg-center rounded-lg opacity-50"
+              className="absolute top-0 right-0 w-full h-full bg-cover bg-center rounded-lg opacity-100"
               style={{
                 backgroundImage: `url(${coverImageUrl})`,
               }}

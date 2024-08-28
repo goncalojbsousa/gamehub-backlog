@@ -2,8 +2,8 @@
 
 import { getUserData } from "@/src/lib/getUserData";
 import { ProfilePage } from "@/src/app/user/[username]/profile";
-import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
 import { Metadata } from "next";
+import UserNotFound from "@/src/components/user-not-found";
 
 interface Props {
   params: { username: string };
@@ -12,11 +12,6 @@ interface Props {
 const getUserDataServer = (async (username: string) => {
   const userData = await getUserData(username);
   return userData;
-});
-
-const getAllUserGamesServer = (async (userId: string) => {
-  const allGames = await getAllGameStatusByUserId(userId);
-  return allGames;
 });
 
 export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
@@ -33,10 +28,8 @@ export default async function Profile({ params }: Props) {
     const userData = await getUserDataServer(username);
 
     if (!userData) {
-      return <div>User not found</div>;
+      return <UserNotFound/>;
     }
-
-    const allUserGames = await getAllUserGamesServer(userData.id);
 
     const joinDate = new Date(userData.createdAt).toLocaleDateString();
 
@@ -47,7 +40,6 @@ export default async function Profile({ params }: Props) {
         name={userData.name}
         userName={userData.username}
         joinDate={joinDate}
-        allUserGames={allUserGames}
       />
     );
 

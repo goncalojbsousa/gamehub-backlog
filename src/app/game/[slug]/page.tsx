@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import { cache } from 'react';
 import { GamePage } from "./game";
 import { getUserId } from "@/src/lib/auth/getUserIdServerAction";
+import GameNotFound from "@/src/components/game-not-found";
 
 // USE CACHE TO REQUEST IGDB ONLY 1 TIME
 const getGameData = cache(async (slug: string) => {
@@ -39,7 +40,7 @@ export default async function GamePageServer({ params }: { params: { slug: strin
     const game = await getGameData(params.slug);
 
     if (!game) {
-        return <div>Game not found</div>;
+        return <GameNotFound/>;
     }
 
     const userGameStatus = game.id ? await getGameStatus(game.id) : null;

@@ -7,7 +7,7 @@ const SignIn: React.FC = async () => {
     const isAuthenticated = await checkIsAuthenticated();
 
     if (isAuthenticated) {
-        redirect('/dashboard');
+        redirect('/');
     } else {
         return <SignInPage />;
     }

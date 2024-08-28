@@ -4,7 +4,9 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
 import Image from "next/image";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
+import { LoadingIcon } from "@/src/components/svg/loading";
 
 interface UserProps {
     userId: string;
@@ -12,7 +14,6 @@ interface UserProps {
     name: string;
     userName: string;
     joinDate: string;
-    allUserGames: GameProps[];
 }
 
 interface GameProps {
@@ -22,41 +23,32 @@ interface GameProps {
     gameDetails: Game;
 }
 
-export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId, allUserGames }) => {
+export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId }) => {
     const [selectedCategory, setSelectedCategory] = useState<string>("Played");
     const [selectedProgress, setSelectedProgress] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOption, setSortOption] = useState("rating_desc");
-    const itemsPerPage = 48;
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+    const [games, setGames] = useState<GameProps[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
 
-    const filteredGames = useMemo(() => {
-        let filtered = allUserGames.filter(game =>
-            game.status === selectedCategory &&
-            (selectedProgress ? game.progress === selectedProgress : true) &&
-            game.gameDetails.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+    useEffect(() => {
+        fetchGames();
+    }, [selectedCategory, currentPage]);
 
-        switch (sortOption) {
-            case "rating_desc":
-                filtered.sort((a, b) => (b.gameDetails.total_rating || 0) - (a.gameDetails.total_rating || 0));
-                break;
-            case "rating_asc":
-                filtered.sort((a, b) => (a.gameDetails.total_rating || 0) - (b.gameDetails.total_rating || 0));
-                break;
-            case "name_asc":
-                filtered.sort((a, b) => a.gameDetails.name.localeCompare(b.gameDetails.name));
-                break;
-            case "name_desc":
-                filtered.sort((a, b) => b.gameDetails.name.localeCompare(a.gameDetails.name));
-                break;
+    const fetchGames = async () => {
+        setLoading(true);
+        try {
+            const data = await getAllGameStatusByUserId(userId, selectedCategory, currentPage);
+            setGames(data.games);
+            setTotalPages(data.totalPages);
+        } catch (error) {
+            console.error("Error fetching games:", error);
         }
-        return filtered;
-    }, [allUserGames, selectedCategory, selectedProgress, searchTerm, sortOption]);
-
-    const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
-    const currentGames = filteredGames.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+        setLoading(false);
+    };
 
     const handleCategoryClick = (category: string) => {
         setSelectedCategory(category);
@@ -66,7 +58,6 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
 
     const handleProgressClick = (progress: string) => {
         setSelectedProgress(prev => prev === progress ? null : progress);
-        setCurrentPage(1);
     };
 
     const handlePageChange = (newPage: number) => {
@@ -74,6 +65,11 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
             setCurrentPage(newPage);
         }
     };
+
+    const filteredGames = games.filter(game =>
+        (selectedProgress ? game.progress === selectedProgress : true) &&
+        game.gameDetails.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const progressOptions = ['Unfinished', 'Beaten', 'Completed', 'Continuous'];
 
@@ -123,8 +119,8 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                         </button>
 
                         <div className={`md:block ${isFiltersOpen ? 'block' : 'hidden'}`}>
-                            <div className="flex flex-col md:flex-row justify-between items-center bg-color_main rounded-lg p-2">
-                                <div className="w-full md:w-auto mb-4 md:mb-0">
+                            <div className="flex flex-col md:flex-row justify-between items-center  rounded-lg p-2">
+                                <div className="w-full md:w-auto ml-2 mb-4 md:mb-0">
                                     <input
                                         type="text"
                                         placeholder="Search games..."
@@ -146,37 +142,32 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                     ))}
                                 </div>
 
-                                <div className="w-full md:w-auto">
-                                    <select
-                                        value={sortOption}
-                                        onChange={(e) => setSortOption(e.target.value)}
-                                        className="w-full md:w-auto p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail"
-                                    >
-                                        <option value="rating_desc">Rating (High to Low)</option>
-                                        <option value="rating_asc">Rating (Low to High)</option>
-                                        <option value="name_asc">Name (A-Z)</option>
-                                        <option value="name_desc">Name (Z-A)</option>
-                                    </select>
+                                <div className="mr-2">
+                                    <p>{games.length} results on page {currentPage}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <hr className=" border-border_detail" />
                     {/* Game cards */}
-                    {currentGames.length === 0 ? (
+                    {loading ? (
+                        <div className="flex justify-center items-center min-h-[200px]">
+                            <LoadingIcon className="fill-color_icons"/>
+                        </div>
+                    ) : filteredGames.length === 0 ? (
                         <div className="flex justify-center items-center min-h-[200px] text-color_text_sec">
                             <p>No results found :(</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mt-4">
-                            {currentGames.map(game => (
+                            {filteredGames.map(game => (
                                 <GameCard key={game.id} game={game.gameDetails} progress={game.progress} />
                             ))}
                         </div>
                     )}
 
                     {/* Pagination */}
-                    {currentGames.length > 0 && (
+                    {filteredGames.length > 0 && (
                         <div className="flex justify-center items-center mt-8 space-x-4">
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}

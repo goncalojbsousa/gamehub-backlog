@@ -147,7 +147,7 @@ const Terms = () => {
             <h2 className="text-2xl font-semibold mt-6 mb-4">Contact Information</h2>
 
             <p className="mb-4">
-                If you have questions about these terms or need to contact us regarding any issues related to your rights and obligations, please email us at <a href="mailto:goncalojbsousa@gmail.com" className="text-blue-600 hover:underline">goncalojbsousa@gmail.com</a>.
+                If you have questions about these terms or need to contact us regarding any issues related to your rights and obligations, please email us at <a href="mailto:gamehubbacklog@gmail.com" className="text-blue-600 hover:underline">gamehubbacklog@gmail.com</a>.
             </p>
 
             <p className="mt-8 text-sm text-color_text_sec">

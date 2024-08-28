@@ -14,7 +14,7 @@ export const GameItem: React.FC<GameItemProps> = ({ game }) => (
     <div key={game.id} className="flex p-2 rounded-md hover:bg-color_main">
         <Link href={`/game/${game.slug}`} className="flex w-full">
             <Image
-                src={"https:" + getCoverBigUrl(game.cover.url)}
+                src={game.cover ? "https:" + getCoverBigUrl(game.cover.url) : "/cover.webp"}
                 width={264}
                 height={374}
                 alt=""

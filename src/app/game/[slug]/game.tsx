@@ -100,7 +100,6 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                                         selectedScreenshot={selectedScreenshot}
                                         onSelectScreenshot={setSelectedScreenshot}
                                     />
-                                    <hr className="mt-6 mb-6 border-border_detail" />
                                 </>
                             )
                             }
