@@ -12,6 +12,7 @@
 - [Running Locally](#running-locally)
   - [Database](#database)
 - [Environment Variables](#environment-variables)
+- [Contribution](#contribution)
 - [API Documentation](#api-documentation)
   - [Create/Update User Game Status](#createupdate-user-game-status)
   - [Get User Game Status](#get-user-game-status)
