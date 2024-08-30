@@ -5,6 +5,7 @@
   </a>
 </p>
 
+---
 ## Table of Contents
 
 - [About](#about)
@@ -22,7 +23,7 @@
 - [Inspirations](#inspirations)
 
 
-
+---
 ## About
 
 GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games. Organize, track, and discover - all in one place!
@@ -37,6 +38,7 @@ GameHub Backlog is a game backlog tracker designed to help you keep track of you
 - **User Profiles:** Access and manage your profile to view and organize your tracked games. Search for games by name, filter by status and progress, and sort by rating and name. Share your profile with friends and explore other users' profiles to see their game collections.
 - **Light and Dark Modes:** Switch between light and dark themes for a customizable viewing experience.
 
+---
 ## Running locally
 
 Clone the project
@@ -97,7 +99,7 @@ Generate Prisma client
 
 Your database is now ready to use.
 
-
+---
 ## Environment Variables
 
 Enter the project directory
@@ -114,12 +116,14 @@ Copy .env.example to .env
 
 Update the .env file with the necessary configuration values.
 
+---
 ## Contribution
 
 Contributions are welcome and much appreciated! If you want to help improve the GameHub Backlog please read `CONTRIBUTING.md`
 
 Please follow the `code of conduct` of this project.
 
+---
 ## API documentation
 
 ### Create/update user game status
@@ -300,13 +304,14 @@ GET /api/user/getUserData
 }
 ```
 
-
+---
 ## IGDB
 All game data is provided by IGDB
  - [IGDB](https://www.igdb.com)
  - [Discord](https://discord.com/invite/igdb)
  - [X (Old Twitter)](https://x.com/IGDBcom)
 
+---
 ## Inspirations
 
  - [GameGator](https://gamegator.net)
