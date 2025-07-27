@@ -15,6 +15,7 @@ const nextConfig = {
                 hostname: 'www.cheapshark.com',
             },
         ],
+        unoptimized: true, // Disables Next.js image optimization
     },
 };
 
