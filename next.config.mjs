@@ -12,6 +12,18 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
+                hostname: 'lh4.googleusercontent.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'lh5.googleusercontent.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'lh6.googleusercontent.com',
+            },
+            {
+                protocol: 'https',
                 hostname: 'www.cheapshark.com',
             },
         ],

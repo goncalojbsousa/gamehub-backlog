@@ -4,7 +4,7 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
 import Image from "next/image";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
 import { LoadingIcon } from "@/src/components/svg/loading";
 
@@ -17,7 +17,7 @@ interface UserProps {
 }
 
 interface GameProps {
-    id: string;
+    id: string | number;
     progress: string;
     status: string;
     gameDetails: Game;
@@ -34,11 +34,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        fetchGames();
-    }, [selectedCategory, currentPage]);
-
-    const fetchGames = async () => {
+    const fetchGames = useCallback(async () => {
         setLoading(true);
         try {
             const data = await getAllGameStatusByUserId(userId, selectedCategory, currentPage);
@@ -48,7 +44,11 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
             console.error("Error fetching games:", error);
         }
         setLoading(false);
-    };
+    }, [userId, selectedCategory, currentPage]);
+
+    useEffect(() => {
+        fetchGames();
+    }, [fetchGames]);
 
     const handleCategoryClick = (category: string) => {
         setSelectedCategory(category);
@@ -160,8 +160,8 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mt-4">
-                            {filteredGames.map(game => (
-                                <GameCard key={game.id} game={game.gameDetails} progress={game.progress} />
+                            {filteredGames.map((game, index) => (
+                                <GameCard key={game.id || `game-${index}`} game={game.gameDetails} progress={game.progress} />
                             ))}
                         </div>
                     )}

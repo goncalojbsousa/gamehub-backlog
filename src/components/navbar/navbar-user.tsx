@@ -51,10 +51,15 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
                 ref={profilePicRef}
                 width={200}
                 height={200}
-                src={userImage ? userImage : "/placeholder-user.png"} alt="Profile picture"
+                src={userImage || "/placeholder-user.png"} 
+                alt="Profile picture"
                 className={`w-10 rounded-full cursor-pointer ${menuOpen ? 'rounded-xl' : ''}`}
                 draggable="false"
                 onClick={toggleMenu}
+                onError={(e) => {
+                    console.error('Failed to load user image:', userImage);
+                    e.currentTarget.src = "/placeholder-user.png";
+                }}
             />
             {menuOpen && (
                 <div ref={menuRef} className="absolute mt-36 mr-24 bg-color_sec shadow-md border border-border_detail rounded-md w-48 p-2"> {/* WITH SETTING MT IS 52 mt-52 */}

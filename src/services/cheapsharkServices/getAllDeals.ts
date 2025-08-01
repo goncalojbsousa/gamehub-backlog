@@ -24,7 +24,10 @@ export async function fetchAllDeals(steamIds: string[]): Promise<Deal[]> {
             hasMorePages = pageNumber < totalPageCount;
             pageNumber++;
         } else {
-            console.error(`Failed to fetch prices from CheapShark for page ${pageNumber}`);
+            // Don't log error for 404 or when no deals are found (this is normal for games not in stores)
+            if (priceResponse.status !== 404) {
+                console.error(`Failed to fetch prices from CheapShark for page ${pageNumber}: ${priceResponse.status}`);
+            }
             hasMorePages = false;
         }
     }

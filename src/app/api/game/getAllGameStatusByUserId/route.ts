@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 export async function GET(request: Request) {
     // GET CLIENT IP
-    const headersList = headers();
+    const headersList = await headers();
     const clientIp = headersList.get('x-forwarded-for') || 'unknown';
 
     if (typeof clientIp !== 'string' || clientIp === 'unknown') {

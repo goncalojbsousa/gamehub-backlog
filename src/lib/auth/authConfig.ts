@@ -32,6 +32,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             clientId: process.env.AUTH_GOOGLE_ID,
             clientSecret: process.env.AUTH_GOOGLE_SECRET,
             allowDangerousEmailAccountLinking: true,
+            authorization: {
+                params: {
+                    scope: 'openid email profile',
+                },
+            },
         }),
         Nodemailer({
             server: {
@@ -63,6 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     ...token,
                     id: user.id,
                     username: user.username,
+                    image: user.image, // Ensure image is included in token
                 };
             }
 
@@ -86,6 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     ...session.user,
                     id: token.id as string,
                     username: token.username as string,
+                    image: token.image as string, // Ensure image is included in session
                 },
             };
         },

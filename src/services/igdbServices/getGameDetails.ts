@@ -19,7 +19,7 @@ interface Deal {
 export const fetchGameDetails = async (query: string) => {
 
     // GET CLIENT IP
-    const headersList = headers();
+    const headersList = await headers();
     const clientIp = headersList.get('x-forwarded-for') || 'unknown';
 
     if (typeof clientIp !== 'string') {

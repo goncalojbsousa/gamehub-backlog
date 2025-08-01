@@ -17,7 +17,7 @@ interface Deal {
 export const fetchGameDetailsByIds = async (gameIds: number[]) => {
 
     // GET CLIENT IP
-    const headersList = headers();
+    const headersList = await headers();
     const clientIp = headersList.get('x-forwarded-for') || 'unknown';
 
     if (typeof clientIp !== 'string') {
@@ -89,14 +89,19 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
 
         let prices: Record<string, string> = {};
         if (steamIds.length > 0) {
-            const allDeals = await fetchAllDeals(steamIds);
-            prices = allDeals.reduce((acc: Record<string, string>, deal: Deal) => {
-                const steamAppID = deal.steamAppID.toLowerCase();
-                if (!acc[steamAppID] || parseFloat(deal.salePrice) < parseFloat(acc[steamAppID])) {
-                    acc[steamAppID] = deal.salePrice;
-                }
-                return acc;
-            }, {});
+            try {
+                const allDeals = await fetchAllDeals(steamIds);
+                prices = allDeals.reduce((acc: Record<string, string>, deal: Deal) => {
+                    const steamAppID = deal.steamAppID.toLowerCase();
+                    if (!acc[steamAppID] || parseFloat(deal.salePrice) < parseFloat(acc[steamAppID])) {
+                        acc[steamAppID] = deal.salePrice;
+                    }
+                    return acc;
+                }, {});
+            } catch (error) {
+                console.error('Error fetching deals from CheapShark:', error);
+                // Continue without prices if deals fetch fails
+            }
         }
 
 

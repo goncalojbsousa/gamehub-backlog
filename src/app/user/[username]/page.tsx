@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import UserNotFound from "@/src/components/user-not-found";
 
 interface Props {
-  params: { username: string };
+  params: Promise<{ username: string }>;
 }
 
 const getUserDataServer = (async (username: string) => {
@@ -14,15 +14,16 @@ const getUserDataServer = (async (username: string) => {
   return userData;
 });
 
-export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
-  const userData = await getUserDataServer(params.username);
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
+  const { username } = await params;
+  const userData = await getUserDataServer(username);
   return {
     title: `${userData?.name || 'Name'} | GameHub`,
   };
 }
 
 export default async function Profile({ params }: Props) {
-  const { username } = params;
+  const { username } = await params;
 
   try {
     const userData = await getUserDataServer(username);
