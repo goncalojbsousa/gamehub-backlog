@@ -16,6 +16,12 @@ const getGameData = cache(async (slug: string) => {
 async function getGameStatus(gameId: number) {
     try {
         const userId = await getUserId();
+        
+        // If user is not authenticated, return null without making the API call
+        if (!userId) {
+            return null;
+        }
+        
         const response = await fetch(`${process.env.NEXTAUTH_URL}/api/game/getGameStatus?userId=${userId}&gameId=${gameId}`, { cache: 'no-store' });
         if (response.ok) {
             return await response.json();
@@ -29,15 +35,17 @@ async function getGameStatus(gameId: number) {
 }
 
 // CHANGE TITLE IN THE BROWSER TAB
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const game = await getGameData(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const game = await getGameData(slug);
     return {
         title: `${game?.name || 'Game'} | GameHub`,
     };
 }
 
-export default async function GamePageServer({ params }: { params: { slug: string } }) {
-    const game = await getGameData(params.slug);
+export default async function GamePageServer({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const game = await getGameData(slug);
 
     if (!game) {
         return <GameNotFound/>;

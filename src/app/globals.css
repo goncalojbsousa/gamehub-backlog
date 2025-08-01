@@ -3,7 +3,7 @@
 @import 'tailwindcss/utilities';
 
 :root {
-  --background: theme('colors.white');
+  --background: theme('colors.zinc.50');
   --color_main: theme('colors.zinc.100');
   --color_sec: theme('colors.white');
   --color_reverse: theme('colors.stone.900');
@@ -31,12 +31,12 @@
 
 [data-theme='dark'] {
   --background: theme('colors.stone.900');
-  --color_main: theme('colors.stone.950');
-  --color_sec: theme('colors.stone.900');
+  --color_main: theme('colors.stone.800');
+  --color_sec: theme('colors.stone.800');
   --color_reverse: theme('colors.zinc.200');
   --color_reverse_sec: theme('colors.white');
 
-  --color_click: theme('colors.stone.900');
+  --color_click: theme('colors.stone.700');
 
   --color_text: theme('colors.white');
   --color_text_sec: theme('colors.gray.400');
@@ -50,10 +50,10 @@
   --color_error: theme('colors.red.500');
   --color_success: theme('colors.green.500');
 
-  --gradient-start: rgba(41, 37, 36, 0.7);
-  --gradient-end: rgba(41, 37, 36, 1);
+  --gradient-start: rgba(28, 25, 23, 0.8);
+  --gradient-end: rgba(28, 25, 23, 1);
 
-  --login-bg: rgba(41, 37, 36, 0.5);
+  --login-bg: rgba(28, 25, 23, 0.6);
 }
 
 * {
