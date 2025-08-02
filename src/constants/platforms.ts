@@ -29,15 +29,10 @@ export const platforms = [
     "HP 3000", "HP 2100", "Call-A-Computer time-shared mainframe computer system", 
     "EDSAC", "PLATO", "Microvision", "Odyssey", "Odyssey 2 / Videopac G7000", 
     "PDP-7", "PDP-10", "Z88", "SDS Sigma 7", "Commodore 16", "Commodore 128", 
-    "Bally Astrocade", "Super Famicom", "Philips CD-i", "Casio Loopy", 
-    "Legacy Computer", "Handheld Electronic LCD", "Legacy Mobile Device", 
-    "Analogue electronics", "Apple Pippin", "PlayStation", 
+    "Bally Astrocade", "Super Famicom", "Legacy Computer", "Handheld Electronic LCD", 
+    "Legacy Mobile Device", "Analogue electronics", "Apple Pippin", "PlayStation", 
     "HyperScan", "Mega Duck/Cougar Boy", "Watara/QuickShot Supervision", 
-    "PDP-1", "Analogue electronics", "PlayStation VR", "Casio Loopy", 
-    "OOParts", "Zeebo", "N-Gage", "Gamate", "Zeebo", "Gizmondo", 
-    "Turbografx-16/PC Engine CD", "Gizmondo", "Daydream", "V.Smile", 
-    "PlayStation Portable", "PlayStation Vita", "Atari 5200", "Commodore CDTV", 
-    "PC-FX", "MSX2", "Sharp X1", "FM Towns", "FM-7", "PC-9800 Series", 
-    "PC-8800 Series", "Commodore 16", "Commodore 128", "Game.com", 
-    "Analogue electronics", "Call-A-Computer time-shared mainframe computer system"
+    "PDP-1", "PlayStation VR", "OOParts", "Zeebo", "N-Gage", "Daydream", 
+    "Atari 5200", "Commodore CDTV", "PC-FX", "MSX2", "Sharp X1", "FM Towns", 
+    "FM-7", "PC-9800 Series", "PC-8800 Series"
 ];

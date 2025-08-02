@@ -19,21 +19,31 @@ export const Accordion: React.FC<AccordionProps> = ({ title, filters, selectedFi
     };
 
     return (
-        <div className="rounded-lg p-4 pt-0">
+        <div className="rounded-lg p-4 pt-0 transition-all duration-200 hover:bg-color_main/5">
             <h2
-                className={`flex justify-between cursor-pointer ${isOpen ? 'text-color_text' : 'text-color_text_sec'} hover:text-color_text select-none`}
+                className={`flex justify-between cursor-pointer transition-all duration-200 ${isOpen ? 'text-color_text' : 'text-color_text_sec'} hover:text-color_text select-none`}
                 onClick={toggleAccordion}
             >
                 {title}
-                <span className="">{isOpen ? '▲' : '▼'}</span>
+                <span className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}>
+                    ▼
+                </span>
             </h2>
-            {isOpen && (
-                <div className="mt-4 max-h-60 overflow-y-auto">
-                    {filters.map((filter) => (
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="mt-4 space-y-1">
+                    {filters.map((filter, index) => (
                         <div
                             key={filter}
-                            className={`flex items-center p-2 rounded-lg cursor-pointer ${selectedFilters.includes(filter) ? 'bg-color_main' : 'hover:bg-color_main'}`}
+                            className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 transform hover:scale-[1.02] hover:shadow-sm ${
+                                selectedFilters.includes(filter) 
+                                    ? 'bg-color_main shadow-sm scale-[1.01]' 
+                                    : 'hover:bg-color_main/50'
+                            }`}
                             onClick={() => handleFilterClick(filter)}
+                            style={{
+                                animationDelay: `${index * 50}ms`,
+                                animation: isOpen ? 'slideInUp 0.3s ease-out forwards' : 'none'
+                            }}
                         >
                             <input
                                 type="checkbox"
@@ -42,31 +52,28 @@ export const Accordion: React.FC<AccordionProps> = ({ title, filters, selectedFi
                                 onChange={() => handleFilterClick(filter)}
                                 className="peer hidden"
                             />
-                            <div className="w-5 h-5 flex items-center justify-center border-2 border-border_detail rounded-lg peer-checked:border-transparent">
-                                <svg
-                                    className={`w-4 h-4 ${selectedFilters.includes(filter) ? 'block' : 'hidden'} text-color_text`}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M5 13l4 4L19 7" />
-                                </svg>
+                            <div className={`w-5 h-5 flex items-center justify-center border-2 rounded-lg transition-all duration-200 ${
+                                selectedFilters.includes(filter) 
+                                    ? 'border-color_accent bg-color_accent' 
+                                    : 'border-border_detail hover:border-color_accent/50'
+                            }`}>
+                                {selectedFilters.includes(filter) && (
+                                    <span style={{color: 'white', fontSize: '12px'}}>
+                                        ✓
+                                    </span>
+                                )}
                             </div>
                             <label
                                 htmlFor={`${title}-${filter}`}
-                                className="ml-3 flex-1"
+                                className="ml-3 flex-1 transition-colors duration-200"
                             >
                                 {filter}
                             </label>
                         </div>
                     ))}
                 </div>
-            )}
-            <hr className='mt-2 border-border_detail' />
+            </div>
+            <hr className='mt-2 border-border_detail transition-colors duration-200' />
         </div>
     );
 };
