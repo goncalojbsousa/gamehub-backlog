@@ -1,93 +1,87 @@
 import Link from "next/link";
-import { LinkedinIcon } from "@/src/components/svg/social/linkedin-icon";
-import { GithubIcon } from "@/src/components/svg/social/github-icon";
-import Image from "next/image";
-import { WebsiteIcon } from "@/src/components/svg/social/website-icon";
 import { IGDBIcon } from "@/src/components/svg/igdb";
 
 export const Footer = () => {
     return (
-        <footer className="bg-color_main p-6 flex flex-col items-center justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
+        <footer className="relative bg-gradient-to-b from-color_sec to-color_main border-t border-border_detail">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+            </div>
 
-                <div className="">
-                    <h3 className="text-lg text-color_text font-semibold mb-2">EXPLORE</h3>
-                    <ul className="text-color_text_sec flex flex-col">
-                        <li>
-                            <Link className="hover:underline" href="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link className="hover:underline" href="/search">Search</Link>
-                        </li>
-                    </ul>
-                </div>
+            <div className="relative z-10 container mx-auto px-4 lg:px-8 py-12">
+                {/* Main Footer Content */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                    {/* Navigation Links */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-color_text mb-4">Navigation</h3>
+                        <div className="space-y-2">
+                            <Link 
+                                href="/" 
+                                className="block text-color_text_sec hover:text-color_text transition-colors duration-200 hover:translate-x-1 transform"
+                            >
+                                Home
+                            </Link>
+                            <Link 
+                                href="/search" 
+                                className="block text-color_text_sec hover:text-color_text transition-colors duration-200 hover:translate-x-1 transform"
+                            >
+                                Search Games
+                            </Link>
+                        </div>
+                    </div>
 
-                <div className="">
-                    <h3 className="text-lg text-color_text font-semibold mb-2">GAME HUB</h3>
-                    <ul className="text-color_text_sec flex flex-col">
-                        <li>
-                            <Link className="hover:underline" href="/about">About Us</Link>
-                        </li>
-                    </ul>
-                </div>
+                    {/* Legal Links */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-color_text mb-4">Legal</h3>
+                        <div className="space-y-2">
+                            <Link 
+                                href="/terms" 
+                                className="block text-color_text_sec hover:text-color_text transition-colors duration-200 hover:translate-x-1 transform"
+                            >
+                                Terms of Service
+                            </Link>
+                            <Link 
+                                href="/privacy" 
+                                className="block text-color_text_sec hover:text-color_text transition-colors duration-200 hover:translate-x-1 transform"
+                            >
+                                Privacy Policy
+                            </Link>
+                        </div>
+                    </div>
 
-                <div className="">
-                    <h3 className="text-lg text-color_text font-semibold mb-2">LEGAL</h3>
-                    <ul className="text-color_text_sec flex flex-col">
-                        <li>
-                            <Link className="hover:underline" href="/terms">Terms of Service</Link>
-                        </li>
-                        <li>
-                            <Link className="hover:underline" href="/privacy">Privacy Policy</Link>
-                        </li>
-                    </ul>
-                </div>
-                {/*
-                <div className="">
-                    <h3 className="text-lg text-color_text font-semibold mb-2">DEVELOPED BY</h3>
-                    <div className="flex items-center">
-                        <Image
-                            src="/gjbs.jpeg"
-                            alt="User profile image"
-                            width={48}
-                            height={48}
-                            className="w-12 h-12 rounded-full mr-3"
-                            draggable={false}
-                        />
-                        <div>
-                            <div className="text-color_text_sec flex flex-col">
-                                Gonçalo Sousa
-                            </div>
-                            <div className="flex">
-                                <Link href="https://goncalosousa.netlify.app"
-                                    target="_blank"
-                                    aria-label="Go to Gonçalo Sousa website"
-                                >
-                                    <WebsiteIcon className="fill-color_icons" />
-                                </Link>
-                                <Link href="https://github.com/goncalojbsousa"
-                                    target="_blank"
-                                    aria-label="Go to Gonçalo Sousa github"
-                                >
-                                    <GithubIcon className="fill-color_icons" />
-                                </Link>
-                                <Link href="https://www.linkedin.com/in/goncalojbsousa/"
-                                    target="_blank"
-                                    aria-label="Go to Gonçalo Sousa linkedin"
-                                >
-                                    <LinkedinIcon className="fill-color_icons" />
-                                </Link>
-                            </div>
+                    {/* About */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-color_text mb-4">About</h3>
+                        <div className="space-y-2">
+                            <Link 
+                                href="/about" 
+                                className="block text-color_text_sec hover:text-color_text transition-colors duration-200 hover:translate-x-1 transform"
+                            >
+                                About GameHub
+                            </Link>
                         </div>
                     </div>
                 </div>
-                */}
-            </div>
-            <div className="mt-6">
-                <Link href="https://www.igdb.com" target="_blank" className="flex hover:underline items-center">
-                    <p className="text-color_text mr-2">Games data is powered by</p>
-                    <IGDBIcon className="fill-color_icons" />
-                </Link>
+
+                {/* Bottom Section */}
+                <div className="pt-8 border-t border-border_detail">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        {/* Copyright */}
+                        <div className="text-color_text_sec text-sm">
+                            © 2025 GameHub. All rights reserved.
+                        </div>
+
+                        {/* IGDB Attribution */}
+                        <Link 
+                            href="https://www.igdb.com" 
+                            target="_blank" 
+                            className="flex items-center gap-2 text-color_text_sec hover:text-color_text transition-colors duration-200 group"
+                        >
+                            <span className="text-sm">Games data is powered by</span>
+                            <IGDBIcon className="fill-current w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
+                        </Link>
+                    </div>
+                </div>
             </div>
         </footer>
     );

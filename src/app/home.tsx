@@ -41,8 +41,6 @@ export default function HomePage({
       <div className="relative overflow-hidden">
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-color_accent to-transparent animate-pulse"></div>
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
         </div>
 
         <div className="relative z-10">
@@ -54,7 +52,7 @@ export default function HomePage({
       <div className="relative z-10">
         <div className="container mx-auto px-4 lg:px-8 py-4">
           {/* Popular Games Section */}
-          <div className="mb-16 animate-slide-in-up">
+          <div className="mb-16 animate-on-load animate-slide-in-up">
             <GameSection
               title="🔥 Trending Now"
               games={gamesPopular}
@@ -63,7 +61,7 @@ export default function HomePage({
           </div>
 
           {/* Popular Games of 2024 Section */}
-          <div className="mb-16 animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
+          <div className="mb-16 animate-on-load animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
             <GameSection
               title="🏆 Best of 2024"
               games={gamesPopularYear}
@@ -72,7 +70,7 @@ export default function HomePage({
           </div>
 
           {/* Recent Games Section */}
-          <div className="mb-16 animate-slide-in-up" style={{ animationDelay: '0.4s' }}>
+          <div className="mb-16 animate-on-load animate-slide-in-up" style={{ animationDelay: '0.4s' }}>
             <GameSection
               title="🆕 Recently Released"
               games={gamesRecent}
@@ -81,7 +79,7 @@ export default function HomePage({
           </div>
 
           {/* Upcoming Games Section */}
-          <div className="mb-16 animate-slide-in-up" style={{ animationDelay: '0.6s' }}>
+          <div className="mb-16 animate-on-load animate-slide-in-up" style={{ animationDelay: '0.6s' }}>
             <GameSection
               title="🚀 Coming Soon"
               games={gamesUpcoming}

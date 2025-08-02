@@ -165,6 +165,16 @@ select:focus {
 }
 
 .animate-slide-in-up {
+  opacity: 0;
+  animation: slide-in-up 0.6s ease-out forwards;
+}
+
+/* Initial visibility control for animated elements */
+.animate-on-load {
+  opacity: 0;
+}
+
+.animate-on-load.animate-slide-in-up {
   animation: slide-in-up 0.6s ease-out forwards;
 }
 
