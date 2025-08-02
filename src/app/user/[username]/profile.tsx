@@ -7,6 +7,9 @@ import Image from "next/image";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
 import { LoadingIcon } from "@/src/components/svg/loading";
+import { SearchIcon } from "@/src/components/svg/search-icon";
+import { FiltersIcon } from "@/src/components/svg/filter-icon";
+import { getCoverImageUrl } from "@/src/utils/utils";
 
 interface UserProps {
     userId: string;
@@ -32,7 +35,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [games, setGames] = useState<GameProps[]>([]);
     const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const fetchGames = useCallback(async () => {
         setLoading(true);
@@ -57,7 +60,12 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     };
 
     const handleProgressClick = (progress: string) => {
-        setSelectedProgress(prev => prev === progress ? null : progress);
+        setSelectedProgress(progress === 'All' ? null : progress);
+    };
+
+    const clearAllFilters = () => {
+        setSearchTerm("");
+        setSelectedProgress(null);
     };
 
     const handlePageChange = (newPage: number) => {
@@ -71,128 +79,388 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
         game.gameDetails.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const progressOptions = ['Unfinished', 'Beaten', 'Completed', 'Continuous'];
+    const progressOptions = ['All', 'Unfinished', 'Beaten', 'Completed', 'Continuous'];
+    const categories = ['Played', 'Playing', 'Plan to play', 'Dropped'];
+
+    // Background style similar to home page
+    const mainStyle = {
+        backgroundImage: `
+            linear-gradient(to bottom, var(--gradient-start), var(--background)),
+            url(/login-bg.webp)
+        `,
+        backgroundSize: '100% 1200px',
+        backgroundPosition: 'center top',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: 'var(--background)',
+    };
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-color_bg" style={mainStyle}>
             <Navbar />
-            <main className="flex-grow pt-24">
-                <div className="container mx-auto px-4">
-                    {/* User profile section */}
-                    <div className="flex items-center justify-between p-6 bg-color_main rounded-2xl">
-                        <div className="flex items-center">
-                            <Image
-                                src={userImage}
-                                alt="User profile image"
-                                width={250}
-                                height={250}
-                                className="w-24 h-24 rounded-full"
-                                draggable={false}
-                            />
-                            <div className="ml-6">
-                                <h1 className="text-2xl text-color_text">{name}</h1>
-                                <p className="text-sm text-color_text_sec">@{userName}</p>
+
+            {/* Hero Section */}
+            <div className="relative overflow-hidden">
+                <div className="relative z-10">
+                    <div className="container mx-auto px-4 lg:px-8 py-8">
+                        {/* Profile Header */}
+                        <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail relative overflow-hidden mb-8 animate-slide-in-up">
+                            {/* Background Image Overlay */}
+                            {!loading && games.length > 0 && games[0]?.gameDetails?.screenshots?.[0]?.url && (
+                                <div className="absolute top-0 right-0 w-1/3 h-full opacity-10">
+                                    <div
+                                        className="absolute top-0 right-0 w-full h-full bg-cover bg-center rounded-xl"
+                                        style={{
+                                            backgroundImage: `url(${getCoverImageUrl(`https://${games[0].gameDetails.screenshots[0].url}`)})`,
+                                        }}
+                                    ></div>
+                                </div>
+                            )}
+                            
+                            {/* Content */}
+                            <div className="relative z-10">
+                                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                                    <div className="flex items-center gap-6">
+                                        <div className="relative">
+                                            <Image
+                                                src={userImage}
+                                                alt="User profile image"
+                                                width={120}
+                                                height={120}
+                                                className="w-24 h-24 lg:w-32 lg:h-32 rounded-full border-4 border-color_reverse_sec shadow-lg"
+                                                draggable={false}
+                                            />
+                                        </div>
+                                        <div>
+                                            <h1 className="text-3xl lg:text-4xl font-bold text-color_text mb-2">
+                                                {name}
+                                            </h1>
+                                            <p className="text-lg text-color_text_sec mb-2">@{userName}</p>
+                                            <p className="text-sm text-color_text_sec">
+                                                Member since {new Date(joinDate).toLocaleDateString('en-US', { 
+                                                    year: 'numeric', 
+                                                    month: 'long' 
+                                                })}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Stats - Placeholder for future content */}
+                                    <div className="flex gap-6">
+                                        <div className="text-center">
+                                            <div className="text-2xl font-bold text-color_text"></div>
+                                            <div className="text-sm text-color_text_sec"></div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-2xl font-bold text-color_text"></div>
+                                            <div className="text-sm text-color_text_sec"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    {/* Category buttons */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-6 text-color_text_sec">
-                        {['Played', 'Playing', 'Plan to play', 'Dropped'].map(category => (
+            {/* Mobile/Tablet Filters Modal */}
+            <div className={`fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden transition-all duration-300 ${isFiltersOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div className={`absolute right-0 top-0 h-full w-full max-w-sm bg-color_main shadow-2xl transition-transform duration-300 filter-modal-enter ${isFiltersOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                    <div className="flex flex-col h-full">
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-border_detail">
+                            <h2 className="text-2xl font-bold text-color_text">Filters</h2>
                             <button
-                                key={category}
-                                onClick={() => handleCategoryClick(category)}
-                                className={`p-2 ${selectedCategory === category ? 'text-color_text border-b-2 border-color_reverse' : 'hover:text-color_text'} w-full text-center`}
+                                onClick={() => setIsFiltersOpen(false)}
+                                className="text-2xl text-color_text hover:text-color_text_sec transition-colors p-2"
                             >
-                                {category}
+                                &times;
                             </button>
-                        ))}
-                    </div>
-
-                    {/* Filters section */}
-                    <div className="mt-4">
-                        <button
-                            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                            className="w-full md:hidden bg-color_main text-color_text p-2 rounded-lg mb-2"
-                        >
-                            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
-                        </button>
-
-                        <div className={`md:block ${isFiltersOpen ? 'block' : 'hidden'}`}>
-                            <div className="flex flex-col md:flex-row justify-between items-center  rounded-lg p-2">
-                                <div className="w-full md:w-auto ml-2 mb-4 md:mb-0">
+                        </div>
+                        
+                        {/* Filters Content */}
+                        <div className="flex-1 overflow-y-auto p-6">
+                            {/* Search */}
+                            <div className="mb-6">
+                                <h3 className="text-sm font-semibold text-color_text mb-3">Search Games</h3>
+                                <div className="relative">
                                     <input
                                         type="text"
-                                        placeholder="Search games..."
+                                        placeholder="Type game name..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full md:w-auto p-2 rounded-md bg-color_sec border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail"
+                                        className="w-full p-3 pl-10 rounded-lg bg-color_main border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail text-color_text placeholder-color_text_sec"
                                     />
+                                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 fill-color_icons w-4 h-4" />
                                 </div>
+                            </div>
 
-                                <div className="flex flex-wrap justify-center gap-2 mb-4 md:mb-0">
+                            {/* Category Filter */}
+                            <div className="mb-6">
+                                <h3 className="text-sm font-semibold text-color_text mb-3">Game Status</h3>
+                                <div className="space-y-2">
+                                    {categories.map(category => (
+                                        <button
+                                            key={category}
+                                            onClick={() => {
+                                                handleCategoryClick(category);
+                                                setIsFiltersOpen(false);
+                                            }}
+                                            className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                selectedCategory === category 
+                                                    ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
+                                                    : 'bg-color_main text-color_text hover:bg-color_hover'
+                                            }`}
+                                        >
+                                            {category}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Progress Filter */}
+                            <div className="mb-6">
+                                <h3 className="text-sm font-semibold text-color_text mb-3">Progress Filter</h3>
+                                <div className="space-y-2">
                                     {progressOptions.map(progress => (
                                         <button
                                             key={progress}
                                             onClick={() => handleProgressClick(progress)}
-                                            className={`p-2 ${selectedProgress === progress ? 'border-b-2 border-color_reverse text-color_text' : 'hover:text-color_text'}`}
+                                            className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                selectedProgress === progress || (progress === 'All' && !selectedProgress)
+                                                    ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
+                                                    : 'bg-color_main text-color_text hover:bg-color_hover'
+                                            }`}
                                         >
                                             {progress}
                                         </button>
                                     ))}
                                 </div>
-
-                                <div className="mr-2">
-                                    <p>{games.length} results on page {currentPage}</p>
-                                </div>
                             </div>
+
+                            {/* Results Info */}
+                            <div className="text-sm text-color_text_sec bg-color_main rounded-lg p-3 mb-4">
+                                <p className="font-medium text-color_text">{filteredGames.length} games found</p>
+                                <p>Page {currentPage} of {totalPages}</p>
+                            </div>
+
+                            {/* Clear Filters */}
+                            {(searchTerm || selectedProgress) && (
+                                <button
+                                    onClick={clearAllFilters}
+                                    className="w-full py-2 px-4 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors text-sm font-medium border border-border_detail"
+                                >
+                                    Clear All Filters
+                                </button>
+                            )}
+                        </div>
+                        
+                        {/* Footer */}
+                        <div className="p-6 border-t border-border_detail">
+                            <button
+                                onClick={() => setIsFiltersOpen(false)}
+                                className="w-full py-3 bg-color_reverse_sec text-color_main rounded-lg hover:bg-color_reverse transition-all duration-200 font-medium"
+                            >
+                                Apply Filters
+                            </button>
                         </div>
                     </div>
-                    <hr className=" border-border_detail" />
-                    {/* Game cards */}
-                    {loading ? (
-                        <div className="flex justify-center items-center min-h-[200px]">
-                            <LoadingIcon className="fill-color_icons"/>
-                        </div>
-                    ) : filteredGames.length === 0 ? (
-                        <div className="flex justify-center items-center min-h-[200px] text-color_text_sec">
-                            <p>No results found :(</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mt-4">
-                            {filteredGames.map((game, index) => (
-                                <GameCard key={game.id || `game-${index}`} game={game.gameDetails} progress={game.progress} />
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Pagination */}
-                    {filteredGames.length > 0 && (
-                        <div className="flex justify-center items-center mt-8 space-x-4">
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="bg-color_main text-color_text px-4 py-2 rounded disabled:opacity-50"
-                            >
-                                Previous
-                            </button>
-                            <span className="text-color_text">
-                                Page {currentPage} of {totalPages}
-                            </span>
-                            <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className="bg-color_main text-color_text px-4 py-2 rounded disabled:opacity-50"
-                            >
-                                Next
-                            </button>
-                        </div>
-                    )}
                 </div>
-            </main>
-            <div className="mt-8">
+            </div>
+
+            {/* Main Content */}
+            <div className="relative z-10">
+                <div className="container mx-auto px-4 lg:px-8 py-4">
+                    <div className="flex flex-col lg:flex-row gap-8">
+                        {/* Desktop Filters Sidebar */}
+                        <div className="hidden lg:block w-80 flex-shrink-0">
+                            <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail sticky top-24 animate-slide-in-up">
+                                <h2 className="text-xl font-bold mb-6 text-color_text">Filters</h2>
+                                
+                                {/* Search */}
+                                <div className="mb-6">
+                                    <h3 className="text-sm font-semibold text-color_text mb-3">Search Games</h3>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            placeholder="Type game name..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="w-full p-3 pl-10 rounded-lg bg-color_main border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail text-color_text placeholder-color_text_sec"
+                                        />
+                                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 fill-color_icons w-4 h-4" />
+                                    </div>
+                                </div>
+
+                                {/* Category Filter */}
+                                <div className="mb-6">
+                                    <h3 className="text-sm font-semibold text-color_text mb-3">Game Status</h3>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {categories.map(category => (
+                                            <button
+                                                key={category}
+                                                onClick={() => handleCategoryClick(category)}
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                    selectedCategory === category 
+                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
+                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
+                                                }`}
+                                            >
+                                                {category}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Progress Filter */}
+                                <div className="mb-6">
+                                    <h3 className="text-sm font-semibold text-color_text mb-3">Progress Filter</h3>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {progressOptions.map(progress => (
+                                            <button
+                                                key={progress}
+                                                onClick={() => handleProgressClick(progress)}
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                    selectedProgress === progress || (progress === 'All' && !selectedProgress)
+                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
+                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
+                                                }`}
+                                            >
+                                                {progress}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Results Info */}
+                                <div className="text-sm text-color_text_sec bg-color_main rounded-lg p-3 mb-4">
+                                    <p className="font-medium text-color_text">{filteredGames.length} games found</p>
+                                    <p>Page {currentPage} of {totalPages}</p>
+                                </div>
+
+                                {/* Clear Filters */}
+                                {(searchTerm || selectedProgress) && (
+                                    <button
+                                        onClick={clearAllFilters}
+                                        className="w-full py-2 px-4 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors text-sm font-medium border border-border_detail"
+                                    >
+                                        Clear All Filters
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Games Results */}
+                        <div className="flex-1">
+                            {/* Floating Filters Button for Mobile Only */}
+                            <div className="fixed bottom-6 right-6 z-40 sm:hidden">
+                                <button
+                                    onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+                                    className="bg-color_reverse_sec text-color_main p-4 rounded-full shadow-lg filter-button-hover relative floating-button-pulse"
+                                    title="Open Filters"
+                                >
+                                    <FiltersIcon className="fill-color_main w-6 h-6" />
+                                    {/* Active Filters Indicator */}
+                                    {(selectedProgress || searchTerm) && (
+                                        <span className="absolute -top-2 -right-2 bg-color_accent text-color_main text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center filter-checkbox-enter">
+                                            {(selectedProgress && selectedProgress !== 'All' ? 1 : 0) + (searchTerm ? 1 : 0)}
+                                        </span>
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Mobile Filters Header */}
+                            <div className="lg:hidden mb-6">
+                                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <h2 className="text-xl font-bold text-color_text mb-1">Filters</h2>
+                                            <p className="text-sm text-color_text_sec">
+                                                {filteredGames.length} games found • {selectedCategory}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+                                            className="p-3 rounded-lg bg-color_main hover:bg-color_hover transition-colors"
+                                        >
+                                            <FiltersIcon className="fill-color_icons w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Games Grid */}
+                            {loading ? (
+                                <div className="flex justify-center items-center min-h-[400px]">
+                                    <div className="flex flex-col items-center gap-4">
+                                        <LoadingIcon className="fill-color_icons w-12 h-12 animate-spin" />
+                                        <p className="text-color_text_sec">Loading games...</p>
+                                    </div>
+                                </div>
+                            ) : filteredGames.length === 0 ? (
+                                <div className="flex justify-center items-center min-h-[400px]">
+                                    <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail text-center max-w-md">
+                                        <div className="text-6xl mb-4">🎮</div>
+                                        <h3 className="text-xl font-bold text-color_text mb-2">No Games Found</h3>
+                                        <p className="text-color_text_sec mb-4">
+                                            {searchTerm 
+                                                ? `No games found for "${searchTerm}" in ${selectedCategory.toLowerCase()}.` 
+                                                : `No games in ${selectedCategory.toLowerCase()} yet.`
+                                            }
+                                        </p>
+                                        {searchTerm && (
+                                            <button
+                                                onClick={() => setSearchTerm("")}
+                                                className="px-6 py-3 bg-color_reverse_sec text-color_main rounded-lg hover:bg-color_reverse transition-all duration-200 font-medium"
+                                            >
+                                                Clear Search
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="animate-slide-in-up">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+                                        {filteredGames.map((game, index) => (
+                                            <GameCard key={game.id || `game-${index}`} game={game.gameDetails} progress={game.progress} />
+                                        ))}
+                                    </div>
+
+                                    {/* Pagination */}
+                                    {totalPages > 1 && (
+                                        <div className="flex justify-center items-center mt-12">
+                                            <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
+                                                <div className="flex items-center gap-4">
+                                                    <button
+                                                        onClick={() => handlePageChange(currentPage - 1)}
+                                                        disabled={currentPage === 1}
+                                                        className="px-4 py-2 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        Previous
+                                                    </button>
+                                                    <span className="text-color_text font-medium">
+                                                        Page {currentPage} of {totalPages}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => handlePageChange(currentPage + 1)}
+                                                        disabled={currentPage === totalPages}
+                                                        className="px-4 py-2 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        Next
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="mt-16">
                 <Footer />
             </div>
-        </div>
+        </main>
     );
 };
