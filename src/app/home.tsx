@@ -57,6 +57,7 @@ export default function HomePage({
               title="🔥 Trending Now"
               games={gamesPopular}
               coverImageUrl={getCoverImageUrl(`https://${gamesPopular[0]?.screenshots[0]?.url}`)}
+              isLoading={gamesPopular.length === 0}
             />
           </div>
 
@@ -66,6 +67,7 @@ export default function HomePage({
               title="🏆 Best of 2024"
               games={gamesPopularYear}
               coverImageUrl={getCoverImageUrl(`https://${gamesPopularYear[0]?.screenshots[0]?.url}`)}
+              isLoading={gamesPopularYear.length === 0}
             />
           </div>
 
@@ -75,6 +77,7 @@ export default function HomePage({
               title="🆕 Recently Released"
               games={gamesRecent}
               coverImageUrl={getCoverImageUrl(`https://${gamesRecent[0]?.screenshots?.[0]?.url || ''}`)}
+              isLoading={gamesRecent.length === 0}
             />
           </div>
 
@@ -84,6 +87,7 @@ export default function HomePage({
               title="🚀 Coming Soon"
               games={gamesUpcoming}
               coverImageUrl={getCoverImageUrl(`https://${gamesUpcoming[0]?.screenshots[0]?.url}`)}
+              isLoading={gamesUpcoming.length === 0}
             />
           </div>
         </div>
