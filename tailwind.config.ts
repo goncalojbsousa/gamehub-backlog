@@ -12,6 +12,7 @@ const config: Config = {
         background: "var(--background)",
         color_main: "var(--color_main)",
         color_sec: "var(--color_sec)",
+        color_hover: "var(--color_hover)",
         color_reverse: "var(--color_reverse)",
         color_reverse_sec: "var(--color_reverse_sec)",
         color_text: "var(--color_text)",

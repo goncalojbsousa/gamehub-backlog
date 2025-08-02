@@ -19,7 +19,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, filters, selectedFi
     };
 
     return (
-        <div className="rounded-lg p-4 pt-0 transition-all duration-200 hover:bg-color_main/5">
+        <div className="rounded-lg p-4 pt-0 transition-all duration-200 hover:bg-color_hover/5">
             <h2
                 className={`flex justify-between cursor-pointer transition-all duration-200 ${isOpen ? 'text-color_text' : 'text-color_text_sec'} hover:text-color_text select-none`}
                 onClick={toggleAccordion}
@@ -37,7 +37,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, filters, selectedFi
                             className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 transform hover:scale-[1.02] hover:shadow-sm ${
                                 selectedFilters.includes(filter) 
                                     ? 'bg-color_main shadow-sm scale-[1.01]' 
-                                    : 'hover:bg-color_main/50'
+                                    : 'hover:bg-color_hover'
                             }`}
                             onClick={() => handleFilterClick(filter)}
                             style={{
@@ -55,7 +55,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, filters, selectedFi
                             <div className={`w-5 h-5 flex items-center justify-center border-2 rounded-lg transition-all duration-200 ${
                                 selectedFilters.includes(filter) 
                                     ? 'border-color_accent bg-color_accent' 
-                                    : 'border-border_detail hover:border-color_accent/50'
+                                    : 'border-border_detail hover:border-color_accent'
                             }`}>
                                 {selectedFilters.includes(filter) && (
                                     <span style={{color: 'white', fontSize: '12px'}}>

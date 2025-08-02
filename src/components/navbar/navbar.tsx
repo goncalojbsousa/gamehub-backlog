@@ -11,25 +11,24 @@ export const Navbar = () => {
     const { username, usernameSlug, userImage, isAuthenticated } = useUser();
 
     return (
-        <div className="bg-color_main fixed top-0 left-0 w-full z-50 flex items-center justify-between md:space-x-8 p-3 xl:px-24 transition-colors duration-200 h-16">
+        <div className="bg-color_sec fixed top-0 left-0 w-full z-50 flex items-center justify-between p-4 lg:px-8 transition-all duration-200 h-16 shadow-lg border-b border-border_detail backdrop-blur-sm">
             <div className="flex items-center">
                 <NavbarLinks />
             </div>
 
-            <div className="hidden md:flex flex-grow justify-center">
+            <div className="hidden md:flex flex-grow justify-center max-w-2xl mx-8">
                 <SearchInput />
             </div>
 
-            <div className="flex items-center justify-center">
-                <div className="mr-4">
+            <div className="flex items-center gap-4">
+                <div className="flex items-center">
                     <ThemeToggle />
                 </div>
                 {isAuthenticated ? (
                     <NavbarUser userImage={userImage} usernameSlug={usernameSlug} />
                 ) : (
-                    <SignInButton className="text-color_main bg-color_reverse_sec border border-border_detail rounded-lg py-2 px-6 transition-transform hover:scale-105" />
-                )
-                }
+                    <SignInButton className="text-color_main bg-color_reverse_sec border border-border_detail rounded-lg py-2 px-6 transition-all duration-200 hover:bg-color_reverse hover:shadow-lg hover:-translate-y-0.5 font-medium" />
+                )}
             </div>
         </div>
     );

@@ -4,8 +4,9 @@
 
 :root {
   --background: theme('colors.zinc.50');
-  --color_main: theme('colors.zinc.100');
+  --color_main: theme('colors.white');
   --color_sec: theme('colors.white');
+  --color_hover: theme('colors.zinc.100');
   --color_reverse: theme('colors.stone.900');
   --color_reverse_sec: theme('colors.stone.800');
 
@@ -34,6 +35,7 @@
   --background: theme('colors.stone.900');
   --color_main: theme('colors.stone.800');
   --color_sec: theme('colors.stone.800');
+  --color_hover: theme('colors.stone.700');
   --color_reverse: theme('colors.zinc.200');
   --color_reverse_sec: theme('colors.white');
 

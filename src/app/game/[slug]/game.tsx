@@ -87,11 +87,11 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                                 <div className="flex flex-col sm:flex-row gap-3">
                                     {currentOption && currentProgress && (
                                         <div className="hidden lg:flex gap-3">
-                                            <div className="flex items-center px-4 py-2 rounded-lg border border-border_detail bg-color_sec hover:bg-color_main transition-colors">
+                                            <div className="flex items-center px-4 py-2 rounded-lg border border-border_detail bg-color_sec hover:bg-color_hover transition-colors">
                                                 <StatusIcon className='fill-color_icons mr-2 w-4 h-4' />
                                                 <span className="text-color_text text-sm font-medium">{currentOption}</span>
                                             </div>
-                                            <div className="flex items-center px-4 py-2 rounded-lg border border-border_detail bg-color_sec hover:bg-color_main transition-colors">
+                                            <div className="flex items-center px-4 py-2 rounded-lg border border-border_detail bg-color_sec hover:bg-color_hover transition-colors">
                                                 <ProgressIcon className='fill-color_icons mr-2 w-4 h-4' />
                                                 <span className="text-color_text text-sm font-medium">{currentProgress}</span>
                                             </div>

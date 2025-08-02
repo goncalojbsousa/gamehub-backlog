@@ -120,7 +120,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({ term, games, initialFilt
                                     <button
                                         type="button"
                                         onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                                        className="px-6 py-4 bg-color_sec border border-border_detail text-color_text rounded-lg hover:bg-color_main filter-button-hover font-medium shadow-lg hidden sm:block lg:hidden"
+                                        className="px-6 py-4 bg-color_sec border border-border_detail text-color_text rounded-lg hover:bg-color_hover filter-button-hover font-medium shadow-lg hidden sm:block lg:hidden"
                                     >
                                         <FiltersIcon className="fill-color_icons w-5 h-5" />
                                     </button>

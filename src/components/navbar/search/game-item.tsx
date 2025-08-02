@@ -11,31 +11,39 @@ interface GameItemProps {
 }
 
 export const GameItem: React.FC<GameItemProps> = ({ game }) => (
-    <div className="flex p-2 rounded-md hover:bg-color_main">
-        <Link href={`/game/${game.slug}`} className="flex w-full">
+    <div className="flex p-3 rounded-lg hover:bg-color_hover transition-all duration-200">
+        <Link href={`/game/${game.slug}`} className="flex w-full items-start gap-3">
             <Image
                 src={game.cover ? "https:" + getCoverBigUrl(game.cover.url) : "/cover.webp"}
                 width={264}
                 height={374}
                 alt=""
-                className="w-20 rounded-md"
+                className="w-16 h-20 rounded-lg object-cover flex-shrink-0"
                 draggable="false"
             />
-            <div className="flex flex-col space-x-2 flex-grow">
-                <div className="flex space-x-1">
-                    <p className="ml-2">{game.name || 'Unknown Name'}</p>
-                    <p className="text-color_text_sec"> | {categories[game.category] || 'Unknown Category'}</p>
+            <div className="flex flex-col flex-grow min-w-0">
+                <div className="flex items-start gap-2 mb-1">
+                    <h3 className="text-color_text font-medium text-sm leading-tight truncate">
+                        {game.name || 'Unknown Name'}
+                    </h3>
+                    <span className="text-color_text_sec text-xs px-2 py-1 bg-color_main rounded-full flex-shrink-0">
+                        {categories[game.category] || 'Unknown Category'}
+                    </span>
                 </div>
-                <div className="flex flex-col">
-                    <p className="text-s text-color_text_sec mt-1 mb-2">
+                <div className="flex flex-col gap-1">
+                    <p className="text-xs text-color_text_sec truncate">
                         {game.genres?.map((genre) => genre.name).join(', ') || 'Unknown Genre'}
                     </p>
-                    <p className="text-xs text-color_text_sec mb-2">Released: {convertUnixToDate(game.first_release_date) || 'Unknown Release Date'}</p>
-                    <p className="text-xs text-color_text_sec mb-2">Platforms: {game.platforms?.map((platform) => platform.name).join(', ') || 'Unknown Platforms'}</p>
+                    <p className="text-xs text-color_text_sec">
+                        Released: {convertUnixToDate(game.first_release_date) || 'Unknown Release Date'}
+                    </p>
+                    <p className="text-xs text-color_text_sec truncate">
+                        Platforms: {game.platforms?.map((platform) => platform.name).join(', ') || 'Unknown Platforms'}
+                    </p>
                 </div>
             </div>
-            <div className="flex items-center ml-auto mr-6">
-                {game.total_rating && <RatingCircle score={Math.round(game.total_rating)} size={45} />}
+            <div className="flex items-center ml-auto">
+                {game.total_rating && <RatingCircle score={Math.round(game.total_rating)} size={40} />}
             </div>
         </Link>
     </div>

@@ -139,7 +139,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
             {game.language_supports && (
                 <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <div
-                        className="flex items-center justify-between cursor-pointer hover:bg-color_main p-2 rounded-lg transition-colors duration-200 -m-2"
+                        className="flex items-center justify-between cursor-pointer hover:bg-color_hover p-2 rounded-lg transition-colors duration-200 -m-2"
                         onClick={toggleLanguageExpansion}
                     >
                         <h3 className="text-color_text font-semibold text-lg">Language Support</h3>
@@ -160,7 +160,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 
                             <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto">
                                 {filteredLanguages.map((language_support, index) => (
-                                    <div key={index} className="flex flex-col p-3 border border-border_detail rounded-lg hover:bg-color_main transition-colors duration-200">
+                                    <div key={index} className="flex flex-col p-3 border border-border_detail rounded-lg hover:bg-color_hover transition-colors duration-200">
                                         <p className="font-medium text-color_text">
                                             {language_support.language.native_name}
                                         </p>
@@ -185,7 +185,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="space-y-4">
                         {game.involved_companies.map(involved_companie => (
                             involved_companie.company.logo?.url && (
-                                <div key={involved_companie.company.id} className="flex items-center p-3 hover:bg-color_main rounded-lg transition-colors duration-200">
+                                <div key={involved_companie.company.id} className="flex items-center p-3 hover:bg-color_hover rounded-lg transition-colors duration-200">
                                     <Image
                                         className="w-16 h-16 rounded-lg mr-4 object-cover"
                                         width={64}

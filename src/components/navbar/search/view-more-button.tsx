@@ -5,12 +5,15 @@ interface ViewMoreButtonProps {
 }
 
 export const ViewMoreButton = ({ searchTerm }: ViewMoreButtonProps) => (
-    <div className="p-2 pt-0">
-        <Link href={`/search?term=${searchTerm}`} className="w-full items-center text-center flex p-2 rounded-md hover:bg-color_main">
-            <svg xmlns="http://www.w3.org/2000/svg" className="mr-2  fill-color_icons" width="1em" height="1em" viewBox="0 0 24 24">
+    <div className="p-3 pt-0">
+        <Link 
+            href={`/search?term=${searchTerm}`} 
+            className="w-full items-center text-center flex p-3 rounded-lg hover:bg-color_hover transition-all duration-200 font-medium text-color_text hover:text-color_text"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 fill-color_icons w-5 h-5" width="1em" height="1em" viewBox="0 0 24 24">
                 <path d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z" />
             </svg>
-            View more...
+            View more results...
         </Link>
     </div>
 );
