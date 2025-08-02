@@ -16,10 +16,11 @@ interface ButtonProps {
 
 const SelectionButton: React.FC<ButtonProps> = ({ text, isSelected, onClick }) => (
     <button
-        className={`p-2 px-4 m-2 border border-border_detail rounded-lg transition-colors duration-300  ${isSelected
-            ? 'bg-color_main text-color_text border-border_detail_sec'
-            : 'text-color_text_sec hover:bg-color_main hover:border-color_icons hover:text-color_text'}`
-        }
+        className={`p-3 px-8 rounded-lg transition-all duration-200 font-medium text-sm whitespace-nowrap ${
+            isSelected
+                ? 'bg-color_reverse_sec text-color_main border-2 border-color_reverse_sec shadow-lg transform scale-105'
+                : 'bg-color_main text-color_text border border-border_detail hover:bg-color_click hover:border-border_detail_sec hover:shadow-md transform hover:scale-105'
+        }`}
         onClick={onClick}
     >
         {text}
@@ -37,7 +38,6 @@ interface ModalProps {
     setCurrentOption: React.Dispatch<React.SetStateAction<string>>;
     setCurrentProgress: React.Dispatch<React.SetStateAction<string>>;
 }
-
 
 export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, selectedOption, handleOptionClick, selectedProgress, handleProgressClick, gameId, setCurrentOption, setCurrentProgress }) => {
     const [isUpdating, setIsUpdating] = useState(false);
@@ -90,66 +90,81 @@ export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, se
         }
     };
 
-
     return (
         <>
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <div className="p-2 sm:p-4 max-w-[90vw] sm:max-w-md md:max-w-lg mx-auto">
-                    <div className='flex items-center justify-center'>
-                        <h1 className="text-color_text text-xl sm:text-2xl font-bold">Register your history with this game!</h1>
-                        <GameControlerIcon className='fill-color_icons ml-2' />
+                <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail max-w-2xl w-full mx-4">
+                    {/* Header */}
+                    <div className="text-center mb-8">
+                        <div className="flex items-center justify-center mb-4">
+                            <GameControlerIcon className='fill-color_icons w-8 h-8 mr-4' />
+                            <h1 className="text-color_text text-3xl font-bold">Track Your Progress</h1>
+                        </div>
+                        <p className="text-color_text_sec text-base">Register your history with this game!</p>
                     </div>
 
-                    <div>
-                        <div className='flex items-center mt-8'>
-                            <StatusIcon className='fill-color_icons mr-2' />
-                            <p className="text-color_text">Status</p>
+                    {/* Content Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        {/* Status Section */}
+                        <div>
+                            <div className="flex items-center mb-4">
+                                <StatusIcon className='fill-color_icons w-6 h-6 mr-3' />
+                                <h2 className="text-color_text font-semibold text-xl">Status</h2>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                {['Played', 'Playing', 'Dropped', 'Plan to play'].map(option => (
+                                    <SelectionButton
+                                        key={option}
+                                        text={option}
+                                        isSelected={selectedOption === option}
+                                        onClick={() => handleOptionClick(option)}
+                                    />
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 mt-2">
-                            {['Played', 'Playing', 'Dropped', 'Plan to play'].map(option => (
-                                <SelectionButton
-                                    key={option}
-                                    text={option}
-                                    isSelected={selectedOption === option}
-                                    onClick={() => handleOptionClick(option)}
-                                />
-                            ))}
+                        {/* Progress Section */}
+                        <div>
+                            <div className="flex items-center mb-4">
+                                <ProgressIcon className='fill-color_icons w-6 h-6 mr-3' />
+                                <h2 className="text-color_text font-semibold text-xl">Progress</h2>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                {['Unfinished', 'Beaten', 'Completed', 'Continuous'].map(progress => (
+                                    <SelectionButton
+                                        key={progress}
+                                        text={progress}
+                                        isSelected={selectedProgress === progress}
+                                        onClick={() => handleProgressClick(progress)}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <div className='flex items-center mt-4'>
-                            <ProgressIcon className='fill-color_icons mr-2' />
-                            <p className="text-color_text">Progress</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-2 mt-2">
-                            {['Unfinished', 'Beaten', 'Completed', 'Continuous'].map(progress => (
-                                <SelectionButton
-                                    key={progress}
-                                    text={progress}
-                                    isSelected={selectedProgress === progress}
-                                    onClick={() => handleProgressClick(progress)}
-                                />
-                            ))}
-                        </div>
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <button
+                            className="flex-1 bg-color_reverse_sec text-color_main py-4 px-8 rounded-lg hover:bg-color_reverse transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            onClick={handleUpdate}
+                            disabled={isUpdating}
+                        >
+                            {isUpdating ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-color_main mr-3"></div>
+                                    Updating...
+                                </div>
+                            ) : (
+                                'Update Status'
+                            )}
+                        </button>
+                        <button 
+                            className="flex-1 bg-color_main text-color_text py-4 px-8 rounded-lg hover:bg-color_click transition-all duration-200 font-medium border border-border_detail hover:border-red-500"
+                            onClick={closeModal}
+                        >
+                            Cancel
+                        </button>
                     </div>
-                </div>
-
-                <div className='flex items-center justify-center p-4 gap-x-4 mt-4 flex-col'>
-                    <button
-                        className="text-color_main bg-color_reverse_sec py-2 px-4 rounded-lg hover:bg-color_reverse w-full mb-4"
-                        onClick={handleUpdate}
-                        disabled={isUpdating}
-                    >
-                        {isUpdating ? 'Updating...' : 'Update'}
-                    </button>
-                    <button className="text-white bg-red-800  py-2 px-4 rounded-lg hover:bg-red-900 w-full"
-                        onClick={closeModal}
-                    >
-                        Cancel
-                    </button>
                 </div>
             </Modal>
             {notification && (

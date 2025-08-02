@@ -120,10 +120,14 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
             return [];
         });
 
+        // Add debug logging
+        console.log(`[DEBUG] Games list - Steam IDs found:`, steamIds.length, 'unique IDs');
+
         let prices: Record<string, string> = {};
         if (steamIds.length > 0) {
             try {
                 const allDeals = await fetchAllDeals(steamIds);
+                console.log(`[DEBUG] Found ${allDeals.length} deals for ${steamIds.length} Steam IDs`);
                 prices = allDeals.reduce((acc: Record<string, string>, deal: Deal) => {
                     const steamAppID = deal.steamAppID.toLowerCase();
                     if (!acc[steamAppID] || parseFloat(deal.salePrice) < parseFloat(acc[steamAppID])) {
@@ -135,6 +139,8 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                 console.error('Error fetching deals from CheapShark:', error);
                 // Continue without prices if deals fetch fails
             }
+        } else {
+            console.log(`[DEBUG] No Steam IDs found for games list`);
         }
 
         // ADD PRICES TO GAME DATA

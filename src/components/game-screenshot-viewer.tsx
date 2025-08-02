@@ -59,7 +59,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
     const currentThumbnails = screenshots.slice(startIndex, endIndex);
 
     return (
-        <div className="w-full bg-color_sec rounded-xl overflow-hidden shadow-lg">
+        <div className="w-full bg-color_sec rounded-xl overflow-hidden shadow-lg border border-border_detail">
             {/* Main Screenshot */}
             {selectedScreenshot && (
                 <div className="relative">

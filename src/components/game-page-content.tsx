@@ -15,7 +15,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
         <div className="space-y-8">
             {/* Summary Section */}
             {game.summary && (
-                <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <h2 className="text-color_text text-2xl font-bold mb-4">Summary</h2>
                     <p className="text-color_text_sec text-lg leading-relaxed">{game.summary}</p>
                 </div>
@@ -23,7 +23,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
             {/* Storyline Section */}
             {game.storyline && (
-                <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <h2 className="text-color_text text-2xl font-bold mb-4">Story</h2>
                     <p className="text-color_text_sec text-lg leading-relaxed">{game.storyline}</p>
                 </div>
@@ -31,7 +31,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
             {/* Deals Section */}
             {game.deals && game.deals.length > 0 && (
-                <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <h2 className="text-color_text text-2xl font-bold mb-6">Best Deals</h2>
                     <div className="space-y-4">
                         {game.deals
@@ -81,7 +81,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
             <div className="space-y-8">
                 {/* Expanded Games */}
                 {game.expanded_games && game.expanded_games.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Expanded Games</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.expanded_games.map((expanded_game) => (
@@ -93,7 +93,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Expansions */}
                 {game.expansions && game.expansions.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Expansions</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.expansions.map((expansion) => (
@@ -105,7 +105,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* DLCs */}
                 {game.dlcs && game.dlcs.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">DLCs</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.dlcs.map((dlc) => (
@@ -117,7 +117,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Bundles */}
                 {game.bundles && game.bundles.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Bundles</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.bundles.map((bundle) => (
@@ -129,7 +129,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Remakes */}
                 {game.remakes && game.remakes.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Remakes</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.remakes.map((remake) => (
@@ -141,7 +141,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Remasters */}
                 {game.remasters && game.remasters.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Remasters</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.remasters.map((remaster) => (
@@ -153,7 +153,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Parent Game */}
                 {game.parent_game && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Parent Game</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             <GameCard key={game.parent_game.id} game={game.parent_game} />
@@ -163,7 +163,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Standalone Expansions */}
                 {game.standalone_expansions && game.standalone_expansions.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Standalone Expansions</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.standalone_expansions.map((standalone_expansion) => (
@@ -175,7 +175,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Forks */}
                 {game.forks && game.forks.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Forks</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.forks.map((fork) => (
@@ -187,7 +187,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
 
                 {/* Similar Games */}
                 {game.similar_games && game.similar_games.length > 0 && (
-                    <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                    <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Similar Games</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {game.similar_games.map((similar_game) => (

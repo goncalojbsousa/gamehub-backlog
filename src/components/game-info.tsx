@@ -28,7 +28,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
         <div className="space-y-6">
             {/* Game Cover */}
             {game.cover && (
-                <div className="bg-color_sec rounded-xl overflow-hidden shadow-lg">
+                <div className="bg-color_sec rounded-xl overflow-hidden shadow-lg border border-border_detail">
                     <Image
                         src={game.cover ? "https:" + getCoverImageUrl(game.cover.url) : "/cover.webp"}
                         alt={game.name}
@@ -42,7 +42,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 
             {/* Ratings Section */}
             {(game.total_rating || game.aggregated_rating || game.rating) && (
-                <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <h3 className="text-color_text font-semibold mb-4 text-lg">Ratings</h3>
                     <div className="flex justify-center items-center space-x-6">
                         {game.total_rating && <RatingCircle score={Math.round(game.total_rating)} size={50} />}
@@ -53,7 +53,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
             )}
 
             {/* Game Details */}
-            <div className="bg-color_sec rounded-xl p-6 shadow-lg space-y-6">
+            <div className="bg-color_sec rounded-xl p-6 shadow-lg space-y-6 border border-border_detail">
                 <h3 className="text-color_text font-semibold text-lg">Game Details</h3>
                 
                 {/* Genres */}
@@ -137,7 +137,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 
             {/* Language Support */}
             {game.language_supports && (
-                <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <div
                         className="flex items-center justify-between cursor-pointer hover:bg-color_main p-2 rounded-lg transition-colors duration-200 -m-2"
                         onClick={toggleLanguageExpansion}
@@ -180,7 +180,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 
             {/* Involved Companies */}
             {game.involved_companies && game.involved_companies.length > 0 && (
-                <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <h3 className="text-color_text font-semibold text-lg mb-4">Involved Companies</h3>
                     <div className="space-y-4">
                         {game.involved_companies.map(involved_companie => (
@@ -218,7 +218,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
             )}
 
             {/* Share Section */}
-            <div className="bg-color_sec rounded-xl p-6 shadow-lg">
+            <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                 <h3 className="text-color_text font-semibold text-lg mb-4">Share this game</h3>
                 <ShareButtons 
                     title={game.name}

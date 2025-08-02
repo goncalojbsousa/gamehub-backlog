@@ -172,7 +172,17 @@ export const fetchGameDetails = async (query: string) => {
             return [];
         });
 
-        const deals = await fetchAllDeals(steamId);
+        // Add debug logging
+        console.log(`[DEBUG] Game: ${data[0]?.name || 'Unknown'}, Steam IDs found:`, steamId);
+
+        // Only fetch deals if we have valid Steam IDs
+        let deals: Deal[] = [];
+        if (steamId.length > 0) {
+            deals = await fetchAllDeals(steamId);
+            console.log(`[DEBUG] Found ${deals.length} deals for Steam IDs:`, steamId);
+        } else {
+            console.log(`[DEBUG] No Steam IDs found for game: ${data[0]?.name || 'Unknown'}`);
+        }
 
         const allStores = await fetchAllStores();
 
