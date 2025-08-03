@@ -55,7 +55,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-background text-color_text transition-colors duration-200`} suppressHydrationWarning>
         <ThemeProvider>
-          <SessionProvider>
+          <SessionProvider refetchInterval={0} refetchOnWindowFocus={false}>
             <UserDataFetcher>
               {children}
             </UserDataFetcher>

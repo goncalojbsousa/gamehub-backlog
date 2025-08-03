@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useState, useEffect } from 'react';
 
 interface UserContextProps {
   username: string;
@@ -40,7 +40,19 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children, initialDat
   const [userImage, setUserImage] = useState(initialData.userImage);
   const [isAuthenticated, setIsAuthenticated] = useState(initialData.isAuthenticated);
 
+  // Verificação adicional: se não há dados válidos, considerar como não autenticado
+  useEffect(() => {
+    if (isAuthenticated && (!username || !usernameSlug)) {
+      console.log('Usuário marcado como autenticado mas sem dados válidos, limpando estado');
+      setIsAuthenticated(false);
+      setUsername('');
+      setUsernameSlug('');
+      setUserImage('');
+    }
+  }, [isAuthenticated, username, usernameSlug]);
+
   const logout = () => {
+    console.log('Executando logout no contexto');
     setUsername('');
     setUserImage('');
     setUsernameSlug('');
