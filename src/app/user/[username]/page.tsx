@@ -32,7 +32,8 @@ export default async function Profile({ params }: Props) {
       return <UserNotFound/>;
     }
 
-    const joinDate = new Date(userData.createdAt).toLocaleDateString();
+    // Passar a data original em vez de uma string formatada
+    const joinDate = userData.createdAt;
 
     return (
       <ProfilePage

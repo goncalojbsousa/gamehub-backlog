@@ -16,7 +16,7 @@ interface UserProps {
     userImage: string;
     name: string;
     userName: string;
-    joinDate: string;
+    joinDate: string | Date;
 }
 
 interface GameProps {
@@ -27,6 +27,22 @@ interface GameProps {
 }
 
 export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId }) => {
+    // Função auxiliar para formatar a data de forma segura
+    const formatJoinDate = (date: string | Date) => {
+        try {
+            const dateObj = typeof date === 'string' ? new Date(date) : date;
+            if (isNaN(dateObj.getTime())) {
+                return 'Unknown';
+            }
+            return dateObj.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long' 
+            });
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return 'Unknown';
+        }
+    };
     const [selectedCategory, setSelectedCategory] = useState<string>("Played");
     const [selectedProgress, setSelectedProgress] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -136,10 +152,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                             </h1>
                                             <p className="text-lg text-color_text_sec mb-2">@{userName}</p>
                                             <p className="text-sm text-color_text_sec">
-                                                Member since {new Date(joinDate).toLocaleDateString('en-US', { 
-                                                    year: 'numeric', 
-                                                    month: 'long' 
-                                                })}
+                                                Member since {formatJoinDate(joinDate)}
                                             </p>
                                         </div>
                                     </div>
