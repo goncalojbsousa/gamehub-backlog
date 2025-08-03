@@ -5,23 +5,33 @@ import { Navbar } from "@/src/components/navbar/navbar";
 import { Footer } from "@/src/components/footer";
 
 const ProfileLoading: React.FC = () => {
+  // Background style similar to profile page
+  const mainStyle = {
+    backgroundImage: `
+        linear-gradient(to bottom, var(--gradient-start), var(--background)),
+        url(/login-bg.webp)
+    `,
+    backgroundSize: '100% 1200px',
+    backgroundPosition: 'center top',
+    backgroundRepeat: 'no-repeat',
+    backgroundColor: 'var(--background)',
+  };
+
   return (
-    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background">
+    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background" style={mainStyle}>
       <Navbar />
 
       {/* Profile Header Skeleton */}
-      <div className="bg-gradient-to-b from-black/20 to-transparent">
-        <div className="container mx-auto px-4 lg:px-8 py-8">
-          <div className="flex items-center space-x-6 animate-pulse">
-            {/* Avatar skeleton */}
-            <div className="w-24 h-24 bg-color_main rounded-full"></div>
-            
-            {/* User info skeleton */}
-            <div className="flex-1">
-              <div className="h-8 bg-color_main rounded w-48 mb-2"></div>
-              <div className="h-5 bg-color_main rounded w-32 mb-2"></div>
-              <div className="h-4 bg-color_main rounded w-40"></div>
-            </div>
+      <div className="container mx-auto px-4 lg:px-8 py-8">
+        <div className="flex items-center space-x-6 animate-pulse">
+          {/* Avatar skeleton */}
+          <div className="w-24 h-24 bg-color_main rounded-full"></div>
+          
+          {/* User info skeleton */}
+          <div className="flex-1">
+            <div className="h-8 bg-color_main rounded w-48 mb-2"></div>
+            <div className="h-5 bg-color_main rounded w-32 mb-2"></div>
+            <div className="h-4 bg-color_main rounded w-40"></div>
           </div>
         </div>
       </div>
