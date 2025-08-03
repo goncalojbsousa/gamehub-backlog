@@ -71,9 +71,6 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({ screenshots, select
                         className="w-full h-auto"
                         draggable={false}
                     />
-                    
-                    {/* Gradient overlay at bottom for smooth transition */}
-                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-color_sec to-transparent"></div>
                 </div>
             )}
 
