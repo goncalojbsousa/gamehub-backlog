@@ -8,6 +8,7 @@ import { MenuClose } from "@/src/components/svg/menu/menu-close";
 import { HomeIcon } from "@/src/components/svg/navigation/home-icon";
 import { SearchIcon } from "@/src/components/svg/search-icon";
 
+
 export const NavbarLinks = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -53,6 +54,7 @@ export const NavbarLinks = () => {
                 >
                     Home
                 </Link>
+
             </div>
 
             {/* MENU BUTTON */}
@@ -90,6 +92,7 @@ export const NavbarLinks = () => {
                                 <SearchIcon className="mr-3 fill-color_icons w-5 h-5" />
                                 Search
                             </Link>
+
                         </div>
                     </div>
                 </div>

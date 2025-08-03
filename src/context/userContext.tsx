@@ -37,7 +37,8 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children, initialData }) => {
   const [username, setUsername] = useState(initialData.username);
   const [usernameSlug, setUsernameSlug] = useState(initialData.usernameSlug);
-  const [userImage, setUserImage] = useState(initialData.userImage);
+  // Garantir que userImage nunca seja uma string vazia
+  const [userImage, setUserImage] = useState(initialData.userImage && initialData.userImage.trim() !== '' ? initialData.userImage : '');
   const [isAuthenticated, setIsAuthenticated] = useState(initialData.isAuthenticated);
 
   // Verificação adicional: se não há dados válidos, considerar como não autenticado

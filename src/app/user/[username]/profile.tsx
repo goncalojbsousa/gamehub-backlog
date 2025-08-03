@@ -27,6 +27,11 @@ interface GameProps {
 }
 
 export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId }) => {
+    const [imageError, setImageError] = useState(false);
+    
+    // Garantir que sempre temos uma imagem válida
+    const validUserImage = userImage && userImage.trim() !== '' && !imageError && userImage.startsWith('http') ? userImage : "/placeholder-user.webp";
+    
     // Função auxiliar para formatar a data de forma segura
     const formatJoinDate = (date: string | Date) => {
         try {
@@ -52,6 +57,11 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [games, setGames] = useState<GameProps[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
+
+    // Reset image error when userImage changes
+    useEffect(() => {
+        setImageError(false);
+    }, [userImage]);
 
     const fetchGames = useCallback(async () => {
         setLoading(true);
@@ -111,7 +121,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     };
 
     return (
-        <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-color_bg" style={mainStyle}>
+        <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background" style={mainStyle}>
             <Navbar />
 
             {/* Hero Section */}
@@ -138,12 +148,18 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                     <div className="flex items-center gap-6">
                                         <div className="relative">
                                             <Image
-                                                src={userImage}
+                                                src={validUserImage}
                                                 alt="User profile image"
                                                 width={120}
                                                 height={120}
                                                 className="w-24 h-24 lg:w-32 lg:h-32 rounded-full border-4 border-color_reverse_sec shadow-lg"
                                                 draggable={false}
+                                                onError={(e) => {
+                                                    console.error('Failed to load user image:', userImage);
+                                                    setImageError(true);
+                                                    e.currentTarget.src = "/placeholder-user.webp";
+                                                }}
+                                                unoptimized={userImage?.includes('googleusercontent.com')}
                                             />
                                         </div>
                                         <div>

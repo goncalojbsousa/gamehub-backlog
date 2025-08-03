@@ -6,7 +6,7 @@ import { Footer } from "@/src/components/footer";
 
 const DashboardLoading: React.FC = () => {
   return (
-    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-color_bg">
+    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background">
       <Navbar />
 
       {/* Dashboard Header Skeleton */}

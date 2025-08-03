@@ -7,7 +7,7 @@ import { GameSectionSkeleton } from '@/src/components/skeleton';
 
 const SearchLoading: React.FC = () => {
   return (
-    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-color_bg">
+    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background">
       <Navbar />
 
       {/* Search Header Skeleton */}

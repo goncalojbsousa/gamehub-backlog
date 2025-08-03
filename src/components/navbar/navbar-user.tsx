@@ -15,8 +15,12 @@ interface UserProps {
 
 export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [imageError, setImageError] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const profilePicRef = useRef<HTMLImageElement>(null);
+
+    // Garantir que sempre temos uma imagem válida
+    const validUserImage = userImage && userImage.trim() !== '' && !imageError && userImage.startsWith('http') ? userImage : "/placeholder-user.webp";
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -33,6 +37,11 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
         }
     };
 
+    // Reset image error when userImage changes
+    useEffect(() => {
+        setImageError(false);
+    }, [userImage]);
+
     useEffect(() => {
         if (menuOpen) {
             document.addEventListener('mousedown', handleClickOutside);
@@ -45,6 +54,12 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
         };
     }, [menuOpen]);
 
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        console.error('Failed to load user image:', userImage);
+        setImageError(true);
+        e.currentTarget.src = "/placeholder-user.webp";
+    };
+
     return (
         <>
             <div className="relative">
@@ -52,15 +67,13 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
                     ref={profilePicRef}
                     width={200}
                     height={200}
-                    src={userImage || "/placeholder-user.png"} 
+                    src={validUserImage}
                     alt="Profile picture"
                     className={`w-10 h-10 rounded-full cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg border-2 border-transparent hover:border-border_detail ${menuOpen ? 'ring-2 ring-color_accent' : ''}`}
                     draggable="false"
                     onClick={toggleMenu}
-                    onError={(e) => {
-                        console.error('Failed to load user image:', userImage);
-                        e.currentTarget.src = "/placeholder-user.png";
-                    }}
+                    onError={handleImageError}
+                    unoptimized={userImage?.includes('googleusercontent.com')}
                 />
                 {menuOpen && (
                     <div 

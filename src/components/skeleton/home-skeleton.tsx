@@ -16,7 +16,7 @@ export const HomeSkeleton: React.FC = () => {
   };
 
   return (
-    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-color_bg" style={mainStyle}>
+    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background" style={mainStyle}>
       <Navbar />
 
       {/* Hero Section Skeleton */}

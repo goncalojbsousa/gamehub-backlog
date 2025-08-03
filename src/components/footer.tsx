@@ -59,6 +59,12 @@ export const Footer = () => {
                             >
                                 About GameHub
                             </Link>
+                            <Link 
+                                href="/roadmap" 
+                                className="block text-color_text_sec hover:text-color_text transition-colors duration-200 hover:translate-x-1 transform"
+                            >
+                                Roadmap
+                            </Link>
                         </div>
                     </div>
                 </div>

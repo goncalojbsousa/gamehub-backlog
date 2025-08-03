@@ -24,7 +24,9 @@ export default async function UserDataFetcher({ children }: { children: React.Re
     try {
       username = (await getUserName()) || '';
       usernameSlug = (await getUserNameSlug()) || '';
-      userImage = (await getUserImage()) || '';
+      const imageResult = await getUserImage();
+      // Garantir que userImage nunca seja uma string vazia
+      userImage = imageResult && imageResult.trim() !== '' ? imageResult : '';
       
       // Verificação adicional: se não conseguimos buscar os dados, considerar como não autenticado
       if (!username && !usernameSlug) {
