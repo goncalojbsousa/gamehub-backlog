@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ProfileIcon } from "@/src/components/svg/navigation/profile-icon";
 import { SettingsIcon } from "@/src/components/svg/navigation/settings";
 import { LogoutIcon } from "@/src/components/svg/navigation/logout-icon";
+import { useUser } from "@/src/context/userContext";
 
 interface UserProps {
     usernameSlug: string;
@@ -18,12 +19,17 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
     const [imageError, setImageError] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const profilePicRef = useRef<HTMLImageElement>(null);
+    const { isAuthenticated } = useUser();
 
     // Garantir que sempre temos uma imagem válida
     const validUserImage = userImage && userImage.trim() !== '' && !imageError && userImage.startsWith('http') ? userImage : "/placeholder-user.webp";
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
+    };
+
+    const closeMenu = () => {
+        setMenuOpen(false);
     };
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -41,6 +47,13 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
     useEffect(() => {
         setImageError(false);
     }, [userImage]);
+
+    // Close menu when user logs out
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setMenuOpen(false);
+        }
+    }, [isAuthenticated]);
 
     useEffect(() => {
         if (menuOpen) {
@@ -83,6 +96,7 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
                         <div className="flex flex-col gap-1">
                             <Link 
                                 href={`/user/${usernameSlug}`} 
+                                onClick={closeMenu}
                                 className="flex items-center px-4 py-3 text-color_text hover:bg-color_hover rounded-lg transition-all duration-200 active:bg-color_click select-none font-medium"
                             >
                                 <ProfileIcon className="mr-3 w-5 h-5" />
