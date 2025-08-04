@@ -3,7 +3,16 @@ import { FaGamepad, FaChartLine, FaSearch, FaDollarSign, FaUsers, FaRocket, FaSt
 import { SignInButton } from "@/src/components/sign-in-button";
 import { Logo } from "./svg/logo";
 
+/**
+ * IntroductionSection component - Landing page hero section
+ * Displays the main value proposition and features of the GameHub platform
+ * Includes hero content, feature grid, and statistics section
+ * 
+ * @returns JSX element representing the complete introduction section
+ */
 export default function IntroductionSection() {
+  // Feature definitions for the platform capabilities
+  // Each feature includes an icon, title, description, and color theme
   const features = [
     { 
       icon: <FaGamepad className="text-2xl" />, 
@@ -46,8 +55,9 @@ export default function IntroductionSection() {
   return (
     <div className="py-16">
       <div className="container mx-auto px-4 lg:px-8">
-        {/* Hero Section */}
+        {/* Hero Section - Main heading and call-to-action */}
         <div className="text-center mb-16">
+          {/* Logo and branding */}
           <div className="flex justify-center mb-8">
             <Logo
               className="fill-color_icons"
@@ -56,16 +66,21 @@ export default function IntroductionSection() {
             />
           </div>
           
+          {/* Main title */}
           <h1 className="text-5xl lg:text-6xl font-bold mb-6 text-color_text">
             GameHub Backlog
           </h1>
           
+          {/* Value proposition subtitle */}
           <p className="text-xl lg:text-2xl text-color_text_sec mb-8 max-w-4xl mx-auto leading-relaxed">
             Your ultimate companion for managing your gaming library. Organize, track, and discover - all in one place!
           </p>
           
+          {/* Call-to-action buttons and social proof */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* Primary sign-in button */}
             <SignInButton className="px-8 py-4 bg-color_reverse_sec text-color_main text-lg font-semibold rounded-xl hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 border-0" />
+            {/* Social proof indicator */}
             <div className="flex items-center gap-2 text-color_text_sec">
               <FaRocket className="text-color_accent" />
               <span className="text-sm">Join thousands of gamers</span>
@@ -73,23 +88,27 @@ export default function IntroductionSection() {
           </div>
         </div>
 
-        {/* Features Grid */}
+        {/* Features Grid - Platform capabilities overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {/* Render each feature as a card */}
           {features.map((feature, index) => (
             <div 
               key={index} 
               className="group bg-color_sec rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-border_detail"
             >
+              {/* Feature icon with color-coded background */}
               <div className={`w-16 h-16 rounded-xl ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
                 <div className="text-white">
                   {feature.icon}
                 </div>
               </div>
               
+              {/* Feature title */}
               <h3 className="text-xl font-bold text-color_text mb-3">
                 {feature.title}
               </h3>
               
+              {/* Feature description */}
               <p className="text-color_text_sec leading-relaxed">
                 {feature.text}
               </p>
@@ -97,17 +116,20 @@ export default function IntroductionSection() {
           ))}
         </div>
 
-        {/* Stats Section */}
+        {/* Statistics Section - Platform metrics and social proof */}
         <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            {/* Games database size */}
             <div className="space-y-2">
               <div className="text-3xl font-bold text-color_reverse_sec">300K+</div>
               <div className="text-color_text_sec">Games in Database</div>
             </div>
+            {/* Service availability */}
             <div className="space-y-2">
               <div className="text-3xl font-bold text-color_reverse_sec">24/7</div>
               <div className="text-color_text_sec">Price Monitoring</div>
             </div>
+            {/* Pricing model */}
             <div className="space-y-2">
               <div className="text-3xl font-bold text-color_reverse_sec">Free</div>
               <div className="text-color_text_sec">Forever</div>

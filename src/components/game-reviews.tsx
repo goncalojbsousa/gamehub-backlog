@@ -162,7 +162,7 @@ export const GameReviews: React.FC<GameReviewsProps> = ({ gameId }) => {
         setUserReview(null);
         setReviews(prev => prev.filter(review => review.userId !== userReview?.userId));
         setError(null);
-        // Fechar o formulário de edição se estiver aberto
+        // Close the edit form if it's open
         setShowForm(false);
         setIsEditing(false);
       } else {
@@ -185,14 +185,14 @@ export const GameReviews: React.FC<GameReviewsProps> = ({ gameId }) => {
     setError(null);
   };
 
-  // Função para verificar se o utilizador pode eliminar uma review
+  // Function to check if user can delete a review
   const canDeleteReview = (reviewUserId: string) => {
     if (!isAuthenticated) return false;
     
-    // Admin pode eliminar qualquer review
+    // Admin can delete any review
     if (userRole === 'ADMIN') return true;
     
-    // Utilizador normal só pode eliminar a sua própria review
+    // Regular user can only delete their own review
     return reviewUserId === userReview?.userId;
   };
 

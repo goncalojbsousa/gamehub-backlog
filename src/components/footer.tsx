@@ -1,17 +1,24 @@
 import Link from "next/link";
 import { IGDBIcon } from "@/src/components/svg/igdb";
 
+/**
+ * Footer component - Site-wide footer with navigation and attribution
+ * Provides consistent footer across all pages with navigation links, legal information,
+ * and proper attribution to external data sources
+ * 
+ * @returns JSX element representing the complete footer
+ */
 export const Footer = () => {
     return (
         <footer className="relative bg-gradient-to-b from-color_sec to-color_main border-t border-border_detail">
-            {/* Background Pattern */}
+            {/* Background pattern overlay */}
             <div className="absolute inset-0 opacity-5">
             </div>
 
             <div className="relative z-10 container mx-auto px-4 lg:px-8 py-12">
-                {/* Main Footer Content */}
+                {/* Main footer content grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                    {/* Navigation Links */}
+                    {/* Navigation links section */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-color_text mb-4">Navigation</h3>
                         <div className="space-y-2">
@@ -30,7 +37,7 @@ export const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Legal Links */}
+                    {/* Legal links section */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-color_text mb-4">Legal</h3>
                         <div className="space-y-2">
@@ -49,7 +56,7 @@ export const Footer = () => {
                         </div>
                     </div>
 
-                    {/* About */}
+                    {/* About section */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-color_text mb-4">About</h3>
                         <div className="space-y-2">
@@ -69,15 +76,15 @@ export const Footer = () => {
                     </div>
                 </div>
 
-                {/* Bottom Section */}
+                {/* Bottom section with copyright and attribution */}
                 <div className="pt-8 border-t border-border_detail">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        {/* Copyright */}
+                        {/* Copyright notice */}
                         <div className="text-color_text_sec text-sm">
                             © 2025 GameHub. All rights reserved.
                         </div>
 
-                        {/* IGDB Attribution */}
+                        {/* IGDB attribution link */}
                         <Link 
                             href="https://www.igdb.com" 
                             target="_blank" 

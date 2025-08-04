@@ -6,13 +6,28 @@ import Image from "next/image";
 import { useState } from "react";
 import { getValidImageUrl, isGoogleImage } from "@/src/utils/imageUtils";
 
+/**
+ * Props interface for the BannedUserProfile component
+ * Defines the required user data for displaying a banned profile
+ */
 interface BannedUserProfileProps {
-  userImage: string;
-  name: string;
-  userName: string;
-  joinDate: string | Date;
+  userImage: string;      // User's profile image URL
+  name: string;           // User's display name
+  userName: string;       // User's username
+  joinDate: string | Date;// User's join date
 }
 
+/**
+ * BannedUserProfile component - Displays a banned user's profile page
+ * Shows profile information and a message indicating the account is banned
+ * Handles image loading errors and formats join date for display
+ * 
+ * @param userImage - Profile image URL
+ * @param name - User's display name
+ * @param userName - User's username
+ * @param joinDate - User's join date (string or Date)
+ * @returns JSX element representing the banned user profile page
+ */
 export const BannedUserProfile: React.FC<BannedUserProfileProps> = ({ 
   userImage, 
   name, 
@@ -24,7 +39,7 @@ export const BannedUserProfile: React.FC<BannedUserProfileProps> = ({
   // Ensure we always have a valid image using the utility function
   const validUserImage = !imageError ? getValidImageUrl(userImage) : "/placeholder-user.webp";
   
-  // Função auxiliar para formatar a data de forma segura
+  // Helper function to safely format the join date
   const formatJoinDate = (date: string | Date) => {
     try {
       const dateObj = typeof date === 'string' ? new Date(date) : date;
@@ -55,6 +70,7 @@ export const BannedUserProfile: React.FC<BannedUserProfileProps> = ({
 
   return (
     <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background" style={mainStyle}>
+      {/* Navigation bar */}
       <Navbar />
 
       {/* Hero Section */}
@@ -100,35 +116,24 @@ export const BannedUserProfile: React.FC<BannedUserProfileProps> = ({
         </div>
       </div>
 
-      {/* Banned User Message */}
-      <div className="relative z-10">
-        <div className="container mx-auto px-4 lg:px-8 py-4">
-          <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail text-center max-w-2xl mx-auto">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
-              </svg>
-            </div>
-            
-            <h2 className="text-2xl font-bold text-red-600 mb-2">
-              Account Suspended
-            </h2>
-            
-            <p className="text-color_text mb-6">
-              This user has been banned for violating the terms of use. 
-              The account cannot access any site functionality.
+      {/* Banned message section */}
+      <div className="container mx-auto px-4 lg:px-8 pb-16">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="bg-red-100 border border-red-200 rounded-xl p-8 shadow-lg animate-slide-in-up">
+            <div className="text-5xl mb-4">🚫</div>
+            <h2 className="text-2xl font-bold text-red-600 mb-2">Account Suspended</h2>
+            <p className="text-color_text_sec mb-4">
+              This account has been suspended and is no longer accessible.
             </p>
-            
-            <p className="text-sm text-color_text_sec">
-              If you believe this was an error, contact the support team.
+            <p className="text-sm text-gray-500">
+              If you believe this is a mistake, please contact support.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="mt-16">
-        <Footer />
-      </div>
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }; 

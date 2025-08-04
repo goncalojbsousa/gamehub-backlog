@@ -5,36 +5,55 @@ import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
+/**
+ * User interface - Represents user data for management
+ * Contains all user information needed for administrative operations
+ */
 interface User {
-  id: string;
-  name: string;
-  email: string;
-  username: string;
-  image: string | null;
-  role: 'USER' | 'ADMIN';
-  isBanned: boolean;
-  createdAt: string;
-  _count: {
-    reviews: number;
-    gameStatus: number;
+  id: string;                    // Unique user identifier
+  name: string;                  // User's display name
+  email: string;                 // User's email address
+  username: string;              // User's username
+  image: string | null;          // User's profile image URL
+  role: 'USER' | 'ADMIN';        // User's role in the system
+  isBanned: boolean;             // Whether the user is banned
+  createdAt: string;             // Account creation timestamp
+  _count: {                      // User activity counts
+    reviews: number;             // Number of reviews written
+    gameStatus: number;          // Number of games with status
   };
 }
 
+/**
+ * UserManagement component - Administrative user management interface
+ * Provides comprehensive user management functionality for administrators
+ * Includes user listing, filtering, searching, and ban/unban operations
+ * 
+ * @returns JSX element representing the complete user management interface
+ */
 export const UserManagement: React.FC = () => {
+  // State management for user data and UI
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<'ALL' | 'USER' | 'ADMIN'>('ALL');
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'ACTIVE' | 'BANNED'>('ALL');
+  
+  // State management for ban modal
   const [showBanModal, setShowBanModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [banReason, setBanReason] = useState('');
   const [isBanning, setIsBanning] = useState(false);
 
+  // Fetch users on component mount
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  /**
+   * Fetches all users from the admin API
+   * Retrieves user data including activity counts and ban status
+   */
   const fetchUsers = async () => {
     try {
       const response = await fetch('/api/admin/getUsers');
@@ -49,6 +68,10 @@ export const UserManagement: React.FC = () => {
     }
   };
 
+  /**
+   * Handles the ban user operation
+   * Sends ban request to API and updates user list on success
+   */
   const handleBanUser = async () => {
     if (!selectedUser || !banReason.trim()) return;
 
@@ -83,6 +106,12 @@ export const UserManagement: React.FC = () => {
     }
   };
 
+  /**
+   * Handles the unban user operation
+   * Sends unban request to API and updates user list on success
+   * 
+   * @param userId - The ID of the user to unban
+   */
   const handleUnbanUser = async (userId: string) => {
     try {
       const response = await fetch('/api/user/unbanUser', {
@@ -106,6 +135,7 @@ export const UserManagement: React.FC = () => {
     }
   };
 
+  // Filter users based on search term, role, and status
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -120,6 +150,7 @@ export const UserManagement: React.FC = () => {
     return matchesSearch && matchesRole && matchesStatus;
   });
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="p-6">
@@ -137,10 +168,11 @@ export const UserManagement: React.FC = () => {
 
   return (
     <div className="p-6">
+      {/* Header and filters section */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-color_text mb-4">User Management</h2>
         
-        {/* Filters */}
+        {/* Search and filter controls */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <input
             type="text"
@@ -176,7 +208,7 @@ export const UserManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Users List */}
+      {/* Users list */}
       <div className="space-y-4">
         {filteredUsers.map((user) => (
           <div
@@ -188,6 +220,7 @@ export const UserManagement: React.FC = () => {
             }`}
           >
             <div className="flex items-center justify-between">
+              {/* User information */}
               <div className="flex items-center gap-4">
                 <Image
                   src={user.image || '/placeholder-user.webp'}
@@ -220,13 +253,15 @@ export const UserManagement: React.FC = () => {
                     })}
                   </p>
                   
-                                     <div className="flex items-center gap-4 mt-2 text-xs text-color_text_sec">
-                     <span>{user._count.reviews} reviews</span>
-                     <span>{user._count.gameStatus} games</span>
-                   </div>
+                  {/* User activity counts */}
+                  <div className="flex items-center gap-4 mt-2 text-xs text-color_text_sec">
+                    <span>{user._count.reviews} reviews</span>
+                    <span>{user._count.gameStatus} games</span>
+                  </div>
                 </div>
               </div>
               
+              {/* Action buttons */}
               <div className="flex items-center gap-2">
                 {!user.isBanned ? (
                   <button
@@ -252,7 +287,7 @@ export const UserManagement: React.FC = () => {
         ))}
       </div>
 
-      {/* Ban Modal */}
+      {/* Ban confirmation modal */}
       {showBanModal && selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-color_sec rounded-xl p-6 max-w-md w-full border border-border_detail shadow-2xl">
@@ -270,6 +305,7 @@ export const UserManagement: React.FC = () => {
               </div>
             </div>
             
+            {/* Ban reason input */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-color_text mb-2">
                 Ban Reason:
@@ -283,6 +319,7 @@ export const UserManagement: React.FC = () => {
               />
             </div>
             
+            {/* Modal action buttons */}
             <div className="flex gap-3">
               <button
                 onClick={() => {

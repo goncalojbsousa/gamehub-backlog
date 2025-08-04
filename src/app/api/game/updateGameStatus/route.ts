@@ -9,26 +9,39 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
 
+// Initialize Prisma client for database operations
 const prisma = new PrismaClient();
 
+/**
+ * Input validation schema for game status updates
+ * Ensures data integrity and prevents malicious input
+ */
 const inputSchema = z.object({
-  userId: z.string().uuid(),
-  gameId: z.number().positive(),
-  status: z.string().max(20),
-  progress: z.string().max(20)
+  userId: z.string().uuid(), // Must be a valid UUID
+  gameId: z.number().positive(), // Must be a positive integer
+  status: z.string().max(20), // Status string with max length
+  progress: z.string().max(20) // Progress string with max length
 });
 
+/**
+ * POST endpoint for updating user game status
+ * Allows authenticated users to update their progress and status for games
+ * 
+ * @param request - The incoming HTTP request containing game status data
+ * @returns JSON response with updated game status or error message
+ */
 export async function POST(request: Request) {
-  // CHECK IS AUTHENTICATED
+  // Verify user authentication before processing request
   const isAuthenticated = await checkIsAuthenticated();
   if (!isAuthenticated) {
     redirect("/auth/sign-in");
   }
 
-  // GET CLIENT IP
-      const headersList = await headers();
+  // Extract client IP address for rate limiting
+  const headersList = await headers();
   const clientIp = headersList.get('x-forwarded-for') || 'unknown';
 
+  // Validate IP address format and presence
   if (typeof clientIp !== 'string') {
     throw new Error('Access temporarily blocked. Try again later.');
   }
@@ -37,24 +50,28 @@ export async function POST(request: Request) {
     throw new Error('Access temporarily blocked. Try again later.');
   }
 
+  // Check rate limiting to prevent abuse
   if (!(await checkRateLimit(clientIp))) {
-    throw new Error('Limit rate exceeded. Try again later.');
+    throw new Error('Rate limit exceeded. Try again later.');
   }
 
-  // VALIDATE INPUT
+  // Parse and validate request body
   const body = await request.json();
   const validatedInput = inputSchema.parse(body);
 
+  // Get current user ID from session
   const userId = await getUserId();
   if (userId === undefined) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
+  // Ensure user can only update their own game status
   if (validatedInput.userId !== userId) {
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
   }
 
   try {
+    // Upsert game status - create new record or update existing one
     const result = await prisma.userGameStatus.upsert({
       where: {
         userId_gameId: {
@@ -65,7 +82,7 @@ export async function POST(request: Request) {
       update: {
         status: validatedInput.status,
         progress: validatedInput.progress,
-        updatedAt: new Date(),
+        updatedAt: new Date(), // Update timestamp
       },
       create: {
         userId: validatedInput.userId,
@@ -75,6 +92,7 @@ export async function POST(request: Request) {
       },
     });
 
+    // Return successful response with updated data
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error('Error updating game status:', error);

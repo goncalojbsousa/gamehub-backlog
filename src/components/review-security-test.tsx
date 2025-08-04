@@ -3,11 +3,21 @@
 import { useState } from 'react';
 import { validateReviewContent, sanitizeReviewForDisplay } from '@/src/utils/sanitizeReview';
 
+/**
+ * ReviewSecurityTest component - Review content security testing interface
+ * Provides a testing environment for validating and sanitizing review content
+ * Tests various security scenarios including XSS attacks and safe HTML content
+ * Used for development and testing of review security mechanisms
+ * 
+ * @returns JSX element representing the review security testing interface
+ */
 export const ReviewSecurityTest: React.FC = () => {
+  // State management for test content and results
   const [testContent, setTestContent] = useState('');
   const [validationResult, setValidationResult] = useState<any>(null);
   const [sanitizedContent, setSanitizedContent] = useState('');
 
+  // Predefined test cases for security validation
   const testCases = [
     {
       name: 'XSS Script Tag',
@@ -35,14 +45,21 @@ export const ReviewSecurityTest: React.FC = () => {
     }
   ];
 
+  /**
+   * Runs security tests on the provided content
+   * Tests both validation and sanitization functions
+   * Updates state with test results for display
+   * 
+   * @param content - The content to test for security vulnerabilities
+   */
   const runTest = (content: string) => {
     setTestContent(content);
     
-    // Test validation
+    // Test validation function
     const validation = validateReviewContent(content);
     setValidationResult(validation);
     
-    // Test sanitization for display
+    // Test sanitization function for safe display
     const sanitized = sanitizeReviewForDisplay(content);
     setSanitizedContent(sanitized);
   };
@@ -52,6 +69,7 @@ export const ReviewSecurityTest: React.FC = () => {
       <h2 className="text-2xl font-bold text-color_text mb-4">Review Security Test</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Test cases selection */}
         <div>
           <h3 className="text-lg font-semibold text-color_text mb-3">Test Cases</h3>
           <div className="space-y-2">
@@ -70,11 +88,13 @@ export const ReviewSecurityTest: React.FC = () => {
           </div>
         </div>
         
+        {/* Test results display */}
         <div>
           <h3 className="text-lg font-semibold text-color_text mb-3">Results</h3>
           
           {testContent && (
             <div className="space-y-4">
+              {/* Original content display */}
               <div>
                 <h4 className="font-medium text-color_text mb-2">Original Content:</h4>
                 <div className="p-3 bg-color_main rounded-lg border border-border_detail text-sm">
@@ -82,6 +102,7 @@ export const ReviewSecurityTest: React.FC = () => {
                 </div>
               </div>
               
+              {/* Validation results */}
               {validationResult && (
                 <div>
                   <h4 className="font-medium text-color_text mb-2">Validation Result:</h4>
@@ -108,6 +129,7 @@ export const ReviewSecurityTest: React.FC = () => {
                 </div>
               )}
               
+              {/* Sanitized content display */}
               {sanitizedContent && (
                 <div>
                   <h4 className="font-medium text-color_text mb-2">Sanitized Content (Safe to Display):</h4>

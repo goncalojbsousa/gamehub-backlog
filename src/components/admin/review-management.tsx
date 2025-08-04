@@ -5,34 +5,51 @@ import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
+/**
+ * Review interface - Represents a game review for management
+ * Contains review data and associated user information for administrative purposes
+ */
 interface Review {
-  id: number;
-  content: string;
-  rating: number;
-  isEdited: boolean;
-  createdAt: string;
-  updatedAt: string;
-  gameId: number;
-  user: {
-    id: string;
-    name: string;
-    username: string;
-    image: string | null;
-    isBanned: boolean;
+  id: number;                    // Unique review identifier
+  content: string;               // Review text content
+  rating: number;                // Review rating (1-5)
+  isEdited: boolean;             // Whether the review has been edited
+  createdAt: string;             // Review creation timestamp
+  updatedAt: string;             // Last edit timestamp
+  gameId: number;                // ID of the game being reviewed
+  user: {                        // User who wrote the review
+    id: string;                  // User unique identifier
+    name: string;                // User's display name
+    username: string;            // User's username
+    image: string | null;        // User's profile image URL
+    isBanned: boolean;           // Whether the user is banned
   };
 }
 
+/**
+ * ReviewManagement component - Administrative review management interface
+ * Provides comprehensive review management functionality for administrators
+ * Includes review listing, filtering, searching, and deletion operations
+ * 
+ * @returns JSX element representing the complete review management interface
+ */
 export const ReviewManagement: React.FC = () => {
+  // State management for reviews data and UI
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRating, setFilterRating] = useState<'ALL' | '1' | '2' | '3' | '4' | '5'>('ALL');
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'EDITED' | 'ORIGINAL'>('ALL');
 
+  // Fetch reviews on component mount
   useEffect(() => {
     fetchReviews();
   }, []);
 
+  /**
+   * Fetches all reviews from the admin API
+   * Retrieves review data including user information and edit status
+   */
   const fetchReviews = async () => {
     try {
       const response = await fetch('/api/admin/getReviews');
@@ -47,6 +64,13 @@ export const ReviewManagement: React.FC = () => {
     }
   };
 
+  /**
+   * Handles the review deletion operation
+   * Sends delete request to API and refreshes review list on success
+   * 
+   * @param reviewId - The ID of the review to delete
+   * @param gameId - The ID of the game the review belongs to
+   */
   const handleDeleteReview = async (reviewId: number, gameId: number) => {
     if (!confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
       return;
@@ -74,9 +98,10 @@ export const ReviewManagement: React.FC = () => {
     }
   };
 
+  // Filter reviews based on search term, rating, and edit status
   const filteredReviews = reviews.filter(review => {
-         const matchesSearch = review.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          review.user.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = review.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         review.user.name.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesRating = filterRating === 'ALL' || review.rating.toString() === filterRating;
     
@@ -87,6 +112,7 @@ export const ReviewManagement: React.FC = () => {
     return matchesSearch && matchesRating && matchesStatus;
   });
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="p-6">
@@ -104,10 +130,11 @@ export const ReviewManagement: React.FC = () => {
 
   return (
     <div className="p-6">
+      {/* Header and filters section */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-color_text mb-4">Review Management</h2>
         
-        {/* Filters */}
+        {/* Search and filter controls */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <input
             type="text"
@@ -146,7 +173,7 @@ export const ReviewManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Reviews List */}
+      {/* Reviews list */}
       <div className="space-y-4">
         {filteredReviews.map((review) => (
           <div
@@ -159,6 +186,7 @@ export const ReviewManagement: React.FC = () => {
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
+                {/* Review header with user info and rating */}
                 <div className="flex items-center gap-3 mb-3">
                   <Image
                     src={review.user.image || '/placeholder-user.webp'}
@@ -183,9 +211,9 @@ export const ReviewManagement: React.FC = () => {
                       )}
                     </div>
                     
-                                         <p className="text-sm text-color_text_sec">
-                       Review for Game ID: <span className="font-medium">{review.gameId}</span>
-                     </p>
+                    <p className="text-sm text-color_text_sec">
+                      Review for Game ID: <span className="font-medium">{review.gameId}</span>
+                    </p>
                     
                     <p className="text-xs text-color_text_sec">
                       {formatDistanceToNow(new Date(review.createdAt), { 
@@ -195,6 +223,7 @@ export const ReviewManagement: React.FC = () => {
                     </p>
                   </div>
                   
+                  {/* Rating display */}
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       <span className="text-lg font-bold text-color_text">{review.rating}</span>
@@ -203,6 +232,7 @@ export const ReviewManagement: React.FC = () => {
                   </div>
                 </div>
                 
+                {/* Review content */}
                 <div className="bg-color_sec rounded-lg p-3 mb-3">
                   <p className="text-color_text text-sm leading-relaxed">
                     {review.content}
@@ -210,6 +240,7 @@ export const ReviewManagement: React.FC = () => {
                 </div>
               </div>
               
+              {/* Action buttons */}
               <div className="flex items-center gap-2 ml-4">
                 <button
                   onClick={() => handleDeleteReview(review.id, review.gameId)}

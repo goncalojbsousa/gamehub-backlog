@@ -1,10 +1,23 @@
 'use client'
 
+/**
+ * Props interface for the AdminProfileIndicator component
+ * Defines the properties needed to determine if the indicator should be shown
+ */
 interface AdminProfileIndicatorProps {
-  isPrivate: boolean;
-  isAdmin: boolean;
+  isPrivate: boolean;    // Whether the profile is set to private
+  isAdmin: boolean;      // Whether the current user is an administrator
 }
 
+/**
+ * AdminProfileIndicator component - Shows admin access notification
+ * Displays a notification when an admin is viewing a private profile
+ * Only renders when both conditions are met: profile is private AND user is admin
+ * 
+ * @param isPrivate - Boolean indicating if the profile is private
+ * @param isAdmin - Boolean indicating if the current user is an admin
+ * @returns JSX element for admin notification or null if conditions not met
+ */
 export const AdminProfileIndicator: React.FC<AdminProfileIndicatorProps> = ({ isPrivate, isAdmin }) => {
   // Only show if profile is private AND user is admin
   if (!isPrivate || !isAdmin) return null;

@@ -8,34 +8,41 @@ import { UserProvider } from '@/src/context/userContext';
 import { auth } from '@/src/lib/auth/authConfig';
 
 /**
- *  GET USER DATA ON SERVER SIDE FOR FAST RENDERING
- * @param param0 
- * @returns userContext
+ * UserDataFetcher component - Server-side user data initialization
+ * Fetches user data on the server side for fast rendering and SEO optimization
+ * Provides user context to the entire application with pre-fetched authentication data
+ * Handles authentication verification and data validation
+ * 
+ * @param children - React components to be wrapped with user context
+ * @returns UserProvider component with initialized user data
  */
 export default async function UserDataFetcher({ children }: { children: React.ReactNode }) {
-  // Verificação dupla da autenticação
+  // Double authentication verification
   const session = await auth();
   const isAuthenticated = session && session.user ? true : false;
   
+  // Initialize user data variables
   let username = '';
   let usernameSlug = '';
   let userImage = '';
   let userRole = '';
 
+  // Fetch user data if authenticated
   if (isAuthenticated && session?.user) {
     try {
+      // Retrieve user information from database
       username = (await getUserName()) || '';
       usernameSlug = (await getUserNameSlug()) || '';
       const imageResult = await getUserImage();
-      // Garantir que userImage nunca seja uma string vazia
+      
+      // Ensure userImage is never an empty string
       userImage = imageResult && imageResult.trim() !== '' ? imageResult : '';
       
-
       userRole = (await getUserRole()) || '';
       
-      // Verificação adicional: se não conseguimos buscar os dados, considerar como não autenticado
+      // Additional verification: if we can't fetch data, treat as not authenticated
       if (!username && !usernameSlug) {
-        console.log('Usuário autenticado mas sem dados válidos, tratando como não autenticado');
+        console.log('User authenticated but without valid data, treating as not authenticated');
         return (
           <UserProvider
             initialData={{
@@ -51,8 +58,8 @@ export default async function UserDataFetcher({ children }: { children: React.Re
         );
       }
     } catch (error) {
-      console.error('Erro ao buscar dados do usuário:', error);
-      // Se houver erro ao buscar dados, considerar como não autenticado
+      console.error('Error fetching user data:', error);
+      // If there's an error fetching data, treat as not authenticated
       return (
         <UserProvider
           initialData={{
@@ -69,6 +76,7 @@ export default async function UserDataFetcher({ children }: { children: React.Re
     }
   }
 
+  // Return UserProvider with fetched or default data
   return (
     <UserProvider
       initialData={{

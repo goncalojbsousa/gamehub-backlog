@@ -1,3 +1,9 @@
+/**
+ * Platforms constants - Comprehensive list of gaming platforms
+ * Contains all supported gaming platforms from IGDB database
+ * Used for filtering games by platform and displaying platform information
+ * Includes modern consoles, retro systems, mobile platforms, and VR devices
+ */
 export const platforms = [
     "PC (Microsoft Windows)", "PlayStation 5", "PlayStation 4", "Xbox Series X|S", 
     "Xbox One", "Nintendo Switch", "PlayStation 3", "Xbox 360", "PlayStation 2", 

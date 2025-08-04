@@ -7,37 +7,56 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import { generateUniqueUsername } from "./generateUniqueUsernameServerAction";
 
+/**
+ * Extends the NextAuth User interface to include custom fields
+ * This ensures TypeScript recognizes our custom user properties
+ */
 declare module "next-auth" {
     interface User {
-        username?: string;
+        username?: string; // Custom username field for profile URLs
     }
 }
+
+// Initialize Prisma client for database operations
 const prisma = new PrismaClient()
 
+/**
+ * NextAuth configuration object
+ * Defines authentication providers, session strategy, and custom callbacks
+ */
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    trustHost: true,
-    adapter: PrismaAdapter(prisma),
-    secret: process.env.AUTH_SECRET,
+    trustHost: true, // Trust the host for secure cookie handling
+    adapter: PrismaAdapter(prisma), // Use Prisma adapter for database storage
+    secret: process.env.AUTH_SECRET, // Secret key for JWT signing
+    
+    // Session configuration
     session: {
-        strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60, // 30 DAYS IN SECONDS (DEFAULT AUTH.JS VALUE)
+        strategy: "jwt", // Use JWT strategy for session management
+        maxAge: 30 * 24 * 60 * 60, // 30 days in seconds (default Auth.js value)
     },
+    
+    // Custom page routes for authentication flows
     pages: {
-        signIn: "/auth/sign-in",
-        verifyRequest: "/auth/auth-success",
-        error: "/auth/auth-error",
+        signIn: "/auth/sign-in", // Custom sign-in page
+        verifyRequest: "/auth/auth-success", // Email verification success page
+        error: "/auth/auth-error", // Authentication error page
     },
+    
+    // Authentication providers configuration
     providers: [
+        // Google OAuth provider
         Google({
             clientId: process.env.AUTH_GOOGLE_ID,
             clientSecret: process.env.AUTH_GOOGLE_SECRET,
-            allowDangerousEmailAccountLinking: true,
+            allowDangerousEmailAccountLinking: true, // Allow linking accounts with same email
             authorization: {
                 params: {
-                    scope: 'openid email profile',
+                    scope: 'openid email profile', // Requested OAuth scopes
                 },
             },
         }),
+        
+        // Email provider for passwordless authentication
         Nodemailer({
             server: {
                 host: process.env.EMAIL_SERVER_HOST,
@@ -47,14 +66,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     pass: process.env.EMAIL_SERVER_PASSWORD,
                 },
             },
-            from: process.env.EMAIL_FROM
+            from: process.env.EMAIL_FROM // Sender email address
         })
     ],
+    
+    // Custom callbacks for token and session management
     callbacks: {
+        /**
+         * JWT callback - Handles token creation and updates
+         * Runs when a JWT is created or updated
+         */
         async jwt({ token, user, session, trigger }) {
+            // Handle initial user sign-in
             if (user) {
+                // Clear any stale tokens from previous sessions
                 await clearStaleTokens();
 
+                // Generate unique username if user doesn't have one
                 if (!user.username && user.name) {
                     const username = await generateUniqueUsername(user.name);
                     await prisma.user.update({
@@ -64,6 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     user.username = username;
                 }
 
+                // Return token with user information
                 return {
                     ...token,
                     id: user.id,
@@ -72,6 +101,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 };
             }
 
+            // Handle session updates (e.g., name changes)
             if (trigger === "update" && session?.name !== token.name) {
                 token.name = session.name;
                 try {
@@ -85,8 +115,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             return token;
         },
+        
+        /**
+         * Session callback - Handles session creation and updates
+         * Runs when a session is checked or updated
+         */
         async session({ session, token }) {
-            // Always fetch the latest user data from database
+            // Always fetch the latest user data from database for consistency
             try {
                 const userData = await prisma.user.findUnique({
                     where: { id: token.id as string },
@@ -97,6 +132,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     }
                 });
 
+                // Return session with fresh user data
                 return {
                     ...session,
                     user: {
@@ -109,6 +145,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 };
             } catch (error) {
                 console.error('Error fetching user data in session callback:', error);
+                // Fallback to token data if database query fails
                 return {
                     ...session,
                     user: {

@@ -7,16 +7,31 @@ import { SystemStats } from './system-stats';
 import { SecuritySettings } from './security-settings';
 import { AuditLogs } from './audit-logs';
 
+/**
+ * TabType - Available admin dashboard tabs
+ * Defines the different sections available in the admin dashboard
+ */
 type TabType = 'users' | 'reviews' | 'stats' | 'security' | 'audit';
 
+/**
+ * AdminDashboard component - Main administrative interface
+ * Provides a tabbed interface for accessing all administrative functions
+ * Includes user management, review management, system statistics, security settings, and audit logs
+ * Serves as the central hub for all administrative operations
+ * 
+ * @returns JSX element representing the complete admin dashboard interface
+ */
 export const AdminDashboard: React.FC = () => {
+  // State management for active tab and loading state
   const [activeTab, setActiveTab] = useState<TabType>('users');
   const [isLoading, setIsLoading] = useState(true);
 
+  // Initialize dashboard on component mount
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
+  // Configuration for dashboard tabs
   const tabs = [
     { id: 'users', name: 'User Management', icon: '👥' },
     { id: 'reviews', name: 'Review Management', icon: '📝' },
@@ -25,6 +40,7 @@ export const AdminDashboard: React.FC = () => {
     { id: 'audit', name: 'Audit Logs', icon: '📋' }
   ];
 
+  // Loading state with skeleton animation
   if (isLoading) {
     return (
       <div className="bg-color_sec rounded-xl p-6 border border-border_detail">
@@ -42,7 +58,7 @@ export const AdminDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Tab Navigation */}
+      {/* Tab navigation header */}
       <div className="bg-color_sec rounded-xl border border-border_detail overflow-hidden">
         <div className="flex">
           {tabs.map((tab) => (
@@ -64,8 +80,9 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Tab Content */}
+      {/* Tab content container */}
       <div className="bg-color_sec rounded-xl border border-border_detail">
+        {/* Conditional rendering of tab content based on active tab */}
         {activeTab === 'users' && <UserManagement />}
         {activeTab === 'reviews' && <ReviewManagement />}
         {activeTab === 'stats' && <SystemStats />}

@@ -2,9 +2,19 @@
 
 import { useState } from 'react';
 
+/**
+ * SecuritySettings component - Administrative security management interface
+ * Provides comprehensive security monitoring, testing, and management capabilities
+ * Includes security feature status, automated security tests, and recommendations
+ * Used for maintaining platform security and monitoring protection mechanisms
+ * 
+ * @returns JSX element representing the complete security settings interface
+ */
 export const SecuritySettings: React.FC = () => {
+  // State management for security test operations
   const [isLoading, setIsLoading] = useState(false);
 
+  // Configuration for active security features
   const securityFeatures = [
     {
       title: 'XSS Protection',
@@ -50,6 +60,7 @@ export const SecuritySettings: React.FC = () => {
     }
   ];
 
+  // Configuration for security test cases
   const securityTests = [
     {
       name: 'XSS Script Injection',
@@ -77,6 +88,12 @@ export const SecuritySettings: React.FC = () => {
     }
   ];
 
+  /**
+   * Runs a security test against the platform's sanitization system
+   * Sends test content to the security API and displays results
+   * 
+   * @param testCode - The malicious code to test against sanitization
+   */
   const runSecurityTest = async (testCode: string) => {
     setIsLoading(true);
     try {
@@ -105,6 +122,7 @@ export const SecuritySettings: React.FC = () => {
 
   return (
     <div className="p-6">
+      {/* Header section */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-color_text mb-4">Security Settings</h2>
         <p className="text-color_text_sec">
@@ -112,7 +130,7 @@ export const SecuritySettings: React.FC = () => {
         </p>
       </div>
 
-      {/* Security Features */}
+      {/* Security features overview */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold text-color_text mb-4">Active Security Features</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -138,7 +156,7 @@ export const SecuritySettings: React.FC = () => {
         </div>
       </div>
 
-      {/* Security Tests */}
+      {/* Security testing section */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold text-color_text mb-4">Security Tests</h3>
         <div className="space-y-4">
@@ -151,6 +169,7 @@ export const SecuritySettings: React.FC = () => {
                 <div className="flex-1">
                   <h4 className="font-semibold text-color_text mb-1">{test.name}</h4>
                   <p className="text-sm text-color_text_sec mb-2">{test.description}</p>
+                  {/* Test code display */}
                   <div className="bg-color_sec rounded p-2 mb-3">
                     <code className="text-xs text-color_text_sec">{test.testCode}</code>
                   </div>
@@ -158,6 +177,7 @@ export const SecuritySettings: React.FC = () => {
                     Expected: <span className="font-medium text-green-600">{test.expected}</span>
                   </p>
                 </div>
+                {/* Test execution button */}
                 <button
                   onClick={() => runSecurityTest(test.testCode)}
                   disabled={isLoading}
@@ -171,11 +191,12 @@ export const SecuritySettings: React.FC = () => {
         </div>
       </div>
 
-      {/* Security Recommendations */}
+      {/* Security recommendations section */}
       <div>
         <h3 className="text-lg font-semibold text-color_text mb-4">Security Recommendations</h3>
         <div className="bg-color_main rounded-lg p-4 border border-border_detail">
           <div className="space-y-3">
+            {/* Regular security audits recommendation */}
             <div className="flex items-start gap-3">
               <span className="text-yellow-500 text-lg">⚠️</span>
               <div>
@@ -186,6 +207,7 @@ export const SecuritySettings: React.FC = () => {
               </div>
             </div>
             
+            {/* User activity monitoring recommendation */}
             <div className="flex items-start gap-3">
               <span className="text-blue-500 text-lg">📊</span>
               <div>
@@ -196,6 +218,7 @@ export const SecuritySettings: React.FC = () => {
               </div>
             </div>
             
+            {/* Dependency updates recommendation */}
             <div className="flex items-start gap-3">
               <span className="text-green-500 text-lg">🔄</span>
               <div>
@@ -206,6 +229,7 @@ export const SecuritySettings: React.FC = () => {
               </div>
             </div>
             
+            {/* Backup strategy recommendation */}
             <div className="flex items-start gap-3">
               <span className="text-purple-500 text-lg">🔒</span>
               <div>

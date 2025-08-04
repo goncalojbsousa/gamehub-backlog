@@ -2,25 +2,43 @@
 
 import { useState, useEffect } from 'react';
 
+/**
+ * SystemStats interface - Represents platform statistics and metrics
+ * Contains comprehensive data about user activity, reviews, and platform usage
+ */
 interface SystemStats {
-  totalUsers: number;
-  totalReviews: number;
-  totalGames: number;
-  bannedUsers: number;
-  activeUsers: number;
-  averageRating: number;
-  reviewsThisMonth: number;
-  usersThisMonth: number;
+  totalUsers: number;        // Total number of registered users
+  totalReviews: number;      // Total number of reviews written
+  totalGames: number;        // Total number of games with user status
+  bannedUsers: number;       // Number of banned/suspended users
+  activeUsers: number;       // Number of active (non-banned) users
+  averageRating: number;     // Average rating across all reviews
+  reviewsThisMonth: number;  // Number of reviews written this month
+  usersThisMonth: number;    // Number of new users this month
 }
 
+/**
+ * SystemStats component - Administrative system statistics dashboard
+ * Displays comprehensive platform metrics and user activity statistics
+ * Provides insights into platform usage, user engagement, and growth
+ * Used for monitoring platform health and user activity trends
+ * 
+ * @returns JSX element representing the complete system statistics dashboard
+ */
 export const SystemStats: React.FC = () => {
+  // State management for statistics data
   const [stats, setStats] = useState<SystemStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch statistics on component mount
   useEffect(() => {
     fetchStats();
   }, []);
 
+  /**
+   * Fetches system statistics from the admin API
+   * Retrieves comprehensive platform metrics and user activity data
+   */
   const fetchStats = async () => {
     try {
       const response = await fetch('/api/admin/getStats');
@@ -35,6 +53,7 @@ export const SystemStats: React.FC = () => {
     }
   };
 
+  // Loading state with skeleton animation
   if (isLoading) {
     return (
       <div className="p-6">
@@ -50,6 +69,7 @@ export const SystemStats: React.FC = () => {
     );
   }
 
+  // Error state when stats fail to load
   if (!stats) {
     return (
       <div className="p-6">
@@ -60,6 +80,7 @@ export const SystemStats: React.FC = () => {
     );
   }
 
+  // Configuration for statistics cards
   const statCards = [
     {
       title: 'Total Users',
@@ -121,6 +142,7 @@ export const SystemStats: React.FC = () => {
 
   return (
     <div className="p-6">
+      {/* Header section */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-color_text mb-4">System Statistics</h2>
         <p className="text-color_text_sec">
@@ -128,6 +150,7 @@ export const SystemStats: React.FC = () => {
         </p>
       </div>
 
+      {/* Statistics cards grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card, index) => (
           <div
@@ -135,9 +158,11 @@ export const SystemStats: React.FC = () => {
             className="bg-color_main rounded-xl p-6 border border-border_detail hover:border-border_detail_sec transition-all duration-200"
           >
             <div className="flex items-center justify-between mb-4">
+              {/* Card icon */}
               <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-white ${card.color}`}>
                 <span className="text-xl">{card.icon}</span>
               </div>
+              {/* Card value and title */}
               <div className="text-right">
                 <div className="text-2xl font-bold text-color_text">{card.value}</div>
                 <div className="text-sm text-color_text_sec">{card.title}</div>
@@ -148,8 +173,9 @@ export const SystemStats: React.FC = () => {
         ))}
       </div>
 
-      {/* Additional Insights */}
+      {/* Additional insights section */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* User activity insights */}
         <div className="bg-color_main rounded-xl p-6 border border-border_detail">
           <h3 className="text-lg font-semibold text-color_text mb-4">User Activity</h3>
           <div className="space-y-3">
@@ -159,6 +185,7 @@ export const SystemStats: React.FC = () => {
                 {((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)}% active
               </span>
             </div>
+            {/* Progress bar showing active user percentage */}
             <div className="w-full bg-color_sec rounded-full h-2">
               <div 
                 className="bg-green-500 h-2 rounded-full transition-all duration-300"
@@ -168,6 +195,7 @@ export const SystemStats: React.FC = () => {
           </div>
         </div>
 
+        {/* Review activity insights */}
         <div className="bg-color_main rounded-xl p-6 border border-border_detail">
           <h3 className="text-lg font-semibold text-color_text mb-4">Review Activity</h3>
           <div className="space-y-3">

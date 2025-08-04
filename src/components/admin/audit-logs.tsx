@@ -4,43 +4,67 @@ import { useState, useEffect, useCallback } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
+/**
+ * AdminLog interface - Represents an administrative action log entry
+ * Contains detailed information about admin actions for audit purposes
+ */
 interface AdminLog {
-  id: string;
-  action: string;
-  adminId: string;
-  adminEmail: string;
-  targetId?: string;
-  targetType?: string;
-  details?: string;
-  ipAddress?: string;
-  userAgent?: string;
-  timestamp: string;
+  id: string;              // Unique log entry identifier
+  action: string;          // Type of admin action performed
+  adminId: string;         // ID of the admin who performed the action
+  adminEmail: string;      // Email of the admin who performed the action
+  targetId?: string;       // ID of the target affected by the action
+  targetType?: string;     // Type of target (USER, REVIEW, etc.)
+  details?: string;        // Additional details about the action
+  ipAddress?: string;      // IP address of the admin when action was performed
+  userAgent?: string;      // User agent string of the admin's browser
+  timestamp: string;       // When the action was performed
 }
 
+/**
+ * LogsResponse interface - API response structure for audit logs
+ * Contains paginated log data and metadata
+ */
 interface LogsResponse {
-  logs: AdminLog[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  logs: AdminLog[];        // Array of log entries
+  total: number;           // Total number of logs
+  page: number;            // Current page number
+  limit: number;           // Number of logs per page
+  totalPages: number;      // Total number of pages
 }
 
+/**
+ * AuditLogs component - Administrative audit log viewer
+ * Displays comprehensive audit trail of all administrative actions
+ * Includes filtering, pagination, and detailed log information
+ * Used for security monitoring and compliance purposes
+ * 
+ * @returns JSX element representing the complete audit logs interface
+ */
 export const AuditLogs: React.FC = () => {
+  // State management for logs data and pagination
   const [logs, setLogs] = useState<AdminLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalLogs, setTotalLogs] = useState(0);
+  
+  // State management for filters
   const [filters, setFilters] = useState({
-    action: '',
-    adminId: '',
-    targetType: '',
-    startDate: '',
-    endDate: ''
+    action: '',           // Filter by action type
+    adminId: '',          // Filter by admin ID
+    targetType: '',       // Filter by target type
+    startDate: '',        // Filter by start date
+    endDate: ''           // Filter by end date
   });
 
+  /**
+   * Fetches audit logs from the admin API with current filters and pagination
+   * Updates the logs state and pagination information
+   */
   const fetchLogs = useCallback(async () => {
     try {
+      // Build query parameters for the API request
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: '50',
@@ -67,20 +91,40 @@ export const AuditLogs: React.FC = () => {
     }
   }, [currentPage, filters]);
 
+  // Fetch logs when component mounts or filters/pagination changes
   useEffect(() => {
     fetchLogs();
   }, [fetchLogs]);
 
-  // Validate UUID format
+  /**
+   * Validates if a string is in proper UUID format
+   * Used for admin ID filter validation
+   * 
+   * @param uuid - String to validate as UUID
+   * @returns boolean indicating if the string is a valid UUID
+   */
   const isValidUUID = (uuid: string) => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
   };
 
+  /**
+   * Handles admin ID filter changes with validation
+   * Updates the filters state with the new admin ID value
+   * 
+   * @param value - New admin ID value to set
+   */
   const handleAdminIdChange = (value: string) => {
     setFilters(prev => ({ ...prev, adminId: value }));
   };
 
+  /**
+   * Returns appropriate CSS classes for action type styling
+   * Provides visual distinction between different action types
+   * 
+   * @param action - The action type to get color for
+   * @returns CSS classes for styling the action badge
+   */
   const getActionColor = (action: string) => {
     switch (action) {
       case 'USER_BANNED':
@@ -96,6 +140,13 @@ export const AuditLogs: React.FC = () => {
     }
   };
 
+  /**
+   * Returns appropriate emoji icon for action type
+   * Provides visual representation of different action types
+   * 
+   * @param action - The action type to get icon for
+   * @returns Emoji string representing the action
+   */
   const getActionIcon = (action: string) => {
     switch (action) {
       case 'USER_BANNED':
@@ -111,6 +162,7 @@ export const AuditLogs: React.FC = () => {
     }
   };
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="p-6">
@@ -128,13 +180,14 @@ export const AuditLogs: React.FC = () => {
 
   return (
     <div className="p-6">
+      {/* Header and description */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-color_text mb-4">Audit Logs</h2>
         <p className="text-color_text_sec mb-4">
           View all admin actions for security and compliance purposes
         </p>
         
-        {/* Filters */}
+        {/* Filter controls */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
           <div>
             <input
@@ -146,6 +199,7 @@ export const AuditLogs: React.FC = () => {
             />
           </div>
           
+          {/* Admin ID filter with validation */}
           <input
             type="text"
             placeholder="Filter by admin ID (UUID format)..."
@@ -189,12 +243,13 @@ export const AuditLogs: React.FC = () => {
           />
         </div>
         
+        {/* Results summary */}
         <div className="text-sm text-color_text_sec mb-4">
           {totalLogs} logs found • Page {currentPage} of {totalPages}
         </div>
       </div>
 
-      {/* Logs List */}
+      {/* Logs list */}
       <div className="space-y-4">
         {logs.map((log) => (
           <div
@@ -203,6 +258,7 @@ export const AuditLogs: React.FC = () => {
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
+                {/* Log header with action icon and timestamp */}
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl">{getActionIcon(log.action)}</span>
                   <div className="flex items-center gap-2">
@@ -218,6 +274,7 @@ export const AuditLogs: React.FC = () => {
                   </div>
                 </div>
                 
+                {/* Log details */}
                 <div className="space-y-1 text-sm">
                   <p className="text-color_text">
                     <span className="font-medium">Admin:</span> {log.adminEmail}
@@ -235,6 +292,7 @@ export const AuditLogs: React.FC = () => {
                     </p>
                   )}
                   
+                  {/* Technical details */}
                   <div className="flex items-center gap-4 text-xs text-color_text_sec">
                     {log.ipAddress && (
                       <span>IP: {log.ipAddress}</span>
@@ -252,7 +310,7 @@ export const AuditLogs: React.FC = () => {
         ))}
       </div>
 
-      {/* Pagination */}
+      {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="mt-6 flex items-center justify-center gap-2">
           <button
