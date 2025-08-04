@@ -5,7 +5,7 @@ const Privacy = () => {
 
             <div className="space-y-6 text-color_text">
                 <p className="text-lg leading-relaxed">
-                    Welcome to GameHub Backlog! We're gamers just like you, and we understand the importance of privacy in the digital age. This Privacy Policy explains how we collect, use, and protect your information when you use our service.
+                    Welcome to GameHub Backlog! We&apos;re gamers just like you, and we understand the importance of privacy in the digital age. This Privacy Policy explains how we collect, use, and protect your information when you use our service.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">What This Privacy Policy Governs</h2>
@@ -115,7 +115,7 @@ const Privacy = () => {
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Changes to This Privacy Policy</h2>
 
                 <p className="leading-relaxed">
-                    We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date at the bottom of this page.
+                    We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date at the bottom of this page.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Contact Us</h2>

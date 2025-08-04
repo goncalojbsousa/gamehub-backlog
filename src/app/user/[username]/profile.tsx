@@ -3,13 +3,17 @@
 import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
+import { AdminProfileIndicator } from "@/src/components/admin-profile-indicator";
 import Image from "next/image";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
+import { checkUserHasGames } from "@/src/lib/checkUserHasGames";
 import { LoadingIcon } from "@/src/components/svg/loading";
 import { SearchIcon } from "@/src/components/svg/search-icon";
 import { FiltersIcon } from "@/src/components/svg/filter-icon";
 import { getCoverImageUrl } from "@/src/utils/utils";
+import { useUser } from "@/src/context/userContext";
+import { getValidImageUrl, isGoogleImage } from "@/src/utils/imageUtils";
 
 interface UserProps {
     userId: string;
@@ -17,6 +21,10 @@ interface UserProps {
     name: string;
     userName: string;
     joinDate: string | Date;
+    isBanned?: boolean;
+    bio?: string;
+    isProfilePublic?: boolean;
+    isPrivateProfile?: boolean;
 }
 
 interface GameProps {
@@ -26,11 +34,12 @@ interface GameProps {
     gameDetails: Game;
 }
 
-export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId }) => {
+export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId, isBanned = false, bio, isProfilePublic = true, isPrivateProfile = false }) => {
+    const { userRole } = useUser();
     const [imageError, setImageError] = useState(false);
     
-    // Garantir que sempre temos uma imagem válida
-    const validUserImage = userImage && userImage.trim() !== '' && !imageError && userImage.startsWith('http') ? userImage : "/placeholder-user.webp";
+    // Ensure we always have a valid image using the utility function
+    const validUserImage = !imageError ? getValidImageUrl(userImage) : "/placeholder-user.webp";
     
     // Função auxiliar para formatar a data de forma segura
     const formatJoinDate = (date: string | Date) => {
@@ -57,11 +66,36 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [games, setGames] = useState<GameProps[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [hasGames, setHasGames] = useState<boolean | null>(null);
+    const [userGameStats, setUserGameStats] = useState<Record<string, number>>({});
 
     // Reset image error when userImage changes
     useEffect(() => {
         setImageError(false);
     }, [userImage]);
+
+    // Check if user has any games on component mount
+    useEffect(() => {
+        const checkGames = async () => {
+            try {
+                const data = await checkUserHasGames(userId);
+                setHasGames(data.hasGames);
+                setUserGameStats(data.statusCounts || {});
+                
+                // Auto-select the first category that has games
+                if (data.statusCounts) {
+                    const firstCategoryWithGames = categories.find(category => data.statusCounts[category] > 0);
+                    if (firstCategoryWithGames && firstCategoryWithGames !== selectedCategory) {
+                        setSelectedCategory(firstCategoryWithGames);
+                    }
+                }
+            } catch (error) {
+                console.error("Error checking user games:", error);
+                setHasGames(false);
+            }
+        };
+        checkGames();
+    }, [userId]);
 
     const fetchGames = useCallback(async () => {
         setLoading(true);
@@ -128,6 +162,9 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
             <div className="relative overflow-hidden">
                 <div className="relative z-10">
                     <div className="container mx-auto px-4 lg:px-8 py-8">
+                        {/* Admin Profile Indicator */}
+                        <AdminProfileIndicator isPrivate={isPrivateProfile} isAdmin={userRole === 'ADMIN'} />
+                        
                         {/* Profile Header */}
                         <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail relative overflow-hidden mb-8 animate-slide-in-up">
                             {/* Background Image Overlay */}
@@ -155,22 +192,40 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                                 className="w-24 h-24 lg:w-32 lg:h-32 rounded-full border-4 border-color_reverse_sec shadow-lg"
                                                 draggable={false}
                                                 onError={(e) => {
-                                                    console.error('Failed to load user image:', userImage);
+                                                    // Silently handle image loading errors without console logging
                                                     setImageError(true);
                                                     e.currentTarget.src = "/placeholder-user.webp";
                                                 }}
-                                                unoptimized={userImage?.includes('googleusercontent.com')}
+                                                unoptimized={isGoogleImage(userImage)}
                                             />
                                         </div>
-                                        <div>
-                                            <h1 className="text-3xl lg:text-4xl font-bold text-color_text mb-2">
-                                                {name}
-                                            </h1>
-                                            <p className="text-lg text-color_text_sec mb-2">@{userName}</p>
-                                            <p className="text-sm text-color_text_sec">
-                                                Member since {formatJoinDate(joinDate)}
-                                            </p>
-                                        </div>
+                                                                                    <div>
+                                                <h1 className="text-3xl lg:text-4xl font-bold text-color_text mb-2">
+                                                    {name}
+                                                </h1>
+                                                <p className="text-lg text-color_text_sec mb-2">@{userName}</p>
+                                                <p className="text-sm text-color_text_sec">
+                                                    Member since {formatJoinDate(joinDate)}
+                                                </p>
+                                                {bio && (
+                                                    <p className="text-sm text-color_text_sec mt-2 max-w-md">
+                                                        {bio}
+                                                    </p>
+                                                )}
+                                                {isBanned && (
+                                                                                                     <div className="mt-3 p-3 bg-red-100 border border-red-200 rounded-lg">
+                                                   <div className="flex items-center gap-2">
+                                                     <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                                                     </svg>
+                                                     <span className="text-red-800 font-medium">Account Suspended</span>
+                                                   </div>
+                                                   <p className="text-red-700 text-sm mt-1">
+                                                     This user has been banned and cannot access the site.
+                                                   </p>
+                                                 </div>
+                                                )}
+                                            </div>
                                     </div>
 
                                     {/* Stats - Placeholder for future content */}
@@ -223,28 +278,35 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                 </div>
                             </div>
 
-                            {/* Category Filter */}
-                            <div className="mb-6">
-                                <h3 className="text-sm font-semibold text-color_text mb-3">Game Status</h3>
-                                <div className="space-y-2">
-                                    {categories.map(category => (
-                                        <button
-                                            key={category}
-                                            onClick={() => {
-                                                handleCategoryClick(category);
-                                                setIsFiltersOpen(false);
-                                            }}
-                                            className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
-                                                selectedCategory === category 
-                                                    ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
-                                                    : 'bg-color_main text-color_text hover:bg-color_hover'
-                                            }`}
-                                        >
-                                            {category}
-                                        </button>
-                                    ))}
+                                                            {/* Category Filter */}
+                                <div className="mb-6">
+                                    <h3 className="text-sm font-semibold text-color_text mb-3">Game Status</h3>
+                                    <div className="space-y-2">
+                                        {categories.map(category => (
+                                            <button
+                                                key={category}
+                                                onClick={() => {
+                                                    handleCategoryClick(category);
+                                                    setIsFiltersOpen(false);
+                                                }}
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                    selectedCategory === category 
+                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
+                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
+                                                }`}
+                                            >
+                                                <div className="flex justify-between items-center">
+                                                    <span>{category}</span>
+                                                    {userGameStats[category] && (
+                                                        <span className="bg-color_accent text-color_main text-xs font-bold rounded-full px-2 py-1 min-w-[20px] text-center">
+                                                            {userGameStats[category]}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
 
                             {/* Progress Filter */}
                             <div className="mb-6">
@@ -301,7 +363,8 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                 <div className="container mx-auto px-4 lg:px-8 py-4">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Desktop Filters Sidebar */}
-                        <div className="hidden lg:block w-80 flex-shrink-0">
+                        {hasGames === true && (
+                            <div className="hidden lg:block w-80 flex-shrink-0">
                             <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail sticky top-24 animate-slide-in-up">
                                 <h2 className="text-xl font-bold mb-6 text-color_text">Filters</h2>
                                 
@@ -334,7 +397,14 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                                         : 'bg-color_main text-color_text hover:bg-color_hover'
                                                 }`}
                                             >
-                                                {category}
+                                                <div className="flex justify-between items-center">
+                                                    <span>{category}</span>
+                                                    {userGameStats[category] && (
+                                                        <span className="bg-color_accent text-color_main text-xs font-bold rounded-full px-2 py-1 min-w-[20px] text-center">
+                                                            {userGameStats[category]}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </button>
                                         ))}
                                     </div>
@@ -377,11 +447,26 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                 )}
                             </div>
                         </div>
+                        )}
 
                         {/* Games Results */}
-                        <div className="flex-1">
+                        {hasGames === false && !loading ? (
+                            <div className="flex-1">
+                                <div className="flex justify-center items-center min-h-[400px]">
+                                    <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail text-center max-w-md">
+                                        <div className="text-6xl mb-4">🎮</div>
+                                        <h3 className="text-xl font-bold text-color_text mb-2">No Games Yet</h3>
+                                        <p className="text-color_text_sec">
+                                            This user hasn&apos;t added any games to their collection yet.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (hasGames === true || loading) ? (
+                            <div className="flex-1">
                             {/* Floating Filters Button for Mobile Only */}
-                            <div className="fixed bottom-6 right-6 z-40 sm:hidden">
+                            {hasGames === true && (
+                                <div className="fixed bottom-6 right-6 z-40 sm:hidden">
                                 <button
                                     onClick={() => setIsFiltersOpen(!isFiltersOpen)}
                                     className="bg-color_reverse_sec text-color_main p-4 rounded-full shadow-lg filter-button-hover relative floating-button-pulse"
@@ -396,9 +481,11 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                     )}
                                 </button>
                             </div>
+                            )}
 
                             {/* Mobile Filters Header */}
-                            <div className="lg:hidden mb-6">
+                            {hasGames === true && (
+                                <div className="lg:hidden mb-6">
                                 <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                                     <div className="flex items-center justify-between">
                                         <div>
@@ -416,6 +503,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                     </div>
                                 </div>
                             </div>
+                            )}
 
                             {/* Games Grid */}
                             {loading ? (
@@ -483,6 +571,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                 </div>
                             )}
                         </div>
+                        ) : null}
                     </div>
                 </div>
             </div>

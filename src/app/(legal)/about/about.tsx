@@ -49,10 +49,10 @@ export const AboutPage: React.FC = () => {
                             <h2 className="text-3xl font-bold text-color_text mb-6">🎯 Our Mission</h2>
                             <div className="space-y-4 text-color_text">
                                 <p className="text-lg leading-relaxed">
-                                    Welcome to GameHub Backlog! We're thrilled to have you here. At its core, GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games.
+                                    Welcome to GameHub Backlog! We&apos;re thrilled to have you here. At its core, GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games.
                                 </p>
                                 <p className="leading-relaxed">
-                                    We understand how easy it is to accumulate a list of games you plan to "play someday," only to find it becoming overwhelming. GameHub simplifies the process, allowing you to organize, prioritize, and manage your games in one convenient location.
+                                    We understand how easy it is to accumulate a list of games you plan to &quot;play someday,&quot; only to find it becoming overwhelming. GameHub simplifies the process, allowing you to organize, prioritize, and manage your games in one convenient location.
                                 </p>
                             </div>
                         </div>
@@ -62,10 +62,10 @@ export const AboutPage: React.FC = () => {
                             <h2 className="text-3xl font-bold text-color_text mb-6">🤝 Community-Driven</h2>
                             <div className="space-y-4 text-color_text">
                                 <p className="text-lg leading-relaxed">
-                                    But GameHub Backlog is more than just a personal tracker; it's a community-driven platform built by players, for players.
+                                    But GameHub Backlog is more than just a personal tracker; it&apos;s a community-driven platform built by players, for players.
                                 </p>
                                 <p className="leading-relaxed">
-                                    Whether you're looking to discover new titles, categorize your existing collection, or share your game lists with friends, GameHub has you covered. Our goal is to bring gamers together, fostering a space where you can share your gaming experiences and discover new ones.
+                                    Whether you&apos;re looking to discover new titles, categorize your existing collection, or share your game lists with friends, GameHub has you covered. Our goal is to bring gamers together, fostering a space where you can share your gaming experiences and discover new ones.
                                 </p>
                             </div>
                         </div>
@@ -109,7 +109,7 @@ export const AboutPage: React.FC = () => {
                                     Join us on this journey as we continue to enhance GameHub Backlog, adding new features and improving the platform based on your feedback.
                                 </p>
                                 <p className="leading-relaxed">
-                                    Together, let's make the world of gaming more organized and enjoyable. Happy gaming!
+                                    Together, let&apos;s make the world of gaming more organized and enjoyable. Happy gaming!
                                 </p>
                             </div>
                         </div>
@@ -119,7 +119,7 @@ export const AboutPage: React.FC = () => {
                             <h2 className="text-3xl font-bold text-color_text mb-6">💬 Get in Touch</h2>
                             <div className="text-center space-y-4">
                                 <p className="text-color_text_sec leading-relaxed">
-                                    Have suggestions, feedback, or just want to say hello? We'd love to hear from you!
+                                    Have suggestions, feedback, or just want to say hello? We&apos;d love to hear from you!
                                 </p>
                                 <a 
                                     href="mailto:gamehubbacklog@gmail.com" 

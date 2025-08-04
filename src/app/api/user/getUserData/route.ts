@@ -26,6 +26,9 @@ export async function GET(request: Request) {
         image: true,
         createdAt: true,
         username: true,
+        isBanned: true,
+        bio: true,
+        isProfilePublic: true,
       }
     });
 

@@ -86,15 +86,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return token;
         },
         async session({ session, token }) {
-            return {
-                ...session,
-                user: {
-                    ...session.user,
-                    id: token.id as string,
-                    username: token.username as string,
-                    image: token.image as string, // Ensure image is included in session
-                },
-            };
+            // Always fetch the latest user data from database
+            try {
+                const userData = await prisma.user.findUnique({
+                    where: { id: token.id as string },
+                    select: {
+                        name: true,
+                        username: true,
+                        image: true,
+                    }
+                });
+
+                return {
+                    ...session,
+                    user: {
+                        ...session.user,
+                        id: token.id as string,
+                        name: userData?.name || session.user.name,
+                        username: userData?.username || token.username as string,
+                        image: userData?.image || token.image as string,
+                    },
+                };
+            } catch (error) {
+                console.error('Error fetching user data in session callback:', error);
+                return {
+                    ...session,
+                    user: {
+                        ...session.user,
+                        id: token.id as string,
+                        username: token.username as string,
+                        image: token.image as string,
+                    },
+                };
+            }
         },
     },
 })

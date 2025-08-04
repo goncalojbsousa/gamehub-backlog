@@ -3,6 +3,7 @@ import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
 import { getUserName } from '@/src/lib/auth/getUserNameServerAction';
 import { getUserImage } from '@/src/lib/auth/getUserImageServerAction';
 import { getUserNameSlug } from '@/src/lib/auth/getUserNameSlugServerAction';
+import { getUserRole } from '@/src/lib/auth/getUserRoleServerAction';
 import { UserProvider } from '@/src/context/userContext';
 import { auth } from '@/src/lib/auth/authConfig';
 
@@ -19,6 +20,7 @@ export default async function UserDataFetcher({ children }: { children: React.Re
   let username = '';
   let usernameSlug = '';
   let userImage = '';
+  let userRole = '';
 
   if (isAuthenticated && session?.user) {
     try {
@@ -27,6 +29,9 @@ export default async function UserDataFetcher({ children }: { children: React.Re
       const imageResult = await getUserImage();
       // Garantir que userImage nunca seja uma string vazia
       userImage = imageResult && imageResult.trim() !== '' ? imageResult : '';
+      
+
+      userRole = (await getUserRole()) || '';
       
       // Verificação adicional: se não conseguimos buscar os dados, considerar como não autenticado
       if (!username && !usernameSlug) {
@@ -38,6 +43,7 @@ export default async function UserDataFetcher({ children }: { children: React.Re
               username: '',
               usernameSlug: '',
               userImage: '',
+              userRole: '',
             }}
           >
             {children}
@@ -54,6 +60,7 @@ export default async function UserDataFetcher({ children }: { children: React.Re
             username: '',
             usernameSlug: '',
             userImage: '',
+            userRole: '',
           }}
         >
           {children}
@@ -69,6 +76,7 @@ export default async function UserDataFetcher({ children }: { children: React.Re
         username,
         usernameSlug,
         userImage,
+        userRole,
       }}
     >
       {children}

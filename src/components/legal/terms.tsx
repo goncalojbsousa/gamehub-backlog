@@ -25,7 +25,7 @@ const Terms = () => {
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">What Do These Terms Cover?</h2>
 
                 <p className="leading-relaxed">
-                    We recommend reading these terms before using GameHub Backlog, but here's a summary:
+                    We recommend reading these terms before using GameHub Backlog, but here&apos;s a summary:
                 </p>
 
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -47,7 +47,7 @@ const Terms = () => {
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Account Creation</h2>
 
                 <p className="leading-relaxed">
-                    You can explore GameHub Backlog and its content without registering. However, to access certain features, such as tracking games you've played, completed, dropped, or intend to play, you will need to create an account. You must use GameHub Backlog only for lawful purposes and in line with these terms. Sharing your account or allowing others to use it is prohibited. You are responsible for maintaining the security of your account and all activities conducted under your credentials.
+                    You can explore GameHub Backlog and its content without registering. However, to access certain features, such as tracking games you&apos;ve played, completed, dropped, or intend to play, you will need to create an account. You must use GameHub Backlog only for lawful purposes and in line with these terms. Sharing your account or allowing others to use it is prohibited. You are responsible for maintaining the security of your account and all activities conducted under your credentials.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Acceptable Use Policy</h2>
@@ -60,12 +60,12 @@ const Terms = () => {
                     <li>Follow all applicable laws while using GameHub Backlog.</li>
                     <li>Ensure that the information you provide is accurate and truthful.</li>
                     <li>Adhere to the rules related to the features you use.</li>
-                    <li>Protect your account's security.</li>
+                    <li>Protect your account&apos;s security.</li>
                     <li>Avoid engaging in any activities specified in the restrictions section.</li>
                 </ul>
 
                 <p className="leading-relaxed">
-                    Additionally, by using GameHub Backlog, you agree to indemnify us—meaning you will cover any costs or damages incurred by GameHub Backlog due to your actions or breaches of these terms of service.
+                    Additionally, by using GameHub Backlog, you agree to indemnify us—meaning you&apos;ll cover any costs or damages incurred by GameHub Backlog due to your actions or breaches of these terms of service.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Restrictions</h2>
@@ -75,11 +75,11 @@ const Terms = () => {
                 </p>
 
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                    <li>Respect others: Do not use another person's account or impersonate anyone.</li>
+                    <li>Respect others: Do not use another person&apos;s account or impersonate anyone.</li>
                     <li>Security: Do not upload files containing viruses or designed to damage, disrupt, or limit any equipment or services.</li>
                     <li>Legal compliance: Do not violate third-party intellectual property rights or any laws or regulations.</li>
                     <li>Content: Avoid posting content that is defamatory, obscene, pornographic, or offensive.</li>
-                    <li>Security testing: Do not probe, scan, or test our system's vulnerabilities without authorization.</li>
+                    <li>Security testing: Do not probe, scan, or test our system&apos;s vulnerabilities without authorization.</li>
                     <li>Prohibited activities: Do not promote illegal or harmful substances, violence, or threats.</li>
                 </ul>
 
@@ -92,7 +92,7 @@ const Terms = () => {
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Disclaimers and Limitations of Liability</h2>
 
                 <p className="leading-relaxed">
-                    GameHub Backlog is provided on an "as is" and "as available" basis, with no warranties of any kind. Although we strive to offer a reliable service and promptly resolve technical issues, we cannot guarantee uninterrupted or error-free access to the platform. We are not liable for any damages resulting from or related to your use or inability to use the service.
+                    GameHub Backlog is provided on an &quot;as is&quot; and &quot;as available&quot; basis, with no warranties of any kind. Although we strive to offer a reliable service and promptly resolve technical issues, we cannot guarantee uninterrupted or error-free access to the platform. We are not liable for any damages resulting from or related to your use or inability to use the service.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Account Termination</h2>
@@ -136,7 +136,7 @@ const Terms = () => {
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">United States Legal Compliance</h2>
 
                 <p className="leading-relaxed">
-                    You represent and warrant that you are not located in a country that is subject to a United States government embargo, or that has been designated by the United States government as a "terrorist-supporting" country, and you are not listed on any United States government list of prohibited or restricted parties.
+                    You represent and warrant that you are not located in a country that is subject to a United States government embargo, or that has been designated by the United States government as a &quot;terrorist-supporting&quot; country, and you are not listed on any United States government list of prohibited or restricted parties.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Changes to the Terms</h2>

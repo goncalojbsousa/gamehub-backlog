@@ -2,8 +2,12 @@
 
 import { getUserData } from "@/src/lib/getUserData";
 import { ProfilePage } from "@/src/app/user/[username]/profile";
+import { BannedUserProfile } from "@/src/components/banned-user-profile";
 import { Metadata } from "next";
 import UserNotFound from "@/src/components/user-not-found";
+import { checkCanViewProfile } from "@/src/lib/auth/checkCanViewProfileServerAction";
+import { PrivateProfilePage } from "@/src/components/private-profile-page";
+import { AdminProfileIndicator } from "@/src/components/admin-profile-indicator";
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -35,6 +39,27 @@ export default async function Profile({ params }: Props) {
     // Passar a data original em vez de uma string formatada
     const joinDate = userData.createdAt;
 
+    // Se o utilizador está banido, mostrar o componente de perfil banido
+    if (userData.isBanned) {
+      return (
+        <BannedUserProfile
+          userImage={userData.image}
+          name={userData.name}
+          userName={userData.username}
+          joinDate={joinDate}
+        />
+      );
+    }
+
+    // Check if profile is private and user cannot view it
+    if (!userData.isProfilePublic) {
+      const canViewProfile = await checkCanViewProfile(userData.username);
+      
+      if (!canViewProfile) {
+        return <PrivateProfilePage />;
+      }
+    }
+
     return (
       <ProfilePage
         userId={userData.id}
@@ -42,6 +67,10 @@ export default async function Profile({ params }: Props) {
         name={userData.name}
         userName={userData.username}
         joinDate={joinDate}
+        isBanned={userData.isBanned}
+        bio={userData.bio}
+        isProfilePublic={userData.isProfilePublic}
+        isPrivateProfile={!userData.isProfilePublic}
       />
     );
 

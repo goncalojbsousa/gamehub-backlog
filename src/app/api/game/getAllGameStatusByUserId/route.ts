@@ -43,6 +43,23 @@ export async function GET(request: Request) {
     try {
         const skip = (page - 1) * limit;
 
+        // First, check if user has any games with this status
+        const totalCount = await prisma.userGameStatus.count({
+            where: {
+                userId: userId!,
+                status: status!
+            },
+        });
+
+        // If no games found, return empty result immediately
+        if (totalCount === 0) {
+            return NextResponse.json({
+                games: [],
+                totalPages: 0,
+                currentPage: page,
+            }, { status: 200 });
+        }
+
         const userGameStatuses = await prisma.userGameStatus.findMany({
             where: {
                 userId: userId!,
@@ -58,19 +75,17 @@ export async function GET(request: Request) {
         });
 
         const gameIds = userGameStatuses.map(status => status.gameId);
-        const gameDetails = await fetchGameDetailsByIds(gameIds);
+        
+        // Only fetch game details if there are games to fetch
+        let gameDetails: any[] = [];
+        if (gameIds.length > 0) {
+            gameDetails = await fetchGameDetailsByIds(gameIds);
+        }
 
         const combinedData = userGameStatuses.map((status) => ({
             ...status,
             gameDetails: gameDetails.find((game: any) => game.id === status.gameId) || null,
         }));
-
-        const totalCount = await prisma.userGameStatus.count({
-            where: {
-                userId: userId!,
-                status: status!
-            },
-        });
 
         return NextResponse.json({
             games: combinedData,

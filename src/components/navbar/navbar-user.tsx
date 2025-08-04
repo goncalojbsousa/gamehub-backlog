@@ -5,24 +5,30 @@ import { SignOutButton } from "@/src/components/sign-out-button";
 import Link from "next/link";
 import Image from "next/image";
 import { ProfileIcon } from "@/src/components/svg/navigation/profile-icon";
-import { SettingsIcon } from "@/src/components/svg/navigation/settings";
 import { LogoutIcon } from "@/src/components/svg/navigation/logout-icon";
+import { SettingsIcon } from "@/src/components/svg/navigation/settings";
+import { AdminIcon } from "@/src/components/svg/navigation/admin-icon";
 import { useUser } from "@/src/context/userContext";
+import { getValidImageUrl, isGoogleImage } from "@/src/utils/imageUtils";
 
 interface UserProps {
     usernameSlug: string;
     userImage: string;
+    userRole?: string;
 }
 
-export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => {
+export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage, userRole }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [imageError, setImageError] = useState(false);
+    const [imageLoading, setImageLoading] = useState(true);
     const menuRef = useRef<HTMLDivElement>(null);
     const profilePicRef = useRef<HTMLImageElement>(null);
     const { isAuthenticated } = useUser();
 
-    // Garantir que sempre temos uma imagem válida
-    const validUserImage = userImage && userImage.trim() !== '' && !imageError && userImage.startsWith('http') ? userImage : "/placeholder-user.webp";
+    // Ensure we always have a valid image using the utility function
+    const validUserImage = (userImage && userImage.trim() !== '' && !imageError) 
+        ? getValidImageUrl(userImage) 
+        : "/placeholder-user.webp";
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -43,9 +49,12 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
         }
     };
 
-    // Reset image error when userImage changes
+    // Reset image error and loading state when userImage changes
     useEffect(() => {
-        setImageError(false);
+        if (userImage && userImage.trim() !== '') {
+            setImageError(false);
+            setImageLoading(true);
+        }
     }, [userImage]);
 
     // Close menu when user logs out
@@ -68,9 +77,15 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
     }, [menuOpen]);
 
     const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-        console.error('Failed to load user image:', userImage);
+        // Silently handle image loading errors without console logging
         setImageError(true);
+        setImageLoading(false);
         e.currentTarget.src = "/placeholder-user.webp";
+    };
+
+    const handleImageLoad = () => {
+        setImageLoading(false);
+        setImageError(false);
     };
 
     return (
@@ -86,7 +101,9 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
                     draggable="false"
                     onClick={toggleMenu}
                     onError={handleImageError}
-                    unoptimized={userImage?.includes('googleusercontent.com')}
+                    onLoad={handleImageLoad}
+                    unoptimized={isGoogleImage(userImage)}
+                    priority={true}
                 />
                 {menuOpen && (
                     <div 
@@ -99,17 +116,33 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage }) => 
                                 onClick={closeMenu}
                                 className="flex items-center px-4 py-3 text-color_text hover:bg-color_hover rounded-lg transition-all duration-200 active:bg-color_click select-none font-medium"
                             >
-                                <ProfileIcon className="mr-3 w-5 h-5" />
+                                <ProfileIcon className="mr-3 w-5 h-5 fill-color_icons" />
                                 Profile
                             </Link>
-                            {/*<Link href="/settings" className="flex px-4 py-2 text-color_text hover:bg-color_main rounded-md transition-colors duration-200 active:bg-color_click select-none">
-                                <SettingsIcon />
+                            
+                            <Link 
+                                href="/user/settings" 
+                                onClick={closeMenu}
+                                className="flex items-center px-4 py-3 text-color_text hover:bg-color_hover rounded-lg transition-all duration-200 active:bg-color_click select-none font-medium"
+                            >
+                                <SettingsIcon className="mr-3 w-5 h-5 fill-color_icons" />
                                 Settings
                             </Link>
-                            <hr className="mt-2 mb-2" />*/}
+                            
+                            {userRole === 'ADMIN' && (
+                                <Link 
+                                    href="/admin" 
+                                    onClick={closeMenu}
+                                    className="flex items-center px-4 py-3 text-color_text hover:bg-color_hover rounded-lg transition-all duration-200 active:bg-color_click select-none font-medium"
+                                >
+                                    <AdminIcon className="mr-3 w-5 h-5 fill-color_icons" />
+                                    Admin Panel
+                                </Link>
+                            )}
+                            <hr className="mt-2 mb-2" />
                             
                             <SignOutButton className="flex w-full items-center px-4 py-3 text-color_text hover:bg-btn_logout rounded-lg transition-all duration-200 active:bg-color_click select-none font-medium">
-                                <LogoutIcon className="mr-3 w-5 h-5" />
+                                <LogoutIcon className="mr-3 w-5 h-5 fill-color_icons" />
                                 Logout
                             </SignOutButton>
                         </div>

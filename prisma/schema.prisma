@@ -19,10 +19,14 @@ model User {
   emailVerified DateTime?        @db.Timestamptz
   image         String?
   role          AuthRole         @default(USER)
+  isBanned      Boolean          @default(false)
   createdAt     DateTime         @default(now())
   username      String?          @unique @db.VarChar(255)
+  bio           String?          @db.Text
+  isProfilePublic Boolean        @default(true)
   accounts      Account[]
   gameStatus    UserGameStatus[]
+  reviews       Review[]
 }
 
 model Account {
@@ -81,4 +85,38 @@ model UserGameStatus {
 
   @@unique([userId, gameId])
   @@index([userId, gameId], name: "idx_user_game_status")
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  userId      String   @db.Uuid
+  gameId      Int
+  rating      Int      @db.SmallInt
+  content     String?  @db.Text
+  isEdited    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId])
+  @@index([userId, gameId], name: "idx_user_game_review")
+  @@index([gameId], name: "idx_game_reviews")
+}
+
+model AdminLog {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  action      String   @db.VarChar(100)
+  adminId     String   @db.Uuid
+  adminEmail  String   @db.VarChar(255)
+  targetId    String?  @db.Uuid
+  targetType  String?  @db.VarChar(50)
+  details     String?  @db.Text
+  ipAddress   String?  @db.VarChar(45)
+  userAgent   String?  @db.Text
+  timestamp   DateTime @default(now()) @db.Timestamptz
+
+  @@index([adminId], name: "idx_admin_log_admin_id")
+  @@index([action], name: "idx_admin_log_action")
+  @@index([timestamp], name: "idx_admin_log_timestamp")
+  @@index([targetType], name: "idx_admin_log_target_type")
 }

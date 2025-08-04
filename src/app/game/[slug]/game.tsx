@@ -9,6 +9,7 @@ import { Navbar } from "@/src/components/navbar/navbar";
 import { ProgressIcon } from "@/src/components/svg/progress";
 import { StatusIcon } from "@/src/components/svg/status";
 import { ShareButtons } from "@/src/components/share-buttons";
+import { GameReviews } from "@/src/components/game-reviews";
 import { categories } from "@/src/constants/categories";
 import { getScreenShotImageUrl } from "@/src/utils/utils";
 import { useState } from "react";
@@ -132,6 +133,11 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                             
                             {/* Game Content */}
                             <GamePageContent game={game} />
+                            
+                            {/* Reviews Section */}
+                            <div id="reviews-section" className="mt-12">
+                                <GameReviews gameId={game.id} />
+                            </div>
                         </div>
                     </div>
                 </div>

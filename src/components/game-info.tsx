@@ -4,6 +4,7 @@ import { RatingCircle } from "@/src/components/rating-circle";
 import { ShareButtons } from "@/src/components/share-buttons";
 import Image from "next/image";
 import { SearchIcon } from "@/src/components/svg/search-icon";
+import { GameRatingStars } from "@/src/components/game-rating-stars";
 
 interface GameInfoProps {
     game: Game;
@@ -44,37 +45,57 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
             {(game.total_rating || game.aggregated_rating || game.rating) && (
                 <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <h3 className="text-color_text font-semibold mb-4 text-lg">Ratings</h3>
-                    <div className="flex justify-center items-center space-x-6">
-                        {game.total_rating && (
-                            <div className="relative group">
-                                <RatingCircle score={Math.round(game.total_rating)} size={50} />
-                                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                    <div className="bg-color_main text-color_text text-xs px-2 py-1 rounded whitespace-nowrap border border-border_detail shadow-lg">
-                                        IGDB Community
+                    <div className="space-y-4">
+                        {/* IGDB Ratings */}
+                        <div className="flex justify-center items-center space-x-6">
+                            {game.total_rating && (
+                                <div className="relative group">
+                                    <RatingCircle score={Math.round(game.total_rating)} size={50} />
+                                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                        <div className="bg-color_main text-color_text text-xs px-2 py-1 rounded whitespace-nowrap border border-border_detail shadow-lg">
+                                            IGDB Community
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-                        {game.aggregated_rating && (
-                            <div className="relative group">
-                                <RatingCircle score={Math.round(game.aggregated_rating)} size={50} />
-                                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                    <div className="bg-color_main text-color_text text-xs px-2 py-1 rounded whitespace-nowrap border border-border_detail shadow-lg">
-                                        IGDB Critics
+                            )}
+                            {game.aggregated_rating && (
+                                <div className="relative group">
+                                    <RatingCircle score={Math.round(game.aggregated_rating)} size={50} />
+                                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                        <div className="bg-color_main text-color_text text-xs px-2 py-1 rounded whitespace-nowrap border border-border_detail shadow-lg">
+                                            IGDB Critics
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-                        {game.rating && (
-                            <div className="relative group">
-                                <RatingCircle score={Math.round(game.rating)} size={50} />
-                                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                    <div className="bg-color_main text-color_text text-xs px-2 py-1 rounded whitespace-nowrap border border-border_detail shadow-lg">
-                                        IGDB Rating
+                            )}
+                            {game.rating && (
+                                <div className="relative group">
+                                    <RatingCircle score={Math.round(game.rating)} size={50} />
+                                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                        <div className="bg-color_main text-color_text text-xs px-2 py-1 rounded whitespace-nowrap border border-border_detail shadow-lg">
+                                            IGDB Rating
+                                        </div>
                                     </div>
                                 </div>
+                            )}
+                        </div>
+                        
+                        {/* User Reviews Rating */}
+                        <div className="border-t border-border_detail pt-4">
+                            <div className="flex items-center justify-center">
+                                <GameRatingStars gameId={game.id} />
                             </div>
-                        )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* User Reviews Rating Only */}
+            {!game.total_rating && !game.aggregated_rating && !game.rating && (
+                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
+                    <h3 className="text-color_text font-semibold mb-4 text-lg">User Reviews</h3>
+                    <div className="flex items-center justify-center">
+                        <GameRatingStars gameId={game.id} />
                     </div>
                 </div>
             )}

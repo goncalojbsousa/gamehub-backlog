@@ -9,8 +9,10 @@ import ThemeToggle from "../theme-toggle";
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
-    const { username, usernameSlug, userImage, isAuthenticated } = useUser();
+    const { username, usernameSlug, userImage, userRole, isAuthenticated } = useUser();
     const [clientIsAuthenticated, setClientIsAuthenticated] = useState(isAuthenticated);
+    
+
 
     // Sincronizar o estado do cliente com o contexto
     useEffect(() => {
@@ -35,7 +37,7 @@ export const Navbar = () => {
                     <ThemeToggle />
                 </div>
                 {shouldShowUser ? (
-                    <NavbarUser userImage={userImage} usernameSlug={usernameSlug} />
+                    <NavbarUser userImage={userImage} usernameSlug={usernameSlug} userRole={userRole} />
                 ) : (
                     <SignInButton className="text-color_main bg-color_reverse_sec border border-border_detail rounded-lg py-2 px-6 transition-all duration-200 hover:bg-color_reverse hover:shadow-lg hover:-translate-y-0.5 font-medium" />
                 )}

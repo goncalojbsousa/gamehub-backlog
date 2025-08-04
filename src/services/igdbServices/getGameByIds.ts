@@ -15,6 +15,10 @@ interface Deal {
 }
 
 export const fetchGameDetailsByIds = async (gameIds: number[]) => {
+    // Early return if no game IDs provided
+    if (!gameIds || gameIds.length === 0) {
+        return [];
+    }
 
     // GET CLIENT IP
     const headersList = await headers();

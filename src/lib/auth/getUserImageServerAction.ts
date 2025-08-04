@@ -1,21 +1,18 @@
 'use server'
 
 import { auth } from "@/src/lib/auth/authConfig"
+import { processGoogleImageUrl } from "@/src/utils/imageUtils"
 
 export const getUserImage = async () => {
     const session = await auth();
     if (session && session.user?.image) {
         let image = session.user.image.trim();
         
-        // Garantir que a URL do Google seja válida
-        if (image.includes('googleusercontent.com')) {
-            // Remover parâmetros de tamanho se existirem e adicionar tamanho adequado
-            image = image.replace(/=s\d+-c$/, '=s200-c');
-        }
+        // Ensure Google URL is valid using the utility function
+        image = processGoogleImageUrl(image);
         
-        console.log('User image from session:', image);
-        // Retornar null se a imagem estiver vazia após trim
-        return image || null;    
+        // Return empty string if image is empty after trim
+        return image || '';    
     }
-    return null;
+    return '';
 };
