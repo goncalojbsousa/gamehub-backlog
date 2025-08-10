@@ -9,7 +9,7 @@ import { LogoutIcon } from "@/src/components/svg/navigation/logout-icon";
 import { SettingsIcon } from "@/src/components/svg/navigation/settings";
 import { AdminIcon } from "@/src/components/svg/navigation/admin-icon";
 import { useUser } from "@/src/context/userContext";
-import { getValidImageUrl, isGoogleImage } from "@/src/utils/imageUtils";
+import { isGoogleImage } from "@/src/utils/imageUtils";
 
 interface UserProps {
     usernameSlug: string;
@@ -25,10 +25,7 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage, userR
     const profilePicRef = useRef<HTMLImageElement>(null);
     const { isAuthenticated } = useUser();
 
-    // Ensure we always have a valid image using the utility function
-    const validUserImage = (userImage && userImage.trim() !== '' && !imageError) 
-        ? getValidImageUrl(userImage) 
-        : "/placeholder-user.webp";
+    const validUserImage = userImage || "/placeholder-user.webp";
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -51,7 +48,7 @@ export const NavbarUser: React.FC<UserProps> = ({ usernameSlug, userImage, userR
 
     // Reset image error and loading state when userImage changes
     useEffect(() => {
-        if (userImage && userImage.trim() !== '') {
+        if (userImage) {
             setImageError(false);
             setImageLoading(true);
         }

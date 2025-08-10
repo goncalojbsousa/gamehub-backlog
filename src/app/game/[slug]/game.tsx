@@ -83,7 +83,7 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                                 </div>
                             </div>
 
-                            {/* Action Buttons and Share */}
+                            {/* Action Buttons */}
                             <div className="flex flex-col gap-3">
                                 <div className="flex flex-col sm:flex-row gap-3">
                                     {currentOption && currentProgress && (
@@ -135,9 +135,7 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                             <GamePageContent game={game} />
                             
                             {/* Reviews Section */}
-                            <div id="reviews-section" className="mt-12">
-                                <GameReviews gameId={game.id} />
-                            </div>
+                            <GameReviews gameId={game.id} />
                         </div>
                     </div>
                 </div>

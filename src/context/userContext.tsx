@@ -67,8 +67,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children, initialDat
   const [username, setUsername] = useState(initialData.username);
   const [usernameSlug, setUsernameSlug] = useState(initialData.usernameSlug);
   
-  // Ensure userImage is never an empty string - use empty string if no valid image
-  const [userImage, setUserImage] = useState(initialData.userImage && initialData.userImage.trim() !== '' ? initialData.userImage : '');
+  const [userImage, setUserImage] = useState(initialData.userImage || '');
   const [userRole, setUserRole] = useState(initialData.userRole || '');
   const [isAuthenticated, setIsAuthenticated] = useState(initialData.isAuthenticated);
 

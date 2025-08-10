@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { convertUnixToDate, getCoverImageUrl } from "@/src/utils/utils";
 import { RatingCircle } from "@/src/components/rating-circle";
 import { ShareButtons } from "@/src/components/share-buttons";
@@ -14,6 +14,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 
     const [isLanguageExpanded, setIsLanguageExpanded] = useState(false);
     const [languageFilter, setLanguageFilter] = useState("");
+    const [hasUserReviews, setHasUserReviews] = useState<boolean | null>(null);
 
     const toggleLanguageExpansion = () => {
         setIsLanguageExpanded(!isLanguageExpanded);
@@ -24,6 +25,25 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
             language_support.language.native_name.toLowerCase().includes(languageFilter.toLowerCase())
         ) || [];
     }, [game.language_supports, languageFilter]);
+
+    useEffect(() => {
+        let isMounted = true;
+        const loadHasReviews = async () => {
+            try {
+                const res = await fetch(`/api/game/getGameRating?gameId=${game.id}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (isMounted) setHasUserReviews(!!data?.hasReviews);
+                } else {
+                    if (isMounted) setHasUserReviews(false);
+                }
+            } catch {
+                if (isMounted) setHasUserReviews(false);
+            }
+        };
+        loadHasReviews();
+        return () => { isMounted = false; };
+    }, [game.id]);
 
     return (
         <div className="space-y-6">
@@ -80,18 +100,20 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
                             )}
                         </div>
                         
-                        {/* User Reviews Rating */}
-                        <div className="border-t border-border_detail pt-4">
-                            <div className="flex items-center justify-center">
-                                <GameRatingStars gameId={game.id} />
+                        {/* User Reviews Rating (only if there are site reviews) */}
+                        {hasUserReviews && (
+                            <div className="border-t border-border_detail pt-4">
+                                <div className="flex items-center justify-center">
+                                    <GameRatingStars gameId={game.id} />
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             )}
 
-            {/* User Reviews Rating Only */}
-            {!game.total_rating && !game.aggregated_rating && !game.rating && (
+            {/* User Reviews Rating Only (only if there are site reviews) */}
+            {!game.total_rating && !game.aggregated_rating && !game.rating && hasUserReviews && (
                 <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                     <h3 className="text-color_text font-semibold mb-4 text-lg">User Reviews</h3>
                     <div className="flex items-center justify-center">

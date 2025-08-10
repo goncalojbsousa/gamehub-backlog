@@ -34,9 +34,7 @@ export default async function UserDataFetcher({ children }: { children: React.Re
       username = (await getUserName()) || '';
       usernameSlug = (await getUserNameSlug()) || '';
       const imageResult = await getUserImage();
-      
-      // Ensure userImage is never an empty string
-      userImage = imageResult && imageResult.trim() !== '' ? imageResult : '';
+      userImage = imageResult || '';
       
       userRole = (await getUserRole()) || '';
       

@@ -35,34 +35,8 @@ export const isValidImageUrl = (url: string): boolean => {
     }
 };
 
-/**
- * Processes Google profile image URLs to ensure they have the correct format
- * Removes existing size parameters and adds consistent sizing for optimal display
- * 
- * @param url - The Google image URL to process
- * @returns Processed URL with consistent size parameters
- */
-export const processGoogleImageUrl = (url: string): string => {
-    // Return original URL if not a Google image
-    if (!url || !url.includes('googleusercontent.com')) return url;
-    
-    // Remove existing size parameters and add a consistent size
-    // Handle different Google image URL formats
-    let processedUrl = url;
-    
-    // Remove existing size parameters using regex patterns
-    processedUrl = processedUrl.replace(/=s\d+-c$/, ''); // Remove size with crop parameter
-    processedUrl = processedUrl.replace(/=s\d+$/, '');   // Remove size without crop parameter
-    
-    // Add consistent size parameter (200px with crop)
-    if (!processedUrl.includes('=')) {
-        processedUrl += '=s200-c';
-    } else {
-        processedUrl += '=s200-c';
-    }
-    
-    return processedUrl;
-};
+// Note: We intentionally removed any Google image URL processing.
+// We will use the image URL exactly as stored in the database.
 
 /**
  * Gets a valid image URL with fallback to placeholder
@@ -85,9 +59,9 @@ export const getValidImageUrl = (imageUrl: string | null | undefined, placeholde
         return placeholder;
     }
     
-    // For Google images, always accept them and process for consistent sizing
+    // For Google images, always accept them as-is (no processing)
     if (trimmedUrl.includes('googleusercontent.com')) {
-        return processGoogleImageUrl(trimmedUrl);
+        return trimmedUrl;
     }
     
     // For other URLs, validate them using URL constructor

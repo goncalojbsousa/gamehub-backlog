@@ -4,16 +4,18 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { GameCard } from "@/src/components/game-card";
 import { AdminProfileIndicator } from "@/src/components/admin-profile-indicator";
+import { UserReviews } from "@/src/components/user-reviews";
 import Image from "next/image";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
 import { checkUserHasGames } from "@/src/lib/checkUserHasGames";
+import { getUserReviewCount } from "@/src/lib/getUserReviewCount";
 import { LoadingIcon } from "@/src/components/svg/loading";
 import { SearchIcon } from "@/src/components/svg/search-icon";
 import { FiltersIcon } from "@/src/components/svg/filter-icon";
 import { getCoverImageUrl } from "@/src/utils/utils";
 import { useUser } from "@/src/context/userContext";
-import { getValidImageUrl, isGoogleImage } from "@/src/utils/imageUtils";
+import { isGoogleImage } from "@/src/utils/imageUtils";
 
 interface UserProps {
     userId: string;
@@ -37,9 +39,9 @@ interface GameProps {
 export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, joinDate, userId, isBanned = false, bio, isProfilePublic = true, isPrivateProfile = false }) => {
     const { userRole } = useUser();
     const [imageError, setImageError] = useState(false);
+    const [activeTab, setActiveTab] = useState<'games' | 'reviews'>('games');
     
-    // Ensure we always have a valid image using the utility function
-    const validUserImage = !imageError ? getValidImageUrl(userImage) : "/placeholder-user.webp";
+    const validUserImage = !imageError ? (userImage || "/placeholder-user.webp") : "/placeholder-user.webp";
     
     // Função auxiliar para formatar a data de forma segura
     const formatJoinDate = (date: string | Date) => {
@@ -68,33 +70,39 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [loading, setLoading] = useState(true);
     const [hasGames, setHasGames] = useState<boolean | null>(null);
     const [userGameStats, setUserGameStats] = useState<Record<string, number>>({});
+    const [reviewCount, setReviewCount] = useState(0);
 
     // Reset image error when userImage changes
     useEffect(() => {
         setImageError(false);
     }, [userImage]);
 
-    // Check if user has any games on component mount
+    // Check if user has any games and reviews on component mount
     useEffect(() => {
-        const checkGames = async () => {
+        const checkUserData = async () => {
             try {
-                const data = await checkUserHasGames(userId);
-                setHasGames(data.hasGames);
-                setUserGameStats(data.statusCounts || {});
+                const [gamesData, reviewsData] = await Promise.all([
+                    checkUserHasGames(userId),
+                    getUserReviewCount(userId)
+                ]);
+                
+                setHasGames(gamesData.hasGames);
+                setUserGameStats(gamesData.statusCounts || {});
+                setReviewCount(reviewsData);
                 
                 // Auto-select the first category that has games
-                if (data.statusCounts) {
-                    const firstCategoryWithGames = categories.find(category => data.statusCounts[category] > 0);
+                if (gamesData.statusCounts) {
+                    const firstCategoryWithGames = categories.find(category => gamesData.statusCounts[category] > 0);
                     if (firstCategoryWithGames && firstCategoryWithGames !== selectedCategory) {
                         setSelectedCategory(firstCategoryWithGames);
                     }
                 }
             } catch (error) {
-                console.error("Error checking user games:", error);
+                console.error("Error checking user data:", error);
                 setHasGames(false);
             }
         };
-        checkGames();
+        checkUserData();
     }, [userId]);
 
     const fetchGames = useCallback(async () => {
@@ -228,15 +236,17 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                             </div>
                                     </div>
 
-                                    {/* Stats - Placeholder for future content */}
+                                    {/* Stats */}
                                     <div className="flex gap-6">
                                         <div className="text-center">
-                                            <div className="text-2xl font-bold text-color_text"></div>
-                                            <div className="text-sm text-color_text_sec"></div>
+                                            <div className="text-2xl font-bold text-color_text">
+                                                {Object.values(userGameStats).reduce((sum, count) => sum + count, 0)}
+                                            </div>
+                                            <div className="text-sm text-color_text_sec">Games</div>
                                         </div>
                                         <div className="text-center">
-                                            <div className="text-2xl font-bold text-color_text"></div>
-                                            <div className="text-sm text-color_text_sec"></div>
+                                            <div className="text-2xl font-bold text-color_text">{reviewCount}</div>
+                                            <div className="text-sm text-color_text_sec">Reviews</div>
                                         </div>
                                     </div>
                                 </div>
@@ -289,7 +299,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                                     handleCategoryClick(category);
                                                     setIsFiltersOpen(false);
                                                 }}
-                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
                                                     selectedCategory === category 
                                                         ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
                                                         : 'bg-color_main text-color_text hover:bg-color_hover'
@@ -312,19 +322,19 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                             <div className="mb-6">
                                 <h3 className="text-sm font-semibold text-color_text mb-3">Progress Filter</h3>
                                 <div className="space-y-2">
-                                    {progressOptions.map(progress => (
-                                        <button
-                                            key={progress}
-                                            onClick={() => handleProgressClick(progress)}
-                                            className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
-                                                selectedProgress === progress || (progress === 'All' && !selectedProgress)
-                                                    ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
-                                                    : 'bg-color_main text-color_text hover:bg-color_hover'
-                                            }`}
-                                        >
-                                            {progress}
-                                        </button>
-                                    ))}
+                                                                            {progressOptions.map(progress => (
+                                            <button
+                                                key={progress}
+                                                onClick={() => handleProgressClick(progress)}
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
+                                                    selectedProgress === progress || (progress === 'All' && !selectedProgress)
+                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
+                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
+                                                }`}
+                                            >
+                                                {progress}
+                                            </button>
+                                        ))}
                                 </div>
                             </div>
 
@@ -338,7 +348,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                             {(searchTerm || selectedProgress) && (
                                 <button
                                     onClick={clearAllFilters}
-                                    className="w-full py-2 px-4 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors text-sm font-medium border border-border_detail"
+                                    className="w-full py-2 px-4 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors text-sm font-medium border border-border_detail focus:outline-none"
                                 >
                                     Clear All Filters
                                 </button>
@@ -349,7 +359,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                         <div className="p-6 border-t border-border_detail">
                             <button
                                 onClick={() => setIsFiltersOpen(false)}
-                                className="w-full py-3 bg-color_reverse_sec text-color_main rounded-lg hover:bg-color_reverse transition-all duration-200 font-medium"
+                                className="w-full py-3 bg-color_reverse_sec text-color_main rounded-lg hover:bg-color_reverse transition-all duration-200 font-medium focus:outline-none"
                             >
                                 Apply Filters
                             </button>
@@ -361,9 +371,36 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
             {/* Main Content */}
             <div className="relative z-10">
                 <div className="container mx-auto px-4 lg:px-8 py-4">
-                    <div className="flex flex-col lg:flex-row gap-8">
-                        {/* Desktop Filters Sidebar */}
-                        {hasGames === true && (
+                    {/* Tabs */}
+                    <div className="mb-8">
+                        <div className="bg-color_sec rounded-xl p-2 shadow-lg border border-border_detail inline-flex">
+                            <button
+                                onClick={() => setActiveTab('games')}
+                                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none ${
+                                    activeTab === 'games'
+                                        ? 'bg-color_reverse_sec text-color_main shadow-md'
+                                        : 'text-color_text hover:text-color_reverse_sec'
+                                }`}
+                            >
+                                Games ({Object.values(userGameStats).reduce((sum, count) => sum + count, 0)})
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('reviews')}
+                                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none ${
+                                    activeTab === 'reviews'
+                                        ? 'bg-color_reverse_sec text-color_main shadow-md'
+                                        : 'text-color_text hover:text-color_reverse_sec'
+                                }`}
+                            >
+                                Reviews ({reviewCount})
+                            </button>
+                        </div>
+                    </div>
+
+                    {activeTab === 'games' && (
+                        <div className="flex flex-col lg:flex-row gap-8">
+                            {/* Desktop Filters Sidebar */}
+                            {hasGames === true && (
                             <div className="hidden lg:block w-80 flex-shrink-0">
                             <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail sticky top-24 animate-slide-in-up">
                                 <h2 className="text-xl font-bold mb-6 text-color_text">Filters</h2>
@@ -391,7 +428,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                             <button
                                                 key={category}
                                                 onClick={() => handleCategoryClick(category)}
-                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
                                                     selectedCategory === category 
                                                         ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
                                                         : 'bg-color_main text-color_text hover:bg-color_hover'
@@ -418,7 +455,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                             <button
                                                 key={progress}
                                                 onClick={() => handleProgressClick(progress)}
-                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
                                                     selectedProgress === progress || (progress === 'All' && !selectedProgress)
                                                         ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
                                                         : 'bg-color_main text-color_text hover:bg-color_hover'
@@ -496,7 +533,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                         </div>
                                         <button
                                             onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                                            className="p-3 rounded-lg bg-color_main hover:bg-color_hover transition-colors"
+                                            className="p-3 rounded-lg bg-color_main hover:bg-color_hover transition-colors focus:outline-none"
                                         >
                                             <FiltersIcon className="fill-color_icons w-5 h-5" />
                                         </button>
@@ -527,7 +564,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                         {searchTerm && (
                                             <button
                                                 onClick={() => setSearchTerm("")}
-                                                className="px-6 py-3 bg-color_reverse_sec text-color_main rounded-lg hover:bg-color_reverse transition-all duration-200 font-medium"
+                                                className="px-6 py-3 bg-color_reverse_sec text-color_main rounded-lg hover:bg-color_reverse transition-all duration-200 font-medium focus:outline-none"
                                             >
                                                 Clear Search
                                             </button>
@@ -550,7 +587,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                                     <button
                                                         onClick={() => handlePageChange(currentPage - 1)}
                                                         disabled={currentPage === 1}
-                                                        className="px-4 py-2 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="px-4 py-2 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
                                                     >
                                                         Previous
                                                     </button>
@@ -560,7 +597,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                                     <button
                                                         onClick={() => handlePageChange(currentPage + 1)}
                                                         disabled={currentPage === totalPages}
-                                                        className="px-4 py-2 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="px-4 py-2 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
                                                     >
                                                         Next
                                                     </button>
@@ -572,7 +609,14 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                             )}
                         </div>
                         ) : null}
-                    </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'reviews' && (
+                        <div className="animate-slide-in-up">
+                            <UserReviews userId={userId} username={userName} />
+                        </div>
+                    )}
                 </div>
             </div>
 

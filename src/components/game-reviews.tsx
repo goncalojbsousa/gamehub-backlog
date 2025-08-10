@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { ReviewCard } from "@/src/components/review-card";
 import { ReviewForm } from "@/src/components/review-form";
 import { useSession } from "next-auth/react";
@@ -224,8 +225,10 @@ export const GameReviews: React.FC<GameReviewsProps> = ({ gameId }) => {
     ? [userReview, ...reviews.filter(review => review.userId !== userReview?.userId)]
     : reviews;
 
+  // No separate CTA block needed; header button handles auth vs login when there are zero reviews
+
   return (
-    <div className="space-y-8">
+    <div id="reviews-section" className="mt-12 space-y-8">
       {/* Header Section */}
       <div className="bg-color_sec rounded-xl p-6 border border-border_detail shadow-lg">
         <div className="flex items-center justify-between">
@@ -237,13 +240,24 @@ export const GameReviews: React.FC<GameReviewsProps> = ({ gameId }) => {
               {allReviews.length} {allReviews.length === 1 ? 'review' : 'reviews'} for this game
             </p>
           </div>
-          {isAuthenticated && !userReview && !showForm && (
-            <button
-              onClick={() => setShowForm(true)}
-              className="bg-color_reverse_sec text-color_main font-semibold py-3 px-6 rounded-xl hover:bg-color_reverse transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              Write Review
-            </button>
+          {!showForm && !userReview && (
+            isAuthenticated ? (
+              <button
+                onClick={() => setShowForm(true)}
+                className="bg-color_reverse_sec text-color_main font-semibold py-3 px-6 rounded-xl hover:bg-color_reverse transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                Write Review
+              </button>
+            ) : (
+              allReviews.length === 0 ? (
+                <Link
+                  href="/auth/sign-in"
+                  className="bg-color_reverse_sec text-color_main font-semibold py-3 px-6 rounded-xl hover:bg-color_reverse transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  Login to write a review
+                </Link>
+              ) : null
+            )
           )}
         </div>
       </div>
@@ -283,15 +297,8 @@ export const GameReviews: React.FC<GameReviewsProps> = ({ gameId }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-color_text mb-2">
-              {isAuthenticated ? "Be the first to write a review!" : "No reviews yet"}
-            </h3>
-            <p className="text-color_text_sec">
-              {isAuthenticated 
-                ? "Share your opinion and help other players discover this game."
-                : "Sign in to be the first to write a review."
-              }
-            </p>
+            <h3 className="text-xl font-semibold text-color_text mb-2">Be the first to write a review!</h3>
+            <p className="text-color_text_sec">Share your opinion and help other players discover this game.</p>
           </div>
         </div>
       ) : (

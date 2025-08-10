@@ -4,7 +4,7 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import Image from "next/image";
 import { useState } from "react";
-import { getValidImageUrl, isGoogleImage } from "@/src/utils/imageUtils";
+import { isGoogleImage } from "@/src/utils/imageUtils";
 
 /**
  * Props interface for the BannedUserProfile component
@@ -36,8 +36,7 @@ export const BannedUserProfile: React.FC<BannedUserProfileProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   
-  // Ensure we always have a valid image using the utility function
-  const validUserImage = !imageError ? getValidImageUrl(userImage) : "/placeholder-user.webp";
+  const validUserImage = !imageError ? (userImage || "/placeholder-user.webp") : "/placeholder-user.webp";
   
   // Helper function to safely format the join date
   const formatJoinDate = (date: string | Date) => {
