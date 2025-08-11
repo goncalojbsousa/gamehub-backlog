@@ -6,16 +6,15 @@ import { GameCard } from "@/src/components/game-card";
 import { AdminProfileIndicator } from "@/src/components/admin-profile-indicator";
 import { UserReviews } from "@/src/components/user-reviews";
 import Image from "next/image";
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
-import { checkUserHasGames } from "@/src/lib/checkUserHasGames";
-import { getUserReviewCount } from "@/src/lib/getUserReviewCount";
 import { LoadingIcon } from "@/src/components/svg/loading";
 import { SearchIcon } from "@/src/components/svg/search-icon";
 import { FiltersIcon } from "@/src/components/svg/filter-icon";
 import { getCoverImageUrl } from "@/src/utils/utils";
 import { useUser } from "@/src/context/userContext";
 import { isGoogleImage } from "@/src/utils/imageUtils";
+import type { UserReview } from "@/src/lib/getUserReviews";
 
 interface UserProps {
     userId: string;
@@ -72,37 +71,76 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [userGameStats, setUserGameStats] = useState<Record<string, number>>({});
     const [reviewCount, setReviewCount] = useState(0);
 
+    // Prefetched reviews and game details to avoid extra IGDB call on tab switch
+    const [initialReviews, setInitialReviews] = useState<UserReview[] | null>(null);
+    const [initialReviewsPagination, setInitialReviewsPagination] = useState<{
+        currentPage: number;
+        totalPages: number;
+        totalReviews: number;
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+    } | null>(null);
+    const [initialGameDetailsById, setInitialGameDetailsById] = useState<Record<number, Game> | null>(null);
+    const [initialSortBy, setInitialSortBy] = useState<string>('createdAt');
+    const [initialSortOrder, setInitialSortOrder] = useState<'asc' | 'desc'>('desc');
+    const skipInitialGamesFetch = useRef(true);
+
     // Reset image error when userImage changes
     useEffect(() => {
         setImageError(false);
     }, [userImage]);
 
-    // Check if user has any games and reviews on component mount
+    // Initial load: fetch games + reviews, and make a single IGDB call on backend
     useEffect(() => {
-        const checkUserData = async () => {
+        const loadInitialData = async () => {
             try {
-                const [gamesData, reviewsData] = await Promise.all([
-                    checkUserHasGames(userId),
-                    getUserReviewCount(userId)
-                ]);
-                
-                setHasGames(gamesData.hasGames);
-                setUserGameStats(gamesData.statusCounts || {});
-                setReviewCount(reviewsData);
-                
-                // Auto-select the first category that has games
-                if (gamesData.statusCounts) {
-                    const firstCategoryWithGames = categories.find(category => gamesData.statusCounts[category] > 0);
-                    if (firstCategoryWithGames && firstCategoryWithGames !== selectedCategory) {
-                        setSelectedCategory(firstCategoryWithGames);
-                    }
+                setLoading(true);
+                const params = new URLSearchParams({
+                    userId,
+                    status: selectedCategory,
+                    gamePage: String(currentPage),
+                    gameLimit: '48',
+                    reviewPage: '1',
+                    reviewLimit: '10',
+                    sortBy: 'createdAt',
+                    sortOrder: 'desc',
+                });
+                const res = await fetch(`/api/profile/getInitialData?${params.toString()}`);
+                if (!res.ok) {
+                    throw new Error('Failed to load initial profile data');
                 }
+                const data = await res.json();
+
+                // Status counts and review counts
+                setUserGameStats(data.statusCounts || {});
+                setReviewCount(data.reviews?.pagination?.totalReviews || 0);
+                const counts: Record<string, number> = data.statusCounts || {};
+                setHasGames(Object.values(counts).some((v) => v > 0));
+
+                // Games
+                setGames((data.games?.items || []) as GameProps[]);
+                setTotalPages(data.games?.pagination?.totalPages || 1);
+                if (data.games?.selectedStatus && data.games.selectedStatus !== selectedCategory) {
+                    setSelectedCategory(data.games.selectedStatus);
+                }
+
+                // Prefetch reviews and game details for reviews list
+                setInitialReviews(data.reviews?.items || []);
+                setInitialReviewsPagination(data.reviews?.pagination || null);
+                setInitialGameDetailsById(data.gameDetailsById || null);
+                setInitialSortBy(data.reviews?.sortBy || 'createdAt');
+                setInitialSortOrder((data.reviews?.sortOrder || 'desc'));
+
+                // Avoid triggering the immediate fetchGames useEffect once
+                skipInitialGamesFetch.current = true;
             } catch (error) {
-                console.error("Error checking user data:", error);
-                setHasGames(false);
+                console.error('Error loading initial profile data:', error);
+            } finally {
+                setLoading(false);
             }
         };
-        checkUserData();
+        loadInitialData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
 
     const fetchGames = useCallback(async () => {
@@ -118,6 +156,11 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     }, [userId, selectedCategory, currentPage]);
 
     useEffect(() => {
+        if (skipInitialGamesFetch.current) {
+            // Skip once because initial data already set games
+            skipInitialGamesFetch.current = false;
+            return;
+        }
         fetchGames();
     }, [fetchGames]);
 
@@ -614,7 +657,16 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
 
                     {activeTab === 'reviews' && (
                         <div className="animate-slide-in-up">
-                            <UserReviews userId={userId} username={userName} />
+                            <UserReviews
+                                userId={userId}
+                                username={userName}
+                                initialReviews={initialReviews || undefined}
+                                initialPagination={initialReviewsPagination || undefined}
+                                initialGameDetailsById={initialGameDetailsById || undefined}
+                                initialPage={1}
+                                initialSortBy={initialSortBy}
+                                initialSortOrder={initialSortOrder}
+                            />
                         </div>
                     )}
                 </div>

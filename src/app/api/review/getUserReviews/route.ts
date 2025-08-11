@@ -48,13 +48,16 @@ export async function GET(request: NextRequest) {
         });
 
         // Get reviews with pagination and sorting
+        const primaryOrder: any = { [sortBy]: sortOrder };
+        // Deterministic tie-breaker: when sorting by rating, use createdAt desc as secondary.
+        // For date fields, fall back to id desc to keep consistent ordering.
+        const secondaryOrder: any = sortBy === 'rating' ? { createdAt: 'desc' } : { id: 'desc' };
+
         const reviews = await prisma.review.findMany({
             where: {
                 userId: userId
             },
-            orderBy: {
-                [sortBy]: sortOrder
-            },
+            orderBy: [primaryOrder, secondaryOrder],
             skip: offset,
             take: limit,
             include: {

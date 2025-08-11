@@ -1,12 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getUserReviews, UserReview } from '@/src/lib/getUserReviews';
 import { LoadingIcon } from '@/src/components/svg/loading';
 import { RatingStars } from '@/src/components/rating-stars';
 import { getCoverImageUrl } from '@/src/utils/utils';
 import Image from 'next/image';
 import Link from 'next/link';
+
+// Simple in-memory cache to persist user reviews state across unmounts (e.g., tab switches)
+const userReviewsCache: Record<string, {
+    reviews: UserReview[];
+    currentPage: number;
+    totalPages: number;
+    totalReviews: number;
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+    gameDetails: Record<number, GameDetails>;
+}> = {};
 
 interface GameDetails {
     id: number;
@@ -20,18 +31,41 @@ interface GameDetails {
 interface UserReviewsProps {
     userId: string;
     username: string;
+    initialReviews?: UserReview[];
+    initialPagination?: {
+        currentPage: number;
+        totalPages: number;
+        totalReviews: number;
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+    };
+    initialGameDetailsById?: Record<number, GameDetails>;
+    initialPage?: number;
+    initialSortBy?: string;
+    initialSortOrder?: 'asc' | 'desc';
 }
 
-export const UserReviews: React.FC<UserReviewsProps> = ({ userId, username }) => {
-    const [reviews, setReviews] = useState<UserReview[]>([]);
-    const [gameDetails, setGameDetails] = useState<Record<number, GameDetails>>({});
+export const UserReviews: React.FC<UserReviewsProps> = ({
+    userId,
+    username,
+    initialReviews,
+    initialPagination,
+    initialGameDetailsById,
+    initialPage = 1,
+    initialSortBy = 'createdAt',
+    initialSortOrder = 'desc',
+}) => {
+    const [reviews, setReviews] = useState<UserReview[]>(initialReviews || []);
+    const [gameDetails, setGameDetails] = useState<Record<number, GameDetails>>(initialGameDetailsById || {});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalReviews, setTotalReviews] = useState(0);
-    const [sortBy, setSortBy] = useState('createdAt');
-    const [sortOrder, setSortOrder] = useState('desc');
+    const [currentPage, setCurrentPage] = useState(initialPagination?.currentPage || initialPage);
+    const [totalPages, setTotalPages] = useState(initialPagination?.totalPages || 1);
+    const [totalReviews, setTotalReviews] = useState(initialPagination?.totalReviews || 0);
+    const [sortBy, setSortBy] = useState(initialSortBy);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
+    const didUseInitial = useRef<boolean>(!!initialReviews);
+    const lastFetchedRef = useRef<{ page: number; sortBy: string; sortOrder: 'asc' | 'desc' } | null>(null);
 
     const fetchGameDetails = async (gameIds: number[]) => {
         try {
@@ -68,6 +102,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({ userId, username }) =>
             setReviews(data.reviews);
             setTotalPages(data.pagination.totalPages);
             setTotalReviews(data.pagination.totalReviews);
+            lastFetchedRef.current = { page: currentPage, sortBy, sortOrder };
 
             // Fetch game details for new reviews
             const newGameIds = data.reviews
@@ -86,8 +121,72 @@ export const UserReviews: React.FC<UserReviewsProps> = ({ userId, username }) =>
     };
 
     useEffect(() => {
+        // If we have initial reviews, don't refetch on first mount
+        if (didUseInitial.current) {
+            didUseInitial.current = false;
+            setLoading(false);
+            // Ensure we have game details for any IDs missing in the initial map
+            const missingIds = reviews
+                .map(r => r.gameId)
+                .filter(id => !gameDetails[id]);
+            if (missingIds.length > 0) {
+                fetchGameDetails(missingIds);
+            }
+            // Mark last fetched as the initial params
+            lastFetchedRef.current = { 
+                page: initialPagination?.currentPage || initialPage, 
+                sortBy: initialSortBy, 
+                sortOrder: initialSortOrder 
+            };
+            return;
+        }
+
+        // Load from cache if available and matches current view
+        const cached = userReviewsCache[userId];
+        if (cached &&
+            cached.currentPage === currentPage &&
+            cached.sortBy === sortBy &&
+            cached.sortOrder === sortOrder
+        ) {
+            setReviews(cached.reviews);
+            setTotalPages(cached.totalPages);
+            setTotalReviews(cached.totalReviews);
+            // Merge cached game details with any existing
+            setGameDetails(prev => ({ ...cached.gameDetails, ...prev }));
+            setLoading(false);
+            lastFetchedRef.current = { page: currentPage, sortBy, sortOrder };
+            return;
+        }
+
+        // If we already have data corresponding to the current params, skip refetch
+        if (
+            lastFetchedRef.current &&
+            lastFetchedRef.current.page === currentPage &&
+            lastFetchedRef.current.sortBy === sortBy &&
+            lastFetchedRef.current.sortOrder === sortOrder
+        ) {
+            setLoading(false);
+            return;
+        }
+
         fetchReviews();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId, currentPage, sortBy, sortOrder]);
+
+    // Save to cache on unmount so that switching tabs doesn't cause refetches
+    useEffect(() => {
+        return () => {
+            userReviewsCache[userId] = {
+                reviews,
+                currentPage,
+                totalPages,
+                totalReviews,
+                sortBy,
+                sortOrder,
+                gameDetails,
+            };
+        };
+    }, [userId, reviews, currentPage, totalPages, totalReviews, sortBy, sortOrder, gameDetails]);
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= totalPages) {
@@ -267,31 +366,33 @@ export const UserReviews: React.FC<UserReviewsProps> = ({ userId, username }) =>
                     <div key={review.id} className="bg-gradient-to-br from-color_main to-color_sec rounded-xl p-6 border border-border_detail hover:shadow-lg transition-all duration-200 hover:border-color_reverse_sec group relative overflow-hidden">
                         <div className="relative z-10">
                         <div className="flex flex-col lg:flex-row gap-6">
-                            {/* Game Cover */}
                             <div className="flex-shrink-0">
                                 <Link href={`/game/${gameDetails[review.gameId]?.slug || review.gameId}`}>
                                     <div className="relative w-24 h-32 rounded-xl overflow-hidden bg-color_hover shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
-                                        <Image
-                                            src={gameDetails[review.gameId]?.cover?.url 
-                                                ? getCoverImageUrl(`https://${gameDetails[review.gameId].cover.url}`)
-                                                : `/url-image.webp`
-                                            }
-                                            alt={gameDetails[review.gameId]?.name || `Game ${review.gameId}`}
-                                            fill
-                                            className="object-cover transition-opacity duration-300"
-                                            onError={(e) => {
-                                                e.currentTarget.src = '/url-image.webp';
-                                            }}
-                                            onLoad={(e) => {
-                                                e.currentTarget.style.opacity = '1';
-                                            }}
-                                            style={{ opacity: 0 }}
-                                        />
+                                        {(() => {
+                                            const details = gameDetails[review.gameId];
+                                            const coverPath = details?.cover?.url;
+                                            const computedSrc = coverPath ? getCoverImageUrl(`https://${coverPath}`) : '/url-image.webp';
+                                            const altText = details?.name || `Game ${review.gameId}`;
+                                            return (
+                                                <Image
+                                                    src={computedSrc}
+                                                    alt={altText}
+                                                    fill
+                                                    className="object-cover transition-opacity duration-300"
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = '/url-image.webp';
+                                                    }}
+                                                    onLoad={(e) => {
+                                                        e.currentTarget.style.opacity = '1';
+                                                    }}
+                                                    style={{ opacity: 0 }}
+                                                />
+                                            );
+                                        })()}
                                     </div>
                                 </Link>
                             </div>
-
-                            {/* Review Content */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
                                     <div className="flex-1">
