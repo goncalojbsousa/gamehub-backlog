@@ -2,6 +2,7 @@
 
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
+import { getIgdbAccessToken } from './tokenManager';
 
 /**
  * Fetches games from IGDB API based on search query
@@ -42,7 +43,8 @@ export const fetchGamesBySearch = async (query: string): Promise<Game[]> => {
         const IGDB_API_URL = `${process.env.IGDB_API_URL}v4/games`;
         const origin = process.env.NEXTAUTH_URL;
         const clientID = process.env.IGDB_CLIENT;
-        const authorization = 'Bearer ' + process.env.IGDB_SECRET;
+        const token = await getIgdbAccessToken();
+        const authorization = 'Bearer ' + token;
 
         // Validate required environment variables
         if (!origin || !clientID || !authorization) {

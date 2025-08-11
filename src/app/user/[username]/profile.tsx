@@ -6,7 +6,7 @@ import { GameCard } from "@/src/components/game-card";
 import { AdminProfileIndicator } from "@/src/components/admin-profile-indicator";
 import { UserReviews } from "@/src/components/user-reviews";
 import Image from "next/image";
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
 import { LoadingIcon } from "@/src/components/svg/loading";
 import { SearchIcon } from "@/src/components/svg/search-icon";
@@ -83,7 +83,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     const [initialGameDetailsById, setInitialGameDetailsById] = useState<Record<number, Game> | null>(null);
     const [initialSortBy, setInitialSortBy] = useState<string>('createdAt');
     const [initialSortOrder, setInitialSortOrder] = useState<'asc' | 'desc'>('desc');
-    const skipInitialGamesFetch = useRef(true);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
 
     // Reset image error when userImage changes
     useEffect(() => {
@@ -130,13 +130,12 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                 setInitialGameDetailsById(data.gameDetailsById || null);
                 setInitialSortBy(data.reviews?.sortBy || 'createdAt');
                 setInitialSortOrder((data.reviews?.sortOrder || 'desc'));
-
-                // Avoid triggering the immediate fetchGames useEffect once
-                skipInitialGamesFetch.current = true;
             } catch (error) {
                 console.error('Error loading initial profile data:', error);
             } finally {
                 setLoading(false);
+                // Mark initial loading complete so subsequent filter changes trigger fetch
+                setIsInitialLoading(false);
             }
         };
         loadInitialData();
@@ -156,13 +155,10 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     }, [userId, selectedCategory, currentPage]);
 
     useEffect(() => {
-        if (skipInitialGamesFetch.current) {
-            // Skip once because initial data already set games
-            skipInitialGamesFetch.current = false;
-            return;
-        }
+        // Only fetch on user-driven changes after initial data has been loaded
+        if (isInitialLoading) return;
         fetchGames();
-    }, [fetchGames]);
+    }, [fetchGames, isInitialLoading]);
 
     const handleCategoryClick = (category: string) => {
         setSelectedCategory(category);

@@ -3,6 +3,7 @@
 import { checkRateLimit } from "@/src/utils/rateLimit";
 import { headers } from "next/headers";
 import { fetchAllDeals } from "@/src/services/cheapsharkServices/getAllDeals";
+import { getIgdbAccessToken } from './tokenManager';
 
 interface Website {
     url: string;
@@ -40,7 +41,8 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
         const IGDB_API_URL = `${process.env.IGDB_API_URL}v4/games`;
         const origin = process.env.NEXTAUTH_URL;
         const clientID = process.env.IGDB_CLIENT;
-        const authorization = 'Bearer ' + process.env.IGDB_SECRET;
+        const token = await getIgdbAccessToken();
+        const authorization = 'Bearer ' + token;
 
         if (!origin || !clientID || !authorization) {
             throw new Error('Token or Origin not defined');

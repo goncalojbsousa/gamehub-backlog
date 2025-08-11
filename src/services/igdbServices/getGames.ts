@@ -3,6 +3,7 @@
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
 import { fetchAllDeals } from '../cheapsharkServices/getAllDeals';
+import { getIgdbAccessToken } from './tokenManager';
 
 /**
  * Supported list types for fetching games
@@ -56,7 +57,8 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
         const IGDB_API_URL = `${process.env.IGDB_API_URL}v4/games`;
         const origin = process.env.NEXTAUTH_URL;
         const clientID = process.env.IGDB_CLIENT;
-        const authorization = 'Bearer ' + process.env.IGDB_SECRET;
+        const token = await getIgdbAccessToken();
+        const authorization = 'Bearer ' + token;
 
         // Validate required environment variables
         if (!origin || !clientID || !authorization) {

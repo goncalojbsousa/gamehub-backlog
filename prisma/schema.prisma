@@ -8,20 +8,14 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-/**
- * User authentication roles
- * Defines the permission levels for users in the system
- */
+// User authentication roles
+// Defines the permission levels for users in the system
 enum AuthRole {
   USER  // Standard user with basic permissions
   ADMIN // Administrator with full system access
 }
-
-/**
- * User model - Core user entity for authentication and profile management
- * Stores user account information, authentication details, and profile settings
- */
+// User model - Core user entity for authentication and profile management
+// Stores user account information, authentication details, and profile settings
 model User {
   id            String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name          String?          @db.VarChar(255) // Display name for the user
@@ -40,11 +34,8 @@ model User {
   gameStatus    UserGameStatus[] // User's game status tracking
   reviews       Review[]         // User's game reviews
 }
-
-/**
- * Account model - OAuth provider connections
- * Links user accounts to external authentication providers (Google, etc.)
- */
+// Account model - OAuth provider connections
+// Links user accounts to external authentication providers (Google, etc.)
 model Account {
   id                String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId            String  @db.Uuid // Reference to the user
@@ -66,10 +57,8 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-/**
- * Verification token model - Email verification tokens
- * Temporary tokens used for email verification during registration
- */
+// Verification token model - Email verification tokens
+// Temporary tokens used for email verification during registration
 model VerificationToken {
   identifier String   // Email or identifier being verified
   token      String   // Verification token
@@ -78,10 +67,8 @@ model VerificationToken {
   @@id([identifier, token]) // Composite primary key
 }
 
-/**
- * Rate limiting request tracking
- * Records individual API requests for rate limiting enforcement
- */
+// Rate limiting request tracking
+// Records individual API requests for rate limiting enforcement
 model RateLimitRequest {
   id        Int      @id @default(autoincrement())
   ip        String   @db.VarChar(45) // Client IP address (IPv4/IPv6)
@@ -91,28 +78,22 @@ model RateLimitRequest {
   @@index([ip, timestamp], name: "idx_rate_limit_requests_ip_timestamp")
 }
 
-/**
- * Rate limiting violation tracking
- * Tracks repeated violations by IP address for progressive rate limiting
- */
+// Rate limiting violation tracking
+// Tracks repeated violations by IP address for progressive rate limiting
 model RateLimitViolation {
   ip         String @id @db.VarChar(45) // Client IP address
   violations Int    // Number of violations committed
 }
 
-/**
- * Rate limiting block list
- * Temporarily blocks IP addresses that exceed rate limits
- */
+// Rate limiting block list
+// Temporarily blocks IP addresses that exceed rate limits
 model RateLimitBlock {
   ip          String   @id @db.VarChar(45) // Client IP address
   block_until DateTime @db.Timestamptz // Block expiration time
 }
 
-/**
- * User game status tracking
- * Records user's progress and status for individual games
- */
+// User game status tracking
+// Records user's progress and status for individual games
 model UserGameStatus {
   id        Int      @id @default(autoincrement())
   userId    String   @db.Uuid // Reference to the user
@@ -131,10 +112,8 @@ model UserGameStatus {
   @@index([userId, gameId], name: "idx_user_game_status")
 }
 
-/**
- * Game review model
- * Stores user reviews and ratings for games
- */
+// Game review model
+// Stores user reviews and ratings for games
 model Review {
   id          Int      @id @default(autoincrement())
   userId      String   @db.Uuid // Reference to the user
@@ -155,10 +134,8 @@ model Review {
   @@index([gameId], name: "idx_game_reviews")
 }
 
-/**
- * Admin action logging
- * Audit trail for administrative actions performed in the system
- */
+// Admin action logging
+// Audit trail for administrative actions performed in the system
 model AdminLog {
   id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   action      String   @db.VarChar(100) // Type of admin action performed
@@ -176,4 +153,16 @@ model AdminLog {
   @@index([action], name: "idx_admin_log_action")
   @@index([timestamp], name: "idx_admin_log_timestamp")
   @@index([targetType], name: "idx_admin_log_target_type")
+}
+
+// API Token storage
+// Stores access tokens for external providers (e.g., IGDB via Twitch)
+// Only the token and metadata are stored; client credentials remain in env vars
+model ApiToken {
+  id          Int      @id @default(autoincrement())
+  provider    String   @unique @db.VarChar(50) // e.g., "igdb"
+  accessToken String   @db.Text
+  tokenType   String?  @db.VarChar(20) // e.g., "bearer"
+  expiresAt   DateTime @db.Timestamptz
+  refreshedAt DateTime @default(now()) @db.Timestamptz
 }
