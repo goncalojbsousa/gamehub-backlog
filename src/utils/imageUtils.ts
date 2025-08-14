@@ -35,9 +35,6 @@ export const isValidImageUrl = (url: string): boolean => {
     }
 };
 
-// Note: We intentionally removed any Google image URL processing.
-// We will use the image URL exactly as stored in the database.
-
 /**
  * Gets a valid image URL with fallback to placeholder
  * Validates the provided image URL and returns a safe URL for display

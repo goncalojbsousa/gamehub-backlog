@@ -28,6 +28,7 @@ model User {
   username      String?          @unique @db.VarChar(255) // Unique username for profile URLs
   bio           String?          @db.Text // User's biography/description
   isProfilePublic Boolean        @default(true) // Controls profile visibility
+  steamId       String?          @unique @db.VarChar(32) // Linked Steam 64 ID for account linking
   
   // Relationships
   accounts      Account[]        // OAuth account connections

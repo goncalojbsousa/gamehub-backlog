@@ -16,14 +16,14 @@ export async function GET() {
   }
 
   const userId = await getUserId();
-  if (userId === undefined) {
+  if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     // FETCH CURRENT USER DATA
     const userData = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: userId as string },
       select: {
         id: true,
         name: true,
@@ -31,6 +31,7 @@ export async function GET() {
         bio: true,
         isProfilePublic: true,
         image: true,
+        steamId: true,
       }
     });
 

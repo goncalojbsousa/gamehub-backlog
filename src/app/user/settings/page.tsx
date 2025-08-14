@@ -4,7 +4,7 @@ import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/userContext";
 import { validateUsername, sanitizeUsername } from "@/src/utils/validationUtils";
 
@@ -24,6 +24,14 @@ export default function ProfileSettings() {
   const [usernameChecking, setUsernameChecking] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [usernameValidation, setUsernameValidation] = useState<{ isValid: boolean; error?: string } | null>(null);
+  const searchParams = useSearchParams();
+
+  const [steamLinked, setSteamLinked] = useState<boolean>(false);
+  // If the user registered/logged in with Steam, their email will be a steamcommunity.com alias.
+  // In that case, we should not render link/unlink controls.
+  const isSteamEmail = Boolean(
+    session?.user?.email && session.user.email.toLowerCase().endsWith('@steamcommunity.com')
+  );
 
   const [formData, setFormData] = useState<ProfileFormData>({
     name: '',
@@ -46,6 +54,7 @@ export default function ProfileSettings() {
               bio: userData.bio || '',
               isProfilePublic: userData.isProfilePublic !== undefined ? userData.isProfilePublic : true,
             });
+            setSteamLinked(!!userData.steamId);
           }
         } catch (error) {
           console.error('Error loading user data:', error);
@@ -62,6 +71,53 @@ export default function ProfileSettings() {
       router.push('/auth/sign-in');
     }
   }, [status, router]);
+
+  // If redirected from Steam linking flow, complete the link on server
+  useEffect(() => {
+    const handleCompleteLink = async () => {
+      if (searchParams?.get('linked') === '1') {
+        try {
+          const res = await fetch('/api/user/completeSteamLink', { method: 'POST' });
+          if (res.ok) {
+            setMessage({ type: 'success', text: 'Steam linked successfully.' });
+            // Reload current user
+            const refreshed = await fetch('/api/user/getCurrentUser');
+            if (refreshed.ok) {
+              const data = await refreshed.json();
+              setSteamLinked(!!data.steamId);
+            }
+          } else {
+            const err = await res.json().catch(() => ({}));
+            setMessage({ type: 'error', text: err.message || 'Failed to complete Steam linking.' });
+          }
+        } catch (e) {
+          setMessage({ type: 'error', text: 'Unexpected error completing Steam linking.' });
+        } finally {
+          // Clean the query param
+          const url = new URL(window.location.href);
+          url.searchParams.delete('linked');
+          window.history.replaceState({}, '', url.toString());
+        }
+      }
+    };
+    handleCompleteLink();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  // If redirected with an explicit steam link error, show message and clear param
+  useEffect(() => {
+    const error = searchParams?.get('steam_link_error');
+    if (!error) return;
+    if (error === 'already_linked') {
+      setMessage({ type: 'error', text: 'This Steam account is already linked to another account.' });
+    } else {
+      setMessage({ type: 'error', text: 'Failed to link Steam account.' });
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.delete('steam_link_error');
+    window.history.replaceState({}, '', url.toString());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const checkUsernameAvailability = async (username: string) => {
     if (!username || username === session?.user?.username) {
@@ -366,6 +422,51 @@ export default function ProfileSettings() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Steam Linking */}
+                  {!isSteamEmail && (
+                    <div>
+                      <div className="flex items-center justify-between p-4 bg-color_main rounded-lg border border-border_detail">
+                        <div>
+                          <label className="text-sm font-semibold text-color_text">
+                            Steam Account
+                          </label>
+                          <p className="text-xs text-color_text_sec mt-1">
+                            {steamLinked ? 'Your Steam account is linked.' : 'Link your Steam account to sign in with Steam and use Steam-based features.'}
+                          </p>
+                        </div>
+                        {steamLinked ? (
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                const res = await fetch('/api/user/unlinkSteam', { method: 'POST' });
+                                if (res.ok) {
+                                  setSteamLinked(false);
+                                  setMessage({ type: 'success', text: 'Steam unlinked successfully.' });
+                                } else {
+                                  const err = await res.json().catch(() => ({}));
+                                  setMessage({ type: 'error', text: err.message || 'Failed to unlink Steam.' });
+                                }
+                              } catch {
+                                setMessage({ type: 'error', text: 'Unexpected error unlinking Steam.' });
+                              }
+                            }}
+                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                          >
+                            Unlink Steam
+                          </button>
+                        ) : (
+                          <a
+                            href="/api/auth/link/steam"
+                            className="px-4 py-2 bg-color_reverse_sec text-color_main rounded-md hover:bg-color_reverse transition-colors"
+                          >
+                            Link Steam
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Submit Button */}
                   <div className="pt-4">
