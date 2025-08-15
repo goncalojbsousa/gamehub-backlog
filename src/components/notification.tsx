@@ -10,6 +10,7 @@ interface NotificationProps {
     message: string;        // Text message to display in the notification
     type: 'success' | 'error'; // Type of notification for styling and icon
     onClose: () => void;    // Function to call when notification should be closed
+    position?: 'bottom-left' | 'bottom-right'; // Optional position, default bottom-left
 }
 
 /**
@@ -22,7 +23,7 @@ interface NotificationProps {
  * @param onClose - Function to call when notification closes
  * @returns JSX element representing the notification toast
  */
-export const Notification: React.FC<NotificationProps> = ({ message, type, onClose }) => {
+export const Notification: React.FC<NotificationProps> = ({ message, type, onClose, position = 'bottom-left' }) => {
     useEffect(() => {
         // Auto-dismiss notification after 5 seconds
         const timer = setTimeout(() => {
@@ -33,10 +34,10 @@ export const Notification: React.FC<NotificationProps> = ({ message, type, onClo
         return () => clearTimeout(timer);
     }, [onClose]);
 
+    const positionClass = position === 'bottom-right' ? 'bottom-4 right-4' : 'bottom-4 left-4';
     return (
         <div
-            className={`fixed bottom-4 left-4 p-4 rounded-md shadow-lg z-50 bg-color_main flex items-center border-2 ${type === 'success' ? 'border-color_success' : 'border-color_error'
-                } text-white`}
+            className={`fixed ${positionClass} p-4 rounded-md shadow-lg z-50 bg-color_main flex items-center border-2 ${type === 'success' ? 'border-color_success' : 'border-color_error'} text-white`}
         >
             {/* Display appropriate icon based on notification type */}
             {type === 'success'

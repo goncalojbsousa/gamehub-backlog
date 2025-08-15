@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { UserManagement } from './user-management';
 import { ReviewManagement } from './review-management';
+import { ReportManagement } from './report-management';
 import { SystemStats } from './system-stats';
 import { SecuritySettings } from './security-settings';
 import { AuditLogs } from './audit-logs';
@@ -11,7 +12,7 @@ import { AuditLogs } from './audit-logs';
  * TabType - Available admin dashboard tabs
  * Defines the different sections available in the admin dashboard
  */
-type TabType = 'users' | 'reviews' | 'stats' | 'security' | 'audit';
+type TabType = 'users' | 'reviews' | 'reports' | 'stats' | 'security' | 'audit';
 
 /**
  * AdminDashboard component - Main administrative interface
@@ -35,6 +36,7 @@ export const AdminDashboard: React.FC = () => {
   const tabs = [
     { id: 'users', name: 'User Management', icon: '👥' },
     { id: 'reviews', name: 'Review Management', icon: '📝' },
+    { id: 'reports', name: 'Reports', icon: '🚩' },
     { id: 'stats', name: 'System Statistics', icon: '📊' },
     { id: 'security', name: 'Security Settings', icon: '🔒' },
     { id: 'audit', name: 'Audit Logs', icon: '📋' }
@@ -85,6 +87,7 @@ export const AdminDashboard: React.FC = () => {
         {/* Conditional rendering of tab content based on active tab */}
         {activeTab === 'users' && <UserManagement />}
         {activeTab === 'reviews' && <ReviewManagement />}
+        {activeTab === 'reports' && <ReportManagement />}
         {activeTab === 'stats' && <SystemStats />}
         {activeTab === 'security' && <SecuritySettings />}
         {activeTab === 'audit' && <AuditLogs />}

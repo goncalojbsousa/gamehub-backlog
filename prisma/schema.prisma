@@ -14,6 +14,12 @@ enum AuthRole {
   USER  // Standard user with basic permissions
   ADMIN // Administrator with full system access
 }
+// Report status for content reporting workflow
+enum ReportStatus {
+  PENDING   // Newly created report, awaiting review
+  RESOLVED  // Addressed by a moderator/admin
+  DISMISSED // Considered invalid or not actionable
+}
 // User model - Core user entity for authentication and profile management
 // Stores user account information, authentication details, and profile settings
 model User {
@@ -31,9 +37,12 @@ model User {
   steamId       String?          @unique @db.VarChar(32) // Linked Steam 64 ID for account linking
   
   // Relationships
-  accounts      Account[]        // OAuth account connections
-  gameStatus    UserGameStatus[] // User's game status tracking
-  reviews       Review[]         // User's game reviews
+  accounts         Account[]        // OAuth account connections
+  gameStatus       UserGameStatus[] // User's game status tracking
+  reviews          Review[]         // User's game reviews
+  reportsReported  Report[]         @relation("ReportReporter") // Reports this user submitted
+  reportsModerated Report[]         @relation("ReportModerator") // Reports this user moderated
+  reportsAgainst   Report[]         @relation("ReportTargetUser") // Reports where this user is the reported target
 }
 // Account model - OAuth provider connections
 // Links user accounts to external authentication providers (Google, etc.)
@@ -166,4 +175,36 @@ model ApiToken {
   tokenType   String?  @db.VarChar(20) // e.g., "bearer"
   expiresAt   DateTime @db.Timestamptz
   refreshedAt DateTime @default(now()) @db.Timestamptz
+}
+
+// Content Report model
+// Stores user reports against inappropriate or abusive content
+model Report {
+  id             Int           @id @default(autoincrement())
+  reporterId     String        @db.Uuid // User who reported
+  targetType     String        @db.VarChar(50) // e.g., 'REVIEW' (extensible)
+  targetId       Int                       // ID of the reported content (e.g., Review.id)
+  // Snapshot fields to preserve original content context
+  targetContent  String?      @db.Text     // Snapshot of content at report time
+  targetUrl      String?      @db.VarChar(255) // Optional URL to navigate to the content
+  reason         String        @db.VarChar(500) // Reason provided by reporter
+  status         ReportStatus  @default(PENDING)
+  createdAt      DateTime      @default(now()) @db.Timestamptz
+  resolvedAt     DateTime?     @db.Timestamptz
+  moderatorId    String?       @db.Uuid // Admin/moderator who handled
+  resolutionNotes String?      @db.Text
+  // The user who authored/owns the reported content (if applicable)
+  reportedUserId String?       @db.Uuid
+
+  // Relationships
+  reporter       User          @relation("ReportReporter", fields: [reporterId], references: [id])
+  moderator      User?         @relation("ReportModerator", fields: [moderatorId], references: [id])
+  reportedUser   User?         @relation("ReportTargetUser", fields: [reportedUserId], references: [id])
+
+  // Prevent duplicate reports by the same user on the same content
+  @@unique([reporterId, targetType, targetId])
+  // Indexes for efficient moderation queries
+  @@index([status, createdAt], name: "idx_report_status_created")
+  @@index([targetType, targetId], name: "idx_report_target")
+  @@index([reportedUserId], name: "idx_report_reported_user")
 }

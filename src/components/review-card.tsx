@@ -4,6 +4,7 @@ import { RatingStars } from "@/src/components/rating-stars";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { useState, useEffect } from "react";
+import { Notification } from "@/src/components/notification";
 import { sanitizeReviewForDisplay } from "@/src/utils/sanitizeReview";
 import { useUser } from "@/src/context/userContext";
 
@@ -33,6 +34,12 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
   const [banReason, setBanReason] = useState("");
   const [isBanning, setIsBanning] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [isReporting, setIsReporting] = useState(false);
+  const [reportError, setReportError] = useState<string | null>(null);
+  const [reportSuccess, setReportSuccess] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   
   // Handle private profiles with special cases
   const isPrivateProfile = !review.user.isProfilePublic;
@@ -112,6 +119,48 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
     setIsExpanded(!isExpanded);
   };
 
+  const handleReportClick = () => {
+    setShowReportModal(true);
+  };
+
+  const handleCancelReport = () => {
+    setShowReportModal(false);
+    setReportReason("");
+    setReportError(null);
+    setReportSuccess(false);
+  };
+
+  const handleConfirmReport = async () => {
+    if (!reportReason.trim()) return;
+    setIsReporting(true);
+    try {
+      const res = await fetch('/api/report/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetType: 'REVIEW',
+          targetId: review.id,
+          reason: reportReason.trim()
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setReportError(data?.error || 'Failed to submit report');
+        return;
+      }
+      setReportSuccess(true);
+      setReportError(null);
+      setReportReason("");
+      setShowReportModal(false);
+      setToast({ message: 'Report submitted. Thank you for helping keep the community safe.', type: 'success' });
+    } catch (e) {
+      console.error('Error submitting report:', e);
+      setReportError('Error submitting report');
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
   // Buscar o status do jogo para este utilizador
   useEffect(() => {
     const fetchGameStatus = async () => {
@@ -160,7 +209,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
 
   return (
     <>
-      <div className="group bg-color_sec rounded-xl p-4 sm:p-6 border border-border_detail shadow-lg hover:shadow-xl transition-all duration-200 hover:border-border_detail_sec">
+      <div id={`review-${review.id}`} className="group bg-color_sec rounded-xl p-4 sm:p-6 border border-border_detail shadow-lg hover:shadow-xl transition-all duration-200 hover:border-border_detail_sec">
         <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
           <div className="flex-shrink-0">
             {(isPrivateProfile && !canSeeRealName) ? (
@@ -186,6 +235,15 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                 />
               </Link>
             )}
+
+      {toast && (
+        <Notification
+          message={toast.message}
+          type={toast.type}
+          position="bottom-right"
+          onClose={() => setToast(null)}
+        />
+      )}
           </div>
           
           <div className="flex-1 min-w-0">
@@ -263,7 +321,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                 </div>
               </div>
               
-              {(onEdit || onDelete) && (
+              {(onEdit || onDelete || !isOwnReview) && (
                 <div className="flex gap-1 sm:gap-2">
                   {onEdit && (
                     <button
@@ -290,6 +348,18 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                       <span className="hidden sm:inline">{isOwnReview ? "Delete" : "Delete as Admin"}</span>
+                    </button>
+                  )}
+                  {!isOwnReview && (
+                    <button
+                      onClick={handleReportClick}
+                      className="text-xs text-orange-500 hover:text-orange-600 transition-colors flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg hover:bg-orange-100"
+                      title="Report review"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3v18l7-5 7 5V3L10 8 3 3z" />
+                      </svg>
+                      <span className="hidden sm:inline">Report</span>
                     </button>
                   )}
                   {!isOwnReview && isAdmin && (
@@ -393,6 +463,72 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 font-semibold"
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Review Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-color_sec rounded-xl p-6 max-w-md w-full border border-border_detail shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-orange-100 rounded-full grid place-items-center shrink-0">
+                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M4.93 19h14.14c1.23 0 2-1.33 1.38-2.4L13.38 4.6c-.62-1.07-2.14-1.07-2.76 0L3.55 16.6C2.93 17.67 3.7 19 4.93 19z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-color_text text-lg">Report Review</h3>
+                <p className="text-color_text_sec text-sm">Tell us why this review is inappropriate or abusive.</p>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="reportReason" className="block text-sm font-medium text-color_text mb-2">Reason</label>
+              <textarea
+                id="reportReason"
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                className="w-full px-3 py-2 border border-border_detail rounded-lg bg-color_main text-color_text resize-none"
+                placeholder="Describe the issue (e.g., harassment, hate speech, spam, etc.)"
+                rows={4}
+                maxLength={500}
+              />
+              <div className="text-xs text-color_text_sec mt-1">{reportReason.length}/500 characters</div>
+              {reportError && (
+                <div className="mt-2 text-xs text-red-300">{reportError}</div>
+              )}
+              {reportSuccess && (
+                <div className="mt-2 text-xs text-green-300">Report submitted. Thank you for helping keep the community safe.</div>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelReport}
+                className="flex-1 px-4 py-2 border border-border_detail text-color_text rounded-lg hover:bg-color_hover transition-all duration-200"
+                disabled={isReporting}
+              >
+                {reportSuccess ? 'Close' : 'Cancel'}
+              </button>
+              <button
+                onClick={handleConfirmReport}
+                disabled={!reportReason.trim() || isReporting}
+                className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isReporting ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Reporting...
+                  </div>
+                ) : (
+                  'Submit Report'
+                )}
               </button>
             </div>
           </div>

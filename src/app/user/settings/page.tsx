@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import { Footer } from "@/src/components/footer";
 import { Navbar } from "@/src/components/navbar/navbar";
 import { useState, useEffect } from "react";
@@ -457,12 +458,12 @@ export default function ProfileSettings() {
                             Unlink Steam
                           </button>
                         ) : (
-                          <a
+                          <Link
                             href="/api/auth/link/steam"
                             className="px-4 py-2 bg-color_reverse_sec text-color_main rounded-md hover:bg-color_reverse transition-colors"
                           >
                             Link Steam
-                          </a>
+                          </Link>
                         )}
                       </div>
                     </div>
