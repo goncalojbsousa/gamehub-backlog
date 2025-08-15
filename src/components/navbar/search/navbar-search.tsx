@@ -16,6 +16,7 @@ export const SearchInput: React.FC = () => {
     const [noResults, setNoResults] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isMac, setIsMac] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const lastRequestTime = useRef<number>(0);
@@ -91,6 +92,42 @@ export const SearchInput: React.FC = () => {
         };
     }, []);
 
+    // Keyboard shortcuts: Ctrl/Cmd + K to focus search, Esc to close
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            const isCmdOrCtrl = e.ctrlKey || e.metaKey;
+            if (isCmdOrCtrl && (e.key === 'k' || e.key === 'K')) {
+                e.preventDefault();
+                inputRef.current?.focus();
+                setIsDropdownOpen(true);
+            } else if (e.key === 'Escape') {
+                setIsDropdownOpen(false);
+                (document.activeElement as HTMLElement)?.blur?.();
+            }
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => {
+            window.removeEventListener('keydown', onKeyDown);
+        };
+    }, []);
+
+    // Detect macOS to display the correct shortcut label
+    useEffect(() => {
+        try {
+            const uaRaw = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+            const ua = uaRaw.toLowerCase();
+            setIsMac(
+                ua.includes('mac os x') ||
+                ua.includes('macintosh') ||
+                ua.includes('iphone') ||
+                ua.includes('ipad') ||
+                ua.includes('ipod')
+            );
+        } catch {
+            setIsMac(false);
+        }
+    }, []);
+
     const handleInputFocus = () => {
         if (searchTerm.length >= 1) {
             setIsDropdownOpen(true);
@@ -112,6 +149,13 @@ export const SearchInput: React.FC = () => {
                     <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
                         <SearchIcon className="fill-color_icons w-5 h-5" />
                     </div>
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10 select-none" aria-hidden="true" title={`Atalho: ${isMac ? 'Cmd' : 'Ctrl'} + K`}>
+                        <span className="hidden sm:inline-flex items-center gap-1 text-xs text-color_text_sec bg-color_main/60 border border-border_detail rounded-md px-2 py-1">
+                            <span className="font-medium">{isMac ? 'Cmd' : 'Ctrl'}</span>
+                            <span>+</span>
+                            <span className="font-medium">K</span>
+                        </span>
+                    </div>
                     <input
                         ref={inputRef}
                         type="text"
@@ -123,7 +167,7 @@ export const SearchInput: React.FC = () => {
                         maxLength={100}
                         onFocus={handleInputFocus}
                         placeholder="Search games..."
-                        className="w-full p-3 pl-12 pr-4 rounded-xl bg-color_main border border-border_detail transition-all duration-200 focus:outline-none focus:border-input_detail focus:ring-2 focus:ring-color_accent/20 text-color_text placeholder-color_text_sec font-medium"
+                        className="w-full p-3 pl-12 pr-20 rounded-xl bg-color_main border border-border_detail transition-all duration-200 focus:outline-none focus:border-input_detail focus:ring-2 focus:ring-color_accent/20 text-color_text placeholder-color_text_sec font-medium"
                         style={{ outline: 'none' }}
                     />
                 </form>
