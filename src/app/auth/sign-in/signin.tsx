@@ -4,36 +4,12 @@ import { Logo } from "@/src/components/svg/logo";
 import { handleGoogleSignIn } from "@/src/lib/auth/googleSignInServerAction";
 import { handleDiscordSignIn } from "@/src/lib/auth/discordSignInServerAction";
 import { handleSteamSignIn } from "@/src/lib/auth/steamSignInServerAction";
-import { handleEmailSignIn } from "@/src/lib/auth/emailSignInServerAction";
 import { FcGoogle } from "react-icons/fc";
 import { FaDiscord } from "react-icons/fa";
 import { SiSteam } from "react-icons/si";
 import Link from "next/link";
-import { useState } from "react";
 
 export const SignInPage: React.FC = () => {
-    const [email, setEmail] = useState("");
-    const [submitting, setSubmitting] = useState(false);
-    const siteKey = process.env.NEXT_PUBLIC_reCAPTCHA_SITE_KEY as string | undefined;
-
-    const onEmailSignIn = async () => {
-        if (!email) return;
-        try {
-            setSubmitting(true);
-            let token = "";
-            if (typeof window !== "undefined" && (window as any).grecaptcha && siteKey) {
-                const grecaptcha = (window as any).grecaptcha;
-                if (grecaptcha.execute) {
-                    token = await grecaptcha.execute(siteKey, { action: 'submit' });
-                }
-            }
-            await handleEmailSignIn(email, token);
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setSubmitting(false);
-        }
-    }
     const mainStyle = {
         backgroundImage: `
             linear-gradient(to bottom, var(--gradient-start), var(--background)),
@@ -98,26 +74,6 @@ export const SignInPage: React.FC = () => {
                                                 <SiSteam className="text-xl" />
                                                 <span className="text-base">Sign in with Steam</span>
                                             </button>
-
-                                            <div className="pt-2 text-left">
-                                                <label className="block text-sm text-color_text_sec mb-2">Or sign in with email</label>
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="email"
-                                                        placeholder="your@email.com"
-                                                        value={email}
-                                                        onChange={(e) => setEmail(e.target.value)}
-                                                        className="flex-1 px-4 py-3 rounded-xl border border-border_detail bg-color_main text-color_text placeholder:text-color_text_sec focus:outline-none focus:ring-2 focus:ring-color_accent"
-                                                    />
-                                                    <button
-                                                        disabled={submitting || !email}
-                                                        onClick={onEmailSignIn}
-                                                        className="px-5 py-3 rounded-xl bg-color_reverse_sec text-color_main border border-border_detail disabled:opacity-60"
-                                                    >
-                                                        {submitting ? 'Sending…' : 'Send link'}
-                                                    </button>
-                                                </div>
-                                            </div>
                                             
                                             <div className="text-center">
                                                 <p className="text-color_text_sec text-sm">
