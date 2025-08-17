@@ -27,9 +27,9 @@ export const updateSession = async () => {
         }
 
         // Update session with new data
-        session.user.name = userData.name;
-        session.user.username = userData.username;
-        session.user.image = userData.image;
+        session.user.name = userData.name ?? undefined;
+        session.user.username = userData.username ?? undefined;
+        session.user.image = userData.image ?? undefined;
 
         return true;
     } catch (error) {
@@ -38,4 +38,4 @@ export const updateSession = async () => {
     } finally {
         await prisma.$disconnect();
     }
-}; 
+};

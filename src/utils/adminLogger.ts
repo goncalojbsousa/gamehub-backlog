@@ -136,7 +136,21 @@ export async function getAdminLogs(
 
   console.log('Debug - Query results:', { logsCount: logs.length, total });
 
-  return { logs, total };
+  // Sanitize nullable fields from Prisma (string | null) to undefined to match AdminLog
+  const sanitizedLogs: AdminLog[] = logs.map((l) => ({
+    id: l.id,
+    action: l.action,
+    adminId: l.adminId,
+    adminEmail: l.adminEmail,
+    targetId: l.targetId ?? undefined,
+    targetType: l.targetType ?? undefined,
+    details: l.details ?? undefined,
+    ipAddress: l.ipAddress ?? undefined,
+    userAgent: l.userAgent ?? undefined,
+    timestamp: l.timestamp,
+  }));
+
+  return { logs: sanitizedLogs, total };
 }
 
 /**
