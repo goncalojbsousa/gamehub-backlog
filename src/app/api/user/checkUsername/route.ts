@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     validatedInput = checkUsernameSchema.parse(body);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const fieldErrors = error.errors.map(err => `${err.path.join('.')}: ${err.message}`).join(', ');
+      const fieldErrors = error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ');
       return NextResponse.json({ 
         message: `Validation error: ${fieldErrors}` 
       }, { status: 400 });

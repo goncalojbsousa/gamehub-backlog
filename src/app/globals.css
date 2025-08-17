@@ -1,6 +1,25 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss";
+
+/* Tailwind v4 tokens mapped to existing CSS variables */
+@theme {
+  --color-background: var(--background);
+  --color-color_main: var(--color_main);
+  --color-color_sec: var(--color_sec);
+  --color-color_hover: var(--color_hover);
+  --color-color_reverse: var(--color_reverse);
+  --color-color_reverse_sec: var(--color_reverse_sec);
+  --color-color_text: var(--color_text);
+  --color-color_text_sec: var(--color_text_sec);
+  --color-color_icons: var(--color_icons);
+  --color-btn_logout: var(--btn_logout);
+  --color-border_detail: var(--border_detail);
+  --color-border_detail_sec: var(--border_detail_sec);
+  --color-input_detail: var(--input_detail);
+  --color-color_error: var(--color_error);
+  --color-color_success: var(--color_success);
+  --color-color_click: var(--color_click);
+  --color-color_accent: var(--color_accent);
+}
 
 :root {
   --background: theme('colors.zinc.50');

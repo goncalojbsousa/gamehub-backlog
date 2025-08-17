@@ -90,7 +90,7 @@ export async function POST(request: Request) {
   } catch (error) {
     // Handle validation errors from Zod
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid request data', details: error.errors }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid request data', details: error.issues }, { status: 400 });
     }
     
     // Handle unexpected errors
