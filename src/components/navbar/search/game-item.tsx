@@ -27,7 +27,7 @@ export const GameItem: React.FC<GameItemProps> = ({ game }) => (
                         {game.name || 'Unknown Name'}
                     </h3>
                     <span className="text-color_text_sec text-xs px-2 py-1 bg-color_main rounded-full flex-shrink-0">
-                        {categories[game.category] || 'Unknown Category'}
+                        {categories[game.game_type] || 'Unknown Category'}
                     </span>
                 </div>
                 <div className="flex flex-col gap-1">

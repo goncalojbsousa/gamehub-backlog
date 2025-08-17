@@ -41,11 +41,11 @@ interface Deal {
 
 /**
  * Website interface - Represents game-related websites
- * Contains URLs and categories for official and fan websites
+ * Contains URLs and types for official and fan websites
  */
 interface Website {
     url: string;         // Website URL
-    category: number;    // Website category (IGDB category ID)
+    type: number;        // Website type (IGDB type ID)
 }
 
 /**
@@ -59,7 +59,9 @@ declare interface Game {
     cover: {
         url: string;     // Game cover image URL
     };
-    category: number;    // Game category (main game, DLC, etc.)
+    game_type: number;   // Game type (replaces deprecated category)
+    game_status?: number; // Game status (replaces deprecated status)
+
     version_title: string; // Version-specific title
     summary: string;     // Game description/summary
     storyline: string;   // Game storyline/narrative
@@ -132,7 +134,7 @@ declare interface Game {
     // External data
     websites: {                      // Related websites
         url: string;
-        category: number;
+        type: number;
     }[];
     price: string;                   // Current price
     deals?: Deal[];                  // Available deals

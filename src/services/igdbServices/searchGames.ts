@@ -67,7 +67,7 @@ export const fetchGamesBySearch = async (query: string): Promise<Game[]> => {
                     cover.url,
                     genres.name,
                     total_rating,
-                    category,
+                    game_type,
                     first_release_date,
                     platforms.name,
                     slug;

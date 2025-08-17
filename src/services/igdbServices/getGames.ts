@@ -13,11 +13,11 @@ type ListType = 'popular' | 'recent' | 'popular2024' | 'upcoming';
 
 /**
  * Interface for website information from IGDB
- * Contains URL and category information for game websites
+ * Contains URL and type information for game websites
  */
 interface Website {
     url: string;
-    category: number; // IGDB website category (13 = Steam)
+    type: number; // IGDB website type (13 = Steam)
 }
 
 /**
@@ -80,7 +80,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                     case 'popular2024':
                         // Games from current year sorted by rating count
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.type, screenshots.url;
                             where cover.url != null
                                 & first_release_date >= ${new Date(currentYear, 0, 1).getTime() / 1000} 
                                 & first_release_date < ${new Date(currentYear + 1, 0, 1).getTime() / 1000};
@@ -91,7 +91,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                     case 'recent':
                         // Games released in the last year
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.type, screenshots.url;
                             where first_release_date < ${Math.floor(Date.now() / 1000)}
                                 & first_release_date > ${Math.floor(Date.now() / 1000) - (365 * 24 * 60 * 60)}
                                 & cover.url != null
@@ -103,7 +103,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                     case 'popular':
                         // Popular games from the last 10 years
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.type, screenshots.url;
                             where first_release_date > ${oneYearAgo};
                             sort total_rating_count desc;
                             limit ${limit / listTypes.length};
@@ -112,7 +112,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
                     case 'upcoming':
                         // Upcoming games sorted by hype
                         query = `
-                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.category, screenshots.url, hypes;
+                            fields name, slug, cover.url, genres.name, first_release_date, platforms.name, total_rating, aggregated_rating, rating, total_rating, websites.url, websites.type, screenshots.url, hypes;
                             where first_release_date > ${Math.floor(Date.now() / 1000)}
                                 & cover.url != null;
                             sort total_rating_count asc;
@@ -143,7 +143,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
 
         // Extract Steam app IDs from game websites for price lookup
         const steamIds = flattenedData.flatMap((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 // Extract Steam app ID from the URL using regex
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
@@ -180,7 +180,7 @@ export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) 
 
         // Enhance game data with pricing information
         const enhancedData = flattenedData.map((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 const match = steamSite.url.match(/\/app\/(\d+)/i);
                 if (match) {

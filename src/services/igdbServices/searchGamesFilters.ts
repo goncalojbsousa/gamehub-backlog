@@ -7,7 +7,7 @@ import { fetchAllDeals } from '@/src/services/cheapsharkServices/getAllDeals';
 
 interface Website {
     url: string;
-    category: number;
+    type: number;
 }
 
 interface Deal {
@@ -97,10 +97,10 @@ export const fetchGamesBySearchFilter = async (
                     player_perspectives.name,
                     game_modes.name,
                     total_rating, aggregated_rating, rating,
-                    category,
+                    game_type,
                     first_release_date,
                     websites.url,
-                    websites.category,
+                    websites.type,
                     slug;
                 where ${whereClause};
                 limit 20;
@@ -116,7 +116,7 @@ export const fetchGamesBySearchFilter = async (
 
         // EXTRACT STEAM APP IDS
         const steamIds = data.flatMap((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
@@ -153,7 +153,7 @@ export const fetchGamesBySearchFilter = async (
 
         // ADD PRICES TO GAME DATA
         const enhancedData = data.map((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 const match = steamSite.url.match(/\/app\/(\d+)/i);
                 if (match) {

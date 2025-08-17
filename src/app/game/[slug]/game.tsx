@@ -73,7 +73,7 @@ export const GamePage: React.FC<GamePageProps> = ({ game, userGameStatus }) => {
                                 
                                 <div className="flex flex-wrap items-center gap-4 text-sm">
                                     <span className="px-3 py-1 bg-color_reverse_sec text-color_main rounded-full font-medium">
-                                        {categories[game.category] || 'Unknown Category'}
+                                        {categories[game.game_type] || 'Unknown Category'}
                                     </span>
                                     {game.first_release_date && (
                                         <span className="text-color_text_sec">

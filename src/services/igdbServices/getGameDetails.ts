@@ -8,7 +8,7 @@ import { getIgdbAccessToken } from './tokenManager';
 
 interface Website {
     url: string;
-    category: number;
+    type: number;
 }
 
 interface Deal {
@@ -62,7 +62,7 @@ export const fetchGameDetails = async (query: string) => {
                 storyline,
 
                 genres.name, 
-                category,
+                game_type,
                 themes.name,
                 language_supports.language.native_name,
                 language_supports.language_support_type.name,
@@ -92,7 +92,7 @@ export const fetchGameDetails = async (query: string) => {
                 game_localizations.name,
                 game_engines.name,
 
-                status,
+                game_status,
                 
                 language_supports,
 
@@ -147,7 +147,7 @@ export const fetchGameDetails = async (query: string) => {
                 standalone_expansions.cover.url,
 
                 websites.url,
-                websites.category,
+                websites.type,
 
                 version_title,
                 involved_companies;
@@ -163,7 +163,7 @@ export const fetchGameDetails = async (query: string) => {
 
         // EXTRACT STEAM APP IDS
         const steamId = data.flatMap((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);

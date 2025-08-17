@@ -7,7 +7,7 @@ import { getIgdbAccessToken } from './tokenManager';
 
 interface Website {
     url: string;
-    category: number;
+    type: number;
 }
 
 interface Deal {
@@ -67,7 +67,7 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
                 rating,
                 total_rating, 
                 websites.url,
-                websites.category,
+                websites.type,
                 slug;
             where id = (${gameIds.join(', ')});
             limit ${numberOfGames};
@@ -82,7 +82,7 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
 
         // EXTRACT STEAM APP IDS
         const steamIds = data.flatMap((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
@@ -119,7 +119,7 @@ export const fetchGameDetailsByIds = async (gameIds: number[]) => {
 
         // ADD PRICES TO GAME DATA
         const enhancedData = data.map((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 const match = steamSite.url.match(/\/app\/(\d+)/i);
                 if (match) {
