@@ -1,22 +1,56 @@
-# GameHub Project
+<p align="center">
+  <a href="https://gamehub-project-navy.vercel.app">
+    <img src="https://github.com/goncalojbsousa/gamehub-project/blob/main/src/app/favicon.ico" height="96" style="margin-right: 10px;">
+    <h3 align="center">GameHub Backlog</h3>
+  </a>
+</p>
 
-GameHub is a game backlog tracker that let you add games to lists and organize the never ending list of games that we all want to "get around to playing eventually".
+---
+## Table of Contents
 
-In the future, we intend to add a price comparator between several stores, so that you can always make the best purchase!
+- [About](#about)
+  - [Features](#features)
+- [Running Locally](#running-locally)
+  - [Database](#database)
+- [Environment Variables](#environment-variables)
+- [Contribution](#contribution)
+- [API Documentation](#api-documentation)
+  - [Create/Update User Game Status](#createupdate-user-game-status)
+  - [Get User Game Status](#get-user-game-status)
+  - [Get User Game Status by User ID](#get-user-game-status-by-user-id)
+  - [Get User Data](#get-user-data)
+- [IGDB](#igdb)
+- [Inspirations](#inspirations)
 
 
+---
+## About
+
+GameHub Backlog is a game backlog tracker designed to help you keep track of your ever-growing library of video games. Organize, track, and discover - all in one place!
+
+### Features
+
+- **Google Authentication:** Securely sign in using your Google account.
+- **Comprehensive Game Database:** Browse and view details of games worldwide using the IGDB API.
+- **Advanced Search and Filtering:** Search for games with various filters including Genres, Themes, Platforms, Perspectives, and Game Modes.
+- **Game Backlog Management:** Track your game progress by adding games to your backlog with status options ('Played', 'Playing', 'Dropped', 'Plan to Play') and progress indicators ('Unfinished', 'Beaten', 'Completed', 'Continuous').
+- **Price Comparison:** View and compare the prices of Steam games across several trusted stores to find the best deals.
+- **User Profiles:** Access and manage your profile to view and organize your tracked games. Search for games by name, filter by status and progress, and sort by rating and name. Share your profile with friends and explore other users' profiles to see their game collections.
+- **Light and Dark Modes:** Switch between light and dark themes for a customizable viewing experience.
+
+---
 ## Running locally
 
 Clone the project
 
 ```bash
-  git clone https://github.com/goncalojbsousa/gamehub-project.git
+  git clone https://github.com/goncalojbsousa/gamehub-backlog.git
 ```
 
 Enter the project directory
 
 ```bash
-  cd gamehub-project
+  cd gamehub-backlog
 ```
 
 Install dependencies
@@ -33,48 +67,69 @@ Start the server
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Database
 
+Enter the database directory
+
+```bash
+  cd database
+```
+
+Run Docker Compose
+
+```bash
+  docker compose up -d
+```
+
+Edit the .env file in the root directory
+
+- `DATABASE_URL="postgresql://user:password@localhost:5432/auth_db"`
+
+Run Prisma migrations
+
+```bash
+  npx prisma migrate dev
+```
+
+Generate Prisma client
+
+```bash
+  npx prisma generate
+```
+
+Your database is now ready to use.
+
+---
 ## Environment Variables
 
-To run this project, you need to configure the following environment variables in your `.env` file:
+Enter the project directory
 
-### Website URL (Domain)
-- `NEXTAUTH_URL`
+```bash
+  cd gamehub-backlog
+```
 
-### Email Provider (Magic Link)
-- `EMAIL_FROM`
-- `EMAIL_SERVER_HOST`
-- `EMAIL_SERVER_PORT`
-- `EMAIL_SERVER_USER`
-- `EMAIL_SERVER_PASSWORD`
+Copy .env.example to .env
 
-### Google
-#### Authentication Google Provider Credentials
-- `AUTH_GOOGLE_ID`
-- `AUTH_GOOGLE_SECRET`
+```bash
+  cp .env.example .env
+```
 
-#### reCAPTCHA
-- `NEXT_PUBLIC_reCAPTCHA_SITE_KEY`
-- `reCAPTCHA_SECRET_KEY`
+Update the .env file with the necessary configuration values.
 
-### JWT Secret
-- `AUTH_SECRET`
+---
+## Contribution
 
-### IGDB Service
-- `IGDB_PROXY_URL`
-- `IGDB_SECRET`
+Contributions are welcome and much appreciated! If you want to help improve the GameHub Backlog please read `CONTRIBUTING.md`
 
-### Database Configuration
-- `DATABASE_URL`
+Please follow the `code of conduct` of this project.
 
-
+---
 ## API documentation
 
 ### Create/update user game status
-#### To access the route you need to be authenticated 
 
 ```http
-  POST /api/game/updateGameStatus
+POST /api/game/updateGameStatus
 ```
 
 | Parameter   | Type       | Description                                     |
@@ -84,59 +139,182 @@ To run this project, you need to configure the following environment variables i
 | `status`    | `string`    | **Mandatory**. Game status (maximum 20 characters). |
 | `progress`  | `string`    | **Mandatory**. Game progress (maximum 20 characters). |
 
+### Get user game status
 
-## Color documentation
+```http
+GET /api/game/getGameStatus
+```
 
-### White Mode
-| Color                        | Hexadecimal                                                |
-| ---------------------------- | ------------------------------------------------------------ |
-| Background                   | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Main Color                   | ![#f4f4f5](https://via.placeholder.com/10/f4f4f5?text=+) #f4f4f5 |
-| Secondary Color              | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Reverse Color                | ![#1c1917](https://via.placeholder.com/10/1c1917?text=+) #1c1917 |
-| Reverse Secondary Color      | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
-| Text Color                   | ![#27272a](https://via.placeholder.com/10/27272a?text=+) #27272a |
-| Secondary Text Color         | ![#4b5563](https://via.placeholder.com/10/4b5563?text=+) #4b5563 |
-| Icons Color                  | ![#27272a](https://via.placeholder.com/10/27272a?text=+) #27272a |
-| Alert Color                  | ![#fee2e2](https://via.placeholder.com/10/fee2e2?text=+) #fee2e2 |
-| Border Detail Color          | ![#e4e4e7](https://via.placeholder.com/10/e4e4e7?text=+) #e4e4e7 |
-| Secondary Border Detail Color| ![#3b82f6](https://via.placeholder.com/10/3b82f6?text=+) #3b82f6 |
-| Gradient Start Color         | ![#ffffffcc](https://via.placeholder.com/10/ffffffcc?text=+) #ffffffcc |
-| Gradient End Color           | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
+##### Query Parameters:
 
-### Dark Mode
-| Color                        | Hexadecimal                                                |
-| ---------------------------- | ------------------------------------------------------------ |
-| Background                   | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
-| Main Color                   | ![#1c1917](https://via.placeholder.com/10/1c1917?text=+) #1c1917 |
-| Secondary Color              | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
-| Reverse Color                | ![#e4e4e7](https://via.placeholder.com/10/e4e4e7?text=+) #e4e4e7 |
-| Reverse Secondary Color      | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Text Color                   | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Secondary Text Color         | ![#9ca3af](https://via.placeholder.com/10/9ca3af?text=+) #9ca3af |
-| Icons Color                  | ![#ffffff](https://via.placeholder.com/10/ffffff?text=+) #ffffff |
-| Alert Color                  | ![#ef4444](https://via.placeholder.com/10/ef4444?text=+) #ef4444 |
-| Border Detail Color          | ![#52525b](https://via.placeholder.com/10/52525b?text=+) #52525b |
-| Secondary Border Detail Color| ![#3b82f6](https://via.placeholder.com/10/3b82f6?text=+) #3b82f6 |
-| Gradient Start Color         | ![#292524b3](https://via.placeholder.com/10/292524b3?text=+) #292524b3 |
-| Gradient End Color           | ![#292524](https://via.placeholder.com/10/292524?text=+) #292524 |
+| Parameter | Type | Description |
+|-------------|------------|-----------------------------------------------------|
+| `userId` | `string` | **Mandatory**. User identifier (UUID). |
+| `gameId` | `string` | **Mandatory**. Game identifier (positive number in string format). |
 
+##### Responses:
 
+- 200 OK: Returns the game status and progress for the specified user and game.
+
+```json
+{
+    "status": "string", // User's game status
+    "progress": "string" // User's game progress
+}
+```
+
+- 400 Bad Request: Returned when `userId` or `gameId` are missing or improperly formatted.
+
+```json
+{
+    "error": "gameId parameter is missing" // Example error message
+}
+```
+
+- 500 Internal Server Error: Returned if there's a server-side issue when fetching the user's game status.
+
+```json
+{
+    "error": "Internal Server Error"
+}
+```
+
+### Get user game status by user ID
+
+```http
+GET /api/game/getAllGameStatusByUserId
+```
+
+##### Query Parameters:
+
+| Parameter | Type | Description |
+|-------------|------------|-----------------------------------------------------|
+| `userId` | `string` | **Mandatory**. User identifier (UUID). |
+| `status` | `string` | **Mandatory**. Game status (one of: 'Playing', 'Played', 'Dropped', 'Plan to play'). |
+| `page` | `number` | Optional. Page number for pagination (defaults to 1). |
+
+##### Responses:
+
+- 200 OK: Returns the game statuses and progress for the specified user, with pagination.
+
+```json
+{
+    "data": [
+        {
+            "gameId": 1942,
+            "status": "Played",
+            "progress": "Unfinished",
+            "gameDetails": {
+                "id": 1942,
+                "cover": {
+                    "id": 89386,
+                    "url": "//images.igdb.com/igdb/image/upload/t_thumb/co1wyy.jpg"
+                },
+                "name": "The Witcher 3: Wild Hunt",
+                "rating": 70.56316318546406,
+                "slug": "the-witcher-3-wild-hunt"
+                "total_rating": 70.56316318546406,
+                "websites": [
+                    {
+                        "id": 185100,
+                        "category": 13,
+                        "url": "https://store.steampowered.com/app/1623730/Palworld"
+                    },
+                ],
+                "price": "29.99"
+            }
+        },
+    ],
+    "totalPages": 2,
+    "currentPage": 1
+}
+```
+
+- 400 Bad Request: Returned when `userId`, `status` or other parameters are missing or improperly formatted.
+
+```json
+{
+    "message": "Invalid parameters"
+}
+```
+
+- 403 Forbidden: Returned when the client IP is blocked due to rate limiting.
+
+```json
+{
+    "message": "Access temporarily blocked. Try again later."
+}
+```
+
+- 429 Too Many Requests: Returned when the rate limit is exceeded.
+
+```json
+{
+    "message": "Limit rate exceeded. Try again later."
+}
+```
+
+- 500 Internal Server Error: Returned if there's a server-side issue when fetching the user's game statuses or game details.
+
+```json
+{
+    "message": "Internal server error"
+}
+```
+
+### Get user data
+
+```http
+GET /api/user/getUserData
+```
+
+##### Query Parameters:
+
+| Parameter | Type | Description |
+|-------------|------------|----------------------------------------------|
+| `username` | `string` | **Mandatory**. Username of the user to fetch. |
+
+##### Responses:
+
+- 200 OK: Returns the user data for the specified username.
+
+```json
+{
+  "id": "string", // User's unique identifier (UUID)
+  "name": "string", // User's full name
+  "image": "string", // URL to the user's profile image
+  "createdAt": "string",// Date and time the user was created
+  "username": "string" // User's username
+}
+```
+
+- 401 Unauthorized: Returned when the `username` parameter is missing.
+
+```json
+{
+  "error": "Username is missing"
+}
+```
+
+- 500 Internal Server Error: Returned if there's a server-side issue when fetching the user's data.
+
+```json
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
 ## IGDB
 All game data is provided by IGDB
  - [IGDB](https://www.igdb.com)
  - [Discord](https://discord.com/invite/igdb)
  - [X (Old Twitter)](https://x.com/IGDBcom)
 
-
-## Authors
-
-- [@goncalojbsousa](https://github.com/goncalojbsousa)
-
-
+---
 ## Inspirations
 
- - [Gamegator](gamegator.net)
+ - [GameGator](https://gamegator.net)
  - [Mathiewz Project](https://frontend-kofb4cduoq-od.a.run.app)
  - [Backloggd](https://backloggd.com)
  - [Infinite Backlog](https://infinitebacklog.net)

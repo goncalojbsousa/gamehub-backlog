@@ -74,11 +74,11 @@ export const GameCard: React.FC<GameCardProps> = ({ game, progress }) => {
                     
                     {/* Game price (if available) */}
                     {game.price && (
-                        <div className="bg-color_reverse_sec px-2 py-1 rounded-lg">
-                            <span className="text-xs text-color_main font-bold">
-                                ${game.price}
-                            </span>
-                        </div>
+                        <div className="bg-gradient-to-r from-color_reverse_sec to-color_reverse_sec/90 px-3 py-1.5 rounded-lg flex items-center justify-center min-w-[60px] shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 border border-border_detail/20">
+                        <span className="text-sm font-bold bg-gradient-to-r from-color_main to-color_main/80 bg-clip-text text-transparent">
+                            ${game.price}
+                        </span>
+                    </div>
                     )}
                 </div>
             </div>

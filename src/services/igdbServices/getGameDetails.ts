@@ -68,7 +68,7 @@ export const fetchGameDetails = async (query: string) => {
                 language_supports.language_support_type.name,
                 age_ratings.rating_cover_url,
                 age_ratings.synopsis,
-                age_ratings.rating,
+                age_ratings.rating_category,
 
                 aggregated_rating,
                 rating,
