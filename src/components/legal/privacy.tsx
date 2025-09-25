@@ -30,12 +30,14 @@ const Privacy = () => {
                     <li>Your email address</li>
                     <li>Your name</li>
                     <li>Your profile picture (if provided through Google login)</li>
+                    <li>Your username (if you choose to create one)</li>
                     <li>Details of your use of GameHub Backlog including, but not limited to: information about your game collection and your preferences</li>
+                    <li>Reviews, ratings, and comments you submit about games</li>
                     <li>Any other information which you supply us with</li>
                 </ul>
 
                 <p className="leading-relaxed">
-                    We also collect your IP address for security purposes.
+                    We also collect your IP address for security purposes and to prevent abuse of our platform.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">How We Collect Your Information</h2>
@@ -61,6 +63,8 @@ const Privacy = () => {
                     <li>Authenticate your account and keep it secure</li>
                     <li>Improve and personalize your experience with GameHub Backlog</li>
                     <li>Communicate with you about your account and our service</li>
+                    <li>Moderate user-generated content and enforce our community guidelines</li>
+                    <li>Investigate and address violations of our Terms of Service</li>
                 </ul>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">How We Handle Your Information</h2>
@@ -82,7 +86,11 @@ const Privacy = () => {
                 </p>
 
                 <p className="leading-relaxed">
-                    Some elements of your (non)-personal information are accessible to anyone visiting GameHub Backlog. For example: anyone may visit your profile which will show them your name, username, avatar and game collection.
+                    Some elements of your (non)-personal information are accessible to anyone visiting GameHub Backlog. For example: anyone may visit your profile which will show them your name, username, avatar and game collection. If you set your profile to private, your information will be visible only to you and site administrators.
+                </p>
+                
+                <p className="leading-relaxed">
+                    Reviews and ratings you submit will be publicly visible and associated with your username or display name. If you choose to delete your account, your reviews may remain on the platform but will be anonymized.
                 </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Your Rights</h2>
@@ -98,7 +106,12 @@ const Privacy = () => {
                     <li>Object to processing of your personal information</li>
                     <li>Request restriction of processing your personal information</li>
                     <li>Request transfer of your personal information</li>
+                    <li>Report inappropriate content or behavior from other users</li>
                 </ul>
+                
+                <p className="leading-relaxed">
+                    Please note that if your account is banned for violating our Terms of Service, certain rights may be limited during the ban period. However, you may still contact us to exercise your data protection rights.
+                </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Links to Other Websites</h2>
 
@@ -131,7 +144,7 @@ const Privacy = () => {
 
             <div className="mt-12 pt-6 border-t border-border_detail">
                 <p className="text-sm text-color_text_sec">
-                    Last updated: 11/08/2024 (August 11, 2024)
+                    Last updated: 25/09/2025 (September 25, 2025)
                 </p>
             </div>
         </div>

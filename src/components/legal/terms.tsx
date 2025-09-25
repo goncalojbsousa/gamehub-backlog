@@ -67,6 +67,42 @@ const Terms = () => {
                 <p className="leading-relaxed">
                     Additionally, by using GameHub Backlog, you agree to indemnify us—meaning you&apos;ll cover any costs or damages incurred by GameHub Backlog due to your actions or breaches of these terms of service.
                 </p>
+                
+                <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">User Reviews and Content</h2>
+
+                <p className="leading-relaxed">
+                    GameHub Backlog allows users to submit reviews, ratings, and comments about games. By submitting any content to our platform, you agree to the following:
+                </p>
+
+                <ul className="list-disc list-inside space-y-2 ml-4">
+                    <li>You are solely responsible for any content you post, including reviews, comments, and ratings.</li>
+                    <li>You will not post content that is illegal, abusive, harassing, defamatory, obscene, or otherwise objectionable.</li>
+                    <li>You will not post content that infringes on the intellectual property rights of others.</li>
+                    <li>You will not post spam, advertisements, or promotional materials unrelated to the game being reviewed.</li>
+                    <li>You grant GameHub Backlog a non-exclusive, royalty-free license to use, reproduce, modify, and display the content you submit.</li>
+                </ul>
+
+                <p className="leading-relaxed">
+                    We reserve the right to remove any content that violates these terms or that we determine, in our sole discretion, is harmful to our community or platform. Content that violates our guidelines may result in content removal, account suspension, or permanent account termination.
+                </p>
+                
+                <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Account Suspension and Termination</h2>
+
+                <p className="leading-relaxed">
+                    GameHub Backlog maintains a zero-tolerance policy for certain behaviors. We may suspend or permanently ban your account without prior notice if you:
+                </p>
+
+                <ul className="list-disc list-inside space-y-2 ml-4">
+                    <li>Post content that promotes hate speech, discrimination, or violence against individuals or groups.</li>
+                    <li>Harass, threaten, or bully other users through reviews, comments, or any other communication channels.</li>
+                    <li>Post content that is illegal, pornographic, or excessively violent.</li>
+                    <li>Attempt to manipulate ratings or reviews through fake accounts or coordinated actions.</li>
+                    <li>Repeatedly violate our terms of service despite warnings.</li>
+                </ul>
+
+                <p className="leading-relaxed">
+                    If your account is suspended or terminated, you may contact us to appeal the decision. However, we reserve the right to make the final determination regarding account status. Banned users may not create new accounts without our explicit permission.
+                </p>
 
                 <h2 className="text-2xl font-semibold mt-8 mb-4 text-color_text">Restrictions</h2>
 
@@ -154,7 +190,7 @@ const Terms = () => {
 
             <div className="mt-12 pt-6 border-t border-border_detail">
                 <p className="text-sm text-color_text_sec">
-                    Last updated: 11/08/2024 (August 11, 2024)
+                    Last updated: 25/09/2025 (September 25, 2025)
                 </p>
             </div>
         </div>
