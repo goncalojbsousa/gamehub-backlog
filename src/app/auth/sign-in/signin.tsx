@@ -77,7 +77,7 @@ export const SignInPage: React.FC = () => {
                                             
                                             <div className="text-center">
                                                 <p className="text-color_text_sec text-sm">
-                                                    More sign-in methods coming soon! Steam is next.
+                                                    More sign-in methods coming soon!
                                                 </p>
                                             </div>
                                         </div>

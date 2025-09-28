@@ -21,25 +21,66 @@ interface RoadmapItem {
 
 const roadmapData: RoadmapItem[] = [
   {
-    id: '2.0.0',
-    version: '2.0.0',
-    date: '2024-12-XX',
-    title: 'Upcoming Features',
+    id: '3.0.0',
+    version: '3.0.0',
+    date: '2025-XX-XX',
+    title: 'Future Features',
     description: 'Planned features for the next major version.',
     features: [
-      'Review and rating system',
       'Social features and friend system',
       'Backlog export functionality',
       'Custom achievements system',
-      'Integration with more gaming platforms'
+      'Integration with more gaming platforms',
+      'Advanced game analytics and statistics',
+      'Custom tags system',
+      'Game recommendations based on preferences'
     ],
     improvements: [
-      'Personalized dashboard',
-      'Game analytics and statistics',
-      'Custom tags system'
+      'Enhanced user dashboard with personalized insights',
+      'Improved mobile experience',
+      'Advanced filtering and search capabilities'
     ],
     fixes: [],
     status: 'planned',
+    category: 'major'
+  },
+  {
+    id: '2.0.0',
+    version: '2.0.0',
+    date: '2025-01-XX',
+    title: 'Complete Platform Remaster',
+    description: 'Major redesign and feature expansion with comprehensive user management and review system.',
+    features: [
+      'Complete design remasterization with modern UI/UX',
+      'Advanced review system with text reviews and 1-5 star ratings',
+      'Comprehensive administration dashboard',
+      'User reporting system for reviews and profiles',
+      'New authentication methods: Discord and Steam integration',
+      'Enhanced user profile system with biography and privacy settings',
+      'Public/private profile options',
+      'User review history in profiles',
+      'Admin ticket system for managing reports',
+      'User ban/suspension system',
+      'Updated Terms of Service and Privacy Policy',
+      'New roadmap page for platform evolution tracking'
+    ],
+    improvements: [
+      'Simplified backlog system with only 4 possible states',
+      'Streamlined game status selection process',
+      'Direct status selection from game cards without opening game page',
+      'Remastered user profile with comprehensive editing options',
+      'Enhanced home page with better onboarding for new users',
+      'Improved navigation and user experience',
+      'Better mobile responsiveness',
+      'Optimized performance and loading times'
+    ],
+    fixes: [
+      'Resolved various UI inconsistencies',
+      'Fixed authentication edge cases',
+      'Improved error handling and user feedback',
+      'Database optimization for better performance'
+    ],
+    status: 'completed',
     category: 'major'
   },
   {
