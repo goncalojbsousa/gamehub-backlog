@@ -3,6 +3,7 @@ import { LoadingIcon } from "@/src/components/svg/loading";
 import Image from 'next/image';
 import Link from "next/link";
 import { useState } from "react";
+import { useGameStatusOptimized } from "@/src/hooks/useGameStatusOptimized";
 
 interface GameInfoProps {
     game: Game;
@@ -10,6 +11,35 @@ interface GameInfoProps {
 
 export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
     const [showAllDeals, setShowAllDeals] = useState(false);
+    
+    // Collect all related game IDs
+    const relatedGameIds = [
+        ...(game.expanded_games || []).map(g => g.id),
+        ...(game.expansions || []).map(g => g.id),
+        ...(game.dlcs || []).map(g => g.id),
+        ...(game.bundles || []).map(g => g.id),
+        ...(game.remakes || []).map(g => g.id),
+        ...(game.remasters || []).map(g => g.id),
+        ...(game.standalone_expansions || []).map(g => g.id),
+        ...(game.forks || []).map(g => g.id),
+        ...(game.similar_games || []).map(g => g.id),
+        ...(game.parent_game ? [game.parent_game.id] : [])
+    ];
+    
+    // Use the optimized game status hook for related games
+    const { gameStatuses } = useGameStatusOptimized(relatedGameIds);
+    
+    // Helper function to render GameCard with status
+    const renderGameCard = (game: Game) => {
+        const userGameStatus = gameStatuses[game.id] ? { status: gameStatuses[game.id] } : null;
+        return (
+            <GameCard 
+                key={game.id} 
+                game={game} 
+                userGameStatus={userGameStatus}
+            />
+        );
+    };
 
     return (
         <div className="space-y-8">
@@ -84,9 +114,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Expanded Games</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.expanded_games.map((expanded_game) => (
-                                <GameCard key={expanded_game.id} game={expanded_game} />
-                            ))}
+                            {game.expanded_games.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -96,9 +124,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Expansions</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.expansions.map((expansion) => (
-                                <GameCard key={expansion.id} game={expansion} />
-                            ))}
+                            {game.expansions.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -108,9 +134,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">DLCs</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.dlcs.map((dlc) => (
-                                <GameCard key={dlc.id} game={dlc} />
-                            ))}
+                            {game.dlcs.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -120,9 +144,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Bundles</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.bundles.map((bundle) => (
-                                <GameCard key={bundle.id} game={bundle} />
-                            ))}
+                            {game.bundles.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -132,9 +154,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Remakes</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.remakes.map((remake) => (
-                                <GameCard key={remake.id} game={remake} />
-                            ))}
+                            {game.remakes.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -144,9 +164,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Remasters</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.remasters.map((remaster) => (
-                                <GameCard key={remaster.id} game={remaster} />
-                            ))}
+                            {game.remasters.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -156,7 +174,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Parent Game</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            <GameCard key={game.parent_game.id} game={game.parent_game} />
+                            {renderGameCard(game.parent_game)}
                         </div>
                     </div>
                 )}
@@ -166,9 +184,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Standalone Expansions</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.standalone_expansions.map((standalone_expansion) => (
-                                <GameCard key={standalone_expansion.id} game={standalone_expansion} />
-                            ))}
+                            {game.standalone_expansions.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -178,9 +194,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Forks</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.forks.map((fork) => (
-                                <GameCard key={fork.id} game={fork} />
-                            ))}
+                            {game.forks.map(renderGameCard)}
                         </div>
                     </div>
                 )}
@@ -190,9 +204,7 @@ export const GamePageContent: React.FC<GameInfoProps> = ({ game }) => {
                     <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
                         <h2 className="text-color_text text-2xl font-bold mb-6">Similar Games</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            {game.similar_games.map((similar_game) => (
-                                <GameCard key={similar_game.id} game={similar_game} />
-                            ))}
+                            {game.similar_games.map(renderGameCard)}
                         </div>
                     </div>
                 )}

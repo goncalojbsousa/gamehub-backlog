@@ -68,7 +68,6 @@ export async function GET(request: Request) {
             select: {
                 gameId: true,
                 status: true,
-                progress: true,
             },
             skip: skip,
             take: limit,

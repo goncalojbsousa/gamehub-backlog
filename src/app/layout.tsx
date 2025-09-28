@@ -4,6 +4,7 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import UserDataFetcher from "@/src/context/userDataFetcher";
 import { ThemeProvider } from "@/src/context/themeContext";
+import { GameStatusProvider } from "@/src/context/gameStatusContext";
 import BannedUserMessage from "@/src/components/banned-user-message";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -58,8 +59,10 @@ export default function RootLayout({
         <ThemeProvider>
           <SessionProvider refetchInterval={0} refetchOnWindowFocus={false}>
             <UserDataFetcher>
-              <BannedUserMessage />
-              {children}
+              <GameStatusProvider>
+                <BannedUserMessage />
+                {children}
+              </GameStatusProvider>
             </UserDataFetcher>
           </SessionProvider>
         </ThemeProvider>

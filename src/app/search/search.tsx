@@ -10,6 +10,7 @@ import Filters from "@/src/components/filters";
 import { SearchIcon } from "@/src/components/svg/search-icon";
 import { FiltersIcon } from "@/src/components/svg/filter-icon";
 import { getCoverImageUrl } from "@/src/utils/utils";
+import { useGameStatusOptimized } from "@/src/hooks/useGameStatusOptimized";
 
 interface SearchPageProps {
     term?: string;
@@ -28,6 +29,12 @@ export const SearchPage: React.FC<SearchPageProps> = ({ term, games, initialFilt
     const [selectedFilters, setSelectedFilters] = useState(initialFilters);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const router = useRouter();
+    
+    // Get game IDs for status tracking
+    const gameIds = games ? games.map(game => game.id) : [];
+    
+    // Use the optimized game status hook
+    const { gameStatuses } = useGameStatusOptimized(gameIds);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -217,9 +224,16 @@ export const SearchPage: React.FC<SearchPageProps> = ({ term, games, initialFilt
                             {games && games.length > 0 ? (
                                 <div className="animate-slide-in-up">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-                                        {games.map(game => (
-                                            <GameCard key={game.id} game={game} />
-                                        ))}
+                                        {games.map(game => {
+                                            const userGameStatus = gameStatuses[game.id] ? { status: gameStatuses[game.id] } : null;
+                                            return (
+                                                <GameCard 
+                                                    key={game.id} 
+                                                    game={game} 
+                                                    userGameStatus={userGameStatus}
+                                                />
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             ) : term ? (

@@ -103,13 +103,12 @@ model RateLimitBlock {
 }
 
 // User game status tracking
-// Records user's progress and status for individual games
+// Records user's status for individual games
 model UserGameStatus {
   id        Int      @id @default(autoincrement())
   userId    String   @db.Uuid // Reference to the user
   gameId    Int      // IGDB game identifier
   status    String   @db.VarChar(20) // Game status (playing, completed, etc.)
-  progress  String   @db.VarChar(20) // Progress indicator (percentage, hours, etc.)
   createdAt DateTime @default(now()) @db.Timestamptz // Status creation time
   updatedAt DateTime @default(now()) @db.Timestamptz // Last update time
   

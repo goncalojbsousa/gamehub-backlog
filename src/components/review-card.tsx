@@ -161,7 +161,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
     }
   };
 
-  // Buscar o status do jogo para este utilizador
+  // Fetch the game status for this user
   useEffect(() => {
     const fetchGameStatus = async () => {
       if (!review.user.id) return;
@@ -174,7 +174,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
           setUserGameStatus(status);
         }
       } catch (error) {
-        console.error('Erro ao buscar status do jogo:', error);
+        console.error('Error fetching game status:', error);
       } finally {
         setIsLoadingStatus(false);
       }
@@ -183,13 +183,13 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
     fetchGameStatus();
   }, [review.user.id, gameId]);
 
-  // Função para determinar se o conteúdo deve ser truncado
+  // Function to determine if content should be truncated
   const shouldTruncate = (content: string) => {
     const lines = content.split('\n');
     return lines.length > 5 || content.length > 2000;
   };
 
-  // Função para truncar o conteúdo
+  // Function to truncate content
   const truncateContent = (content: string) => {
     const lines = content.split('\n');
     if (lines.length > 5) {
@@ -308,14 +308,6 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                         </svg>
                         {userGameStatus.status}
                       </div>
-                      {userGameStatus.progress && (
-                        <div className="flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-border_detail bg-color_main text-xs font-medium">
-                          <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 fill-color_icons" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                          </svg>
-                          {userGameStatus.progress}
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>

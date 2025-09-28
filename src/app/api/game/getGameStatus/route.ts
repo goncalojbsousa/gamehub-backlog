@@ -1,10 +1,8 @@
 'use server';
 
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/src/lib/prisma';
 
 export async function GET(request: Request) {
   // EXTRACT GAME ID AND USER ID FROM URL PARAMETERS
@@ -44,8 +42,7 @@ export async function GET(request: Request) {
         gameId: parseInt(gameId, 10)
       },
       select: {
-        status: true,
-        progress: true
+        status: true
       }
     });
 

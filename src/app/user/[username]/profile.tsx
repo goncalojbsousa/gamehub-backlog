@@ -10,11 +10,15 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { getAllGameStatusByUserId } from "@/src/lib/getAllGameStatusByUserId";
 import { LoadingIcon } from "@/src/components/svg/loading";
 import { SearchIcon } from "@/src/components/svg/search-icon";
-import { FiltersIcon } from "@/src/components/svg/filter-icon";
+import { IoGameControllerOutline } from "react-icons/io5";
+import { CiPlay1 } from "react-icons/ci";
+import { MdOutlineCancel } from "react-icons/md";
+import { FaList } from "react-icons/fa6";
 import { getCoverImageUrl } from "@/src/utils/utils";
 import { useUser } from "@/src/context/userContext";
 import { isGoogleImage } from "@/src/utils/imageUtils";
 import type { UserReview } from "@/src/lib/getUserReviews";
+import { useGameStatusOptimized } from "@/src/hooks/useGameStatusOptimized";
 
 interface UserProps {
     userId: string;
@@ -30,7 +34,6 @@ interface UserProps {
 
 interface GameProps {
     id: string | number;
-    progress: string;
     status: string;
     gameDetails: Game;
 }
@@ -42,7 +45,7 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     
     const validUserImage = !imageError ? (userImage || "/placeholder-user.webp") : "/placeholder-user.webp";
     
-    // Função auxiliar para formatar a data de forma segura
+    // Helper function to format the date safely
     const formatJoinDate = (date: string | Date) => {
         try {
             const dateObj = typeof date === 'string' ? new Date(date) : date;
@@ -59,17 +62,21 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
         }
     };
     const [selectedCategory, setSelectedCategory] = useState<string>("Played");
-    const [selectedProgress, setSelectedProgress] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOption, setSortOption] = useState("rating_desc");
-    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [games, setGames] = useState<GameProps[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
     const [hasGames, setHasGames] = useState<boolean | null>(null);
     const [userGameStats, setUserGameStats] = useState<Record<string, number>>({});
     const [reviewCount, setReviewCount] = useState(0);
+
+    // Get game IDs for status tracking
+    const gameIds = games.map(game => game.gameDetails.id);
+    
+    // Use the optimized game status hook
+    const { gameStatuses } = useGameStatusOptimized(gameIds);
 
     // Prefetched reviews and game details to avoid extra IGDB call on tab switch
     const [initialReviews, setInitialReviews] = useState<UserReview[] | null>(null);
@@ -162,17 +169,12 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
 
     const handleCategoryClick = (category: string) => {
         setSelectedCategory(category);
-        setSelectedProgress(null);
         setCurrentPage(1);
     };
 
-    const handleProgressClick = (progress: string) => {
-        setSelectedProgress(progress === 'All' ? null : progress);
-    };
 
     const clearAllFilters = () => {
         setSearchTerm("");
-        setSelectedProgress(null);
     };
 
     const handlePageChange = (newPage: number) => {
@@ -182,11 +184,9 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     };
 
     const filteredGames = games.filter(game =>
-        (selectedProgress ? game.progress === selectedProgress : true) &&
         game.gameDetails.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const progressOptions = ['All', 'Unfinished', 'Beaten', 'Completed', 'Continuous'];
     const categories = ['Played', 'Playing', 'Plan to play', 'Dropped'];
 
     // Background style similar to home page
@@ -295,235 +295,87 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                 </div>
             </div>
 
-            {/* Mobile/Tablet Filters Modal */}
-            <div className={`fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden transition-all duration-300 ${isFiltersOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                <div className={`absolute right-0 top-0 h-full w-full max-w-sm bg-color_main shadow-2xl transition-transform duration-300 filter-modal-enter ${isFiltersOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                    <div className="flex flex-col h-full">
-                        {/* Header */}
-                        <div className="flex items-center justify-between p-6 border-b border-border_detail">
-                            <h2 className="text-2xl font-bold text-color_text">Filters</h2>
-                            <button
-                                onClick={() => setIsFiltersOpen(false)}
-                                className="text-2xl text-color_text hover:text-color_text_sec transition-colors p-2"
-                            >
-                                &times;
-                            </button>
-                        </div>
-                        
-                        {/* Filters Content */}
-                        <div className="flex-1 overflow-y-auto p-6">
-                            {/* Search */}
-                            <div className="mb-6">
-                                <h3 className="text-sm font-semibold text-color_text mb-3">Search Games</h3>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="Type game name..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full p-3 pl-10 rounded-lg bg-color_main border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail text-color_text placeholder-color_text_sec"
-                                    />
-                                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 fill-color_icons w-4 h-4" />
-                                </div>
-                            </div>
-
-                                                            {/* Category Filter */}
-                                <div className="mb-6">
-                                    <h3 className="text-sm font-semibold text-color_text mb-3">Game Status</h3>
-                                    <div className="space-y-2">
-                                        {categories.map(category => (
-                                            <button
-                                                key={category}
-                                                onClick={() => {
-                                                    handleCategoryClick(category);
-                                                    setIsFiltersOpen(false);
-                                                }}
-                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
-                                                    selectedCategory === category 
-                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
-                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
-                                                }`}
-                                            >
-                                                <div className="flex justify-between items-center">
-                                                    <span>{category}</span>
-                                                    {userGameStats[category] && (
-                                                        <span className="bg-color_accent text-color_main text-xs font-bold rounded-full px-2 py-1 min-w-[20px] text-center">
-                                                            {userGameStats[category]}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                            {/* Progress Filter */}
-                            <div className="mb-6">
-                                <h3 className="text-sm font-semibold text-color_text mb-3">Progress Filter</h3>
-                                <div className="space-y-2">
-                                                                            {progressOptions.map(progress => (
-                                            <button
-                                                key={progress}
-                                                onClick={() => handleProgressClick(progress)}
-                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
-                                                    selectedProgress === progress || (progress === 'All' && !selectedProgress)
-                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
-                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
-                                                }`}
-                                            >
-                                                {progress}
-                                            </button>
-                                        ))}
-                                </div>
-                            </div>
-
-                            {/* Results Info */}
-                            <div className="text-sm text-color_text_sec bg-color_main rounded-lg p-3 mb-4">
-                                <p className="font-medium text-color_text">{filteredGames.length} games found</p>
-                                <p>Page {currentPage} of {totalPages}</p>
-                            </div>
-
-                            {/* Clear Filters */}
-                            {(searchTerm || selectedProgress) && (
-                                <button
-                                    onClick={clearAllFilters}
-                                    className="w-full py-2 px-4 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors text-sm font-medium border border-border_detail focus:outline-none"
-                                >
-                                    Clear All Filters
-                                </button>
-                            )}
-                        </div>
-                        
-                        {/* Footer */}
-                        <div className="p-6 border-t border-border_detail">
-                            <button
-                                onClick={() => setIsFiltersOpen(false)}
-                                className="w-full py-3 bg-color_reverse_sec text-color_main rounded-lg hover:bg-color_reverse transition-all duration-200 font-medium focus:outline-none"
-                            >
-                                Apply Filters
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             {/* Main Content */}
             <div className="relative z-10">
                 <div className="container mx-auto px-4 lg:px-8 py-4">
-                    {/* Tabs */}
+                    {/* Tabs and Filters */}
                     <div className="mb-8">
-                        <div className="bg-color_sec rounded-xl p-2 shadow-lg border border-border_detail inline-flex">
-                            <button
-                                onClick={() => setActiveTab('games')}
-                                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none ${
-                                    activeTab === 'games'
-                                        ? 'bg-color_reverse_sec text-color_main shadow-md'
-                                        : 'text-color_text hover:text-color_reverse_sec'
-                                }`}
-                            >
-                                Games ({Object.values(userGameStats).reduce((sum, count) => sum + count, 0)})
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('reviews')}
-                                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none ${
-                                    activeTab === 'reviews'
-                                        ? 'bg-color_reverse_sec text-color_main shadow-md'
-                                        : 'text-color_text hover:text-color_reverse_sec'
-                                }`}
-                            >
-                                Reviews ({reviewCount})
-                            </button>
-                        </div>
-                    </div>
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            {/* Tabs */}
+                            <div className="bg-color_sec rounded-xl p-2 shadow-lg border border-border_detail inline-flex">
+                                <button
+                                    onClick={() => setActiveTab('games')}
+                                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none ${
+                                        activeTab === 'games'
+                                            ? 'bg-color_reverse_sec text-color_main shadow-md'
+                                            : 'text-color_text hover:text-color_reverse_sec'
+                                    }`}
+                                >
+                                    Games ({Object.values(userGameStats).reduce((sum, count) => sum + count, 0)})
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('reviews')}
+                                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none ${
+                                        activeTab === 'reviews'
+                                            ? 'bg-color_reverse_sec text-color_main shadow-md'
+                                            : 'text-color_text hover:text-color_reverse_sec'
+                                    }`}
+                                >
+                                    Reviews ({reviewCount})
+                                </button>
+                            </div>
 
-                    {activeTab === 'games' && (
-                        <div className="flex flex-col lg:flex-row gap-8">
-                            {/* Desktop Filters Sidebar */}
-                            {hasGames === true && (
-                            <div className="hidden lg:block w-80 flex-shrink-0">
-                            <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail sticky top-24 animate-slide-in-up">
-                                <h2 className="text-xl font-bold mb-6 text-color_text">Filters</h2>
-                                
-                                {/* Search */}
-                                <div className="mb-6">
-                                    <h3 className="text-sm font-semibold text-color_text mb-3">Search Games</h3>
+                            {/* Inline Filters - Only show for games tab */}
+                            {activeTab === 'games' && hasGames === true && (
+                                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full lg:w-auto">
+                                    {/* Search Input */}
                                     <div className="relative">
                                         <input
                                             type="text"
-                                            placeholder="Type game name..."
+                                            placeholder="Search games..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="w-full p-3 pl-10 rounded-lg bg-color_main border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail text-color_text placeholder-color_text_sec"
+                                            className="w-full sm:w-64 p-3 pl-10 rounded-lg bg-color_main border border-border_detail transition-colors duration-200 focus:outline-none focus:border-input_detail text-color_text placeholder-color_text_sec"
                                         />
                                         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 fill-color_icons w-4 h-4" />
                                     </div>
-                                </div>
 
-                                {/* Category Filter */}
-                                <div className="mb-6">
-                                    <h3 className="text-sm font-semibold text-color_text mb-3">Game Status</h3>
-                                    <div className="grid grid-cols-1 gap-2">
+                                    {/* Game Status Buttons */}
+                                    <div className="flex gap-2 flex-wrap">
                                         {categories.map(category => (
                                             <button
                                                 key={category}
                                                 onClick={() => handleCategoryClick(category)}
-                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
+                                                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 focus:outline-none text-sm font-medium ${
                                                     selectedCategory === category 
-                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
-                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
+                                                        ? 'bg-color_reverse_sec text-color_main shadow-md' 
+                                                        : 'bg-color_main text-color_text hover:bg-color_hover border border-border_detail'
                                                 }`}
                                             >
-                                                <div className="flex justify-between items-center">
-                                                    <span>{category}</span>
-                                                    {userGameStats[category] && (
-                                                        <span className="bg-color_accent text-color_main text-xs font-bold rounded-full px-2 py-1 min-w-[20px] text-center">
-                                                            {userGameStats[category]}
-                                                        </span>
-                                                    )}
-                                                </div>
+                                                {/* Status Icons */}
+                                                {category === 'Played' && <IoGameControllerOutline className="w-4 h-4" />}
+                                                {category === 'Playing' && <CiPlay1 className="w-4 h-4" />}
+                                                {category === 'Dropped' && <MdOutlineCancel className="w-4 h-4" />}
+                                                {category === 'Plan to play' && <FaList className="w-4 h-4" />}
+                                                
+                                                <span className="hidden xs:inline">{category}</span>
+                                                
+                                                {userGameStats[category] && (
+                                                    <span className="bg-color_accent text-color_main text-xs font-bold rounded-full px-2 py-1 min-w-[20px] text-center">
+                                                        {userGameStats[category]}
+                                                    </span>
+                                                )}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
-
-                                {/* Progress Filter */}
-                                <div className="mb-6">
-                                    <h3 className="text-sm font-semibold text-color_text mb-3">Progress Filter</h3>
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {progressOptions.map(progress => (
-                                            <button
-                                                key={progress}
-                                                onClick={() => handleProgressClick(progress)}
-                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 focus:outline-none ${
-                                                    selectedProgress === progress || (progress === 'All' && !selectedProgress)
-                                                        ? 'bg-color_reverse_sec text-color_main font-medium shadow-md' 
-                                                        : 'bg-color_main text-color_text hover:bg-color_hover'
-                                                }`}
-                                            >
-                                                {progress}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Results Info */}
-                                <div className="text-sm text-color_text_sec bg-color_main rounded-lg p-3 mb-4">
-                                    <p className="font-medium text-color_text">{filteredGames.length} games found</p>
-                                    <p>Page {currentPage} of {totalPages}</p>
-                                </div>
-
-                                {/* Clear Filters */}
-                                {(searchTerm || selectedProgress) && (
-                                    <button
-                                        onClick={clearAllFilters}
-                                        className="w-full py-2 px-4 bg-color_main text-color_text rounded-lg hover:bg-color_hover transition-colors text-sm font-medium border border-border_detail"
-                                    >
-                                        Clear All Filters
-                                    </button>
-                                )}
-                            </div>
+                            )}
                         </div>
-                        )}
+                    </div>
+
+                    {activeTab === 'games' && (
+                        <div className="flex flex-col gap-8">
 
                         {/* Games Results */}
                         {hasGames === false && !loading ? (
@@ -540,46 +392,6 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                             </div>
                         ) : (hasGames === true || loading) ? (
                             <div className="flex-1">
-                            {/* Floating Filters Button for Mobile Only */}
-                            {hasGames === true && (
-                                <div className="fixed bottom-6 right-6 z-40 sm:hidden">
-                                <button
-                                    onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                                    className="bg-color_reverse_sec text-color_main p-4 rounded-full shadow-lg filter-button-hover relative floating-button-pulse"
-                                    title="Open Filters"
-                                >
-                                    <FiltersIcon className="fill-color_main w-6 h-6" />
-                                    {/* Active Filters Indicator */}
-                                    {(selectedProgress || searchTerm) && (
-                                        <span className="absolute -top-2 -right-2 bg-color_accent text-color_main text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center filter-checkbox-enter">
-                                            {(selectedProgress && selectedProgress !== 'All' ? 1 : 0) + (searchTerm ? 1 : 0)}
-                                        </span>
-                                    )}
-                                </button>
-                            </div>
-                            )}
-
-                            {/* Mobile Filters Header */}
-                            {hasGames === true && (
-                                <div className="lg:hidden mb-6">
-                                <div className="bg-color_sec rounded-xl p-6 shadow-lg border border-border_detail">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <h2 className="text-xl font-bold text-color_text mb-1">Filters</h2>
-                                            <p className="text-sm text-color_text_sec">
-                                                {filteredGames.length} games found • {selectedCategory}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                                            className="p-3 rounded-lg bg-color_main hover:bg-color_hover transition-colors focus:outline-none"
-                                        >
-                                            <FiltersIcon className="fill-color_icons w-5 h-5" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            )}
 
                             {/* Games Grid */}
                             {loading ? (
@@ -613,9 +425,20 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                             ) : (
                                 <div className="animate-slide-in-up">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-                                        {filteredGames.map((game, index) => (
-                                            <GameCard key={game.id || `game-${index}`} game={game.gameDetails} progress={game.progress} />
-                                        ))}
+                                        {filteredGames.map((game, index) => {
+                                            // Use status from context if available, otherwise use the status from the data
+                                            const userGameStatus = gameStatuses[game.gameDetails.id] 
+                                                ? { status: gameStatuses[game.gameDetails.id] } 
+                                                : { status: game.status };
+                                            
+                                            return (
+                                                <GameCard 
+                                                    key={game.id || `game-${index}`} 
+                                                    game={game.gameDetails} 
+                                                    userGameStatus={userGameStatus}
+                                                />
+                                            );
+                                        })}
                                     </div>
 
                                     {/* Pagination */}

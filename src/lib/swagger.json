@@ -116,9 +116,6 @@
           },
           "status": {
             "type": "string"
-          },
-          "progress": {
-            "type": "integer"
           }
         }
       },
@@ -696,9 +693,6 @@
                   },
                   "status": {
                     "type": "string"
-                  },
-                  "progress": {
-                    "type": "integer"
                   }
                 },
                 "required": ["gameId", "status"]

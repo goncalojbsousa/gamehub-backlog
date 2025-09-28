@@ -10,22 +10,21 @@ import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
 import { prisma } from '@/src/lib/prisma';
 
 /**
- * Input validation schema for game status updates
+ * Input validation schema for game status removal
  * Ensures data integrity and prevents malicious input
  */
 const inputSchema = z.object({
   gameId: z.number().positive(), // Must be a positive integer
-  status: z.string().max(20) // Status string with max length
 });
 
 /**
- * POST endpoint for updating user game status
- * Allows authenticated users to update their progress and status for games
+ * DELETE endpoint for removing user game status
+ * Allows authenticated users to remove their status for games
  * 
- * @param request - The incoming HTTP request containing game status data
- * @returns JSON response with updated game status or error message
+ * @param request - The incoming HTTP request containing game ID
+ * @returns JSON response with success or error message
  */
-export async function POST(request: Request) {
+export async function DELETE(request: Request) {
   // Verify user authentication before processing request
   const isAuthenticated = await checkIsAuthenticated();
   if (!isAuthenticated) {
@@ -61,29 +60,21 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Upsert game status - create new record or update existing one
-    const result = await prisma.userGameStatus.upsert({
+    // Delete the game status record
+    const result = await prisma.userGameStatus.deleteMany({
       where: {
-        userId_gameId: {
-          userId: userId,
-          gameId: validatedInput.gameId,
-        },
-      },
-      update: {
-        status: validatedInput.status,
-        updatedAt: new Date(), // Update timestamp
-      },
-      create: {
         userId: userId,
         gameId: validatedInput.gameId,
-        status: validatedInput.status,
       },
     });
 
-    // Return successful response with updated data
-    return NextResponse.json(result, { status: 200 });
+    // Return successful response
+    return NextResponse.json({ 
+      message: 'Game status removed successfully',
+      deletedCount: result.count 
+    }, { status: 200 });
   } catch (error) {
-    console.error('Error updating game status:', error);
+    console.error('Error removing game status:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }

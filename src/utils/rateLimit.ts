@@ -1,9 +1,6 @@
 'use server'
 
-import { PrismaClient } from '@prisma/client'
-
-// Initialize Prisma client for database operations
-const prisma = new PrismaClient()
+import { prisma } from '@/src/lib/prisma'
 
 // Rate limiting configuration constants
 const MAX_REQUESTS_PER_MINUTE = 60; // Maximum requests allowed per minute per IP

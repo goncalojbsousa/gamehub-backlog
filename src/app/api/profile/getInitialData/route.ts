@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     const userGameStatuses = await prisma.userGameStatus.findMany({
       where: { userId, status: gameStatus },
-      select: { gameId: true, status: true, progress: true },
+      select: { gameId: true, status: true },
       skip: gameSkip,
       take: gameLimit,
     });

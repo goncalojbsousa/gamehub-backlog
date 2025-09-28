@@ -1,7 +1,5 @@
 'use server'
 
-import { checkRateLimit } from '@/src/utils/rateLimit';
-import { headers } from 'next/headers';
 import { fetchAllDeals } from '../cheapsharkServices/getAllDeals';
 import { getIgdbAccessToken } from './tokenManager';
 
@@ -38,19 +36,8 @@ interface Deal {
  * @returns Promise resolving to grouped game data with pricing information
  */
 export const fetchGamesList = async (listTypes: ListType[], limit: number = 20) => {
-    // Extract client IP address for rate limiting
-    const headersList = await headers();
-    const clientIp = headersList.get('x-forwarded-for') || 'unknown';
-
-    // Validate IP address format and presence
-    if (typeof clientIp !== 'string' || clientIp === 'unknown') {
-        throw new Error('Access temporarily blocked. Try again later.');
-    }
-
-    // Check rate limiting to prevent API abuse
-    if (!(await checkRateLimit(clientIp))) {
-        throw new Error('Rate limit exceeded. Try again later.');
-    }
+    // Skip rate limiting for server-side requests
+    // Rate limiting should only apply to client-side API calls
 
     try {
         // IGDB API configuration

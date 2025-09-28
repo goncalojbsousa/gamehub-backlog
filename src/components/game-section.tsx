@@ -1,6 +1,7 @@
 import React from 'react';
 import { GameCard } from '@/src/components/game-card';
 import { GameCardSkeleton } from '@/src/components/skeleton';
+import { useGameStatusOptimized } from '@/src/hooks/useGameStatusOptimized';
 
 interface GameSectionProps {
   title: string;
@@ -11,6 +12,12 @@ interface GameSectionProps {
 }
 
 const GameSection: React.FC<GameSectionProps> = ({ title, games, coverImageUrl, className, isLoading = false }) => {
+  // Get game IDs for status tracking
+  const gameIds = games.map(game => game.id);
+  
+  // Use the optimized game status hook
+  const { gameStatuses } = useGameStatusOptimized(gameIds);
+
   return (
     <div className={className}>
       {/* Modern Section Header */}
@@ -45,9 +52,16 @@ const GameSection: React.FC<GameSectionProps> = ({ title, games, coverImageUrl, 
             <GameCardSkeleton key={index} />
           ))
         ) : games.length > 0 ? (
-          games.map((game) => (
-            <GameCard key={game.id} game={game} />
-          ))
+          games.map((game) => {
+            const userGameStatus = gameStatuses[game.id] ? { status: gameStatuses[game.id] } : null;
+            return (
+              <GameCard 
+                key={game.id} 
+                game={game} 
+                userGameStatus={userGameStatus}
+              />
+            );
+          })
         ) : (
           <div className="col-span-full flex justify-center items-center py-12">
             <div className="flex flex-col items-center gap-4">

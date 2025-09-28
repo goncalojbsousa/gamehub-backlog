@@ -24,7 +24,6 @@ interface UserGameStatus {
     user_id: number;
     game_id: number;
     status: string;
-    progress: number;
     created_at: Date;
     updated_at: Date | string;
 }
@@ -40,7 +39,6 @@ export function sanitizeOutput(data: UserGameStatus): Partial<UserGameStatus> {
     id: data.id,
     game_id: data.game_id,
     status: escape(data.status), // Escape HTML to prevent XSS
-    progress: Math.min(Math.max(data.progress, 0), 100), // Ensure progress is between 0 and 100
     updated_at: data.updated_at.toString()
   };
 }

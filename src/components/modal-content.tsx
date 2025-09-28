@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Modal from '@/src/components/modal';
-import { ProgressIcon } from '@/src/components/svg/progress';
 import { StatusIcon } from '@/src/components/svg/status';
 import { GameControlerIcon } from '@/src/components/svg/game-controler';
 import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
@@ -50,30 +49,24 @@ interface ModalProps {
     closeModal: () => void; // Function to close the modal
     selectedOption: string; // Currently selected game status
     handleOptionClick: (option: string) => void; // Status selection handler
-    selectedProgress: string; // Currently selected progress
-    handleProgressClick: (progress: string) => void; // Progress selection handler
     gameId: number;         // ID of the game being updated
     setCurrentOption: React.Dispatch<React.SetStateAction<string>>; // Status state setter
-    setCurrentProgress: React.Dispatch<React.SetStateAction<string>>; // Progress state setter
 }
 
 /**
  * ModalContent component - Game status update modal
- * Allows users to update their game status and progress
+ * Allows users to update their game status
  * Handles authentication, API calls, and user feedback
  * 
  * @param isModalOpen - Controls modal visibility
  * @param closeModal - Function to close the modal
  * @param selectedOption - Currently selected game status
  * @param handleOptionClick - Status selection handler
- * @param selectedProgress - Currently selected progress
- * @param handleProgressClick - Progress selection handler
  * @param gameId - ID of the game being updated
  * @param setCurrentOption - Status state setter
- * @param setCurrentProgress - Progress state setter
  * @returns JSX element for the complete modal content
  */
-export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, selectedOption, handleOptionClick, selectedProgress, handleProgressClick, gameId, setCurrentOption, setCurrentProgress }) => {
+export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, selectedOption, handleOptionClick, gameId, setCurrentOption }) => {
     // State management for update process and user feedback
     const [isUpdating, setIsUpdating] = useState(false);
     const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -85,9 +78,9 @@ export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, se
      * Provides user feedback through notifications
      */
     const handleUpdate = async () => {
-        // Validate that both status and progress are selected
-        if (!selectedOption || !selectedProgress) {
-            setNotification({ message: 'Please select both status and progress', type: 'error' });
+        // Validate that status is selected
+        if (!selectedOption) {
+            setNotification({ message: 'Please select a status', type: 'error' });
             return;
         }
 
@@ -115,7 +108,6 @@ export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, se
                     userId: userId,
                     gameId: gameId,
                     status: selectedOption,
-                    progress: selectedProgress,
                 }),
             });
 
@@ -126,7 +118,6 @@ export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, se
 
             // Update local state with new values
             setCurrentOption(selectedOption);
-            setCurrentProgress(selectedProgress);
             setNotification({ message: 'Game status updated successfully', type: 'success' });
 
             // Close modal on successful update
@@ -154,44 +145,22 @@ export const ModalContent: React.FC<ModalProps> = ({ isModalOpen, closeModal, se
                         <p className="text-color_text_sec text-base">Register your history with this game!</p>
                     </div>
 
-                    {/* Content grid with status and progress sections */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                        {/* Game Status Selection Section */}
-                        <div>
-                            <div className="flex items-center mb-4">
-                                <StatusIcon className='fill-color_icons w-6 h-6 mr-3' />
-                                <h2 className="text-color_text font-semibold text-xl">Status</h2>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* Status option buttons */}
-                                {['Played', 'Playing', 'Dropped', 'Plan to play'].map(option => (
-                                    <SelectionButton
-                                        key={option}
-                                        text={option}
-                                        isSelected={selectedOption === option}
-                                        onClick={() => handleOptionClick(option)}
-                                    />
-                                ))}
-                            </div>
+                    {/* Game Status Selection Section */}
+                    <div className="mb-8">
+                        <div className="flex items-center mb-4">
+                            <StatusIcon className='fill-color_icons w-6 h-6 mr-3' />
+                            <h2 className="text-color_text font-semibold text-xl">Status</h2>
                         </div>
-
-                        {/* Game Progress Selection Section */}
-                        <div>
-                            <div className="flex items-center mb-4">
-                                <ProgressIcon className='fill-color_icons w-6 h-6 mr-3' />
-                                <h2 className="text-color_text font-semibold text-xl">Progress</h2>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* Progress option buttons */}
-                                {['Unfinished', 'Beaten', 'Completed', 'Continuous'].map(progress => (
-                                    <SelectionButton
-                                        key={progress}
-                                        text={progress}
-                                        isSelected={selectedProgress === progress}
-                                        onClick={() => handleProgressClick(progress)}
-                                    />
-                                ))}
-                            </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            {/* Status option buttons */}
+                            {['Played', 'Playing', 'Dropped', 'Plan to play'].map(option => (
+                                <SelectionButton
+                                    key={option}
+                                    text={option}
+                                    isSelected={selectedOption === option}
+                                    onClick={() => handleOptionClick(option)}
+                                />
+                            ))}
                         </div>
                     </div>
 
