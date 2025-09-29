@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://gamehubbacklog.vercel.app">
-    <img src="https://github.com/goncalojbsousa/gamehub-backlog/blob/main/public/cover.webp" height="96" style="margin-right: 10px;">
+    <img src="https://github.com/goncalojbsousa/gamehub-project/blob/main/src/app/favicon.ico" height="96" style="margin-right: 10px;">
     <h1 align="center">GameHub Backlog</h1>
     <p align="center">Track, rate, and manage your gaming journey</p>
   </a>
