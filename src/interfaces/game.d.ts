@@ -1,71 +1,95 @@
+/**
+ * Store interface - Represents a game store or retailer
+ * Contains information about stores that sell games and their branding
+ */
 interface Store {
-    storeID: string;
-    storeName: string;
-    isActive: boolean;
+    storeID: string;         // Unique identifier for the store
+    storeName: string;       // Human-readable name of the store
+    isActive: boolean;       // Whether the store is currently active
     images: {
-        logo: string;
-        icon: string;
+        logo: string;        // Store logo image URL
+        icon: string;        // Store icon image URL
     };
 }
 
+/**
+ * Deal interface - Represents a game deal or sale
+ * Contains pricing information and deal details from CheapShark API
+ */
 interface Deal {
-    internalName: string;
-    title: string;
-    metacriticLink: string;
-    dealID: string;
-    storeID: string;
-    gameID: string;
-    salePrice: string;
-    normalPrice: string;
-    isOnSale: string;
-    savings: string;
-    metacriticScore: string;
-    steamRatingText: string;
-    steamRatingPercent: string;
-    steamRatingCount: string;
-    steamAppID: string;
-    releaseDate: number;
-    lastChange: number;
-    dealRating: string;
-    thumb: string;
-    store: Store; 
+    internalName: string;        // Internal game name
+    title: string;               // Display title of the game
+    metacriticLink: string;      // Link to Metacritic review
+    dealID: string;              // Unique deal identifier
+    storeID: string;             // Store where deal is available
+    gameID: string;              // Game identifier
+    salePrice: string;           // Current sale price
+    normalPrice: string;         // Regular price before sale
+    isOnSale: string;            // Whether game is currently on sale
+    savings: string;             // Percentage saved
+    metacriticScore: string;     // Metacritic review score
+    steamRatingText: string;     // Steam rating description
+    steamRatingPercent: string;  // Steam rating percentage
+    steamRatingCount: string;    // Number of Steam ratings
+    steamAppID: string;          // Steam application ID
+    releaseDate: number;         // Game release timestamp
+    lastChange: number;          // Last price change timestamp
+    dealRating: string;          // Deal quality rating
+    thumb: string;               // Thumbnail image URL
+    store: Store;                // Associated store information
 }
 
+/**
+ * Website interface - Represents game-related websites
+ * Contains URLs and types for official and fan websites
+ */
 interface Website {
-    url: string;
-    category: number;
+    url: string;         // Website URL
+    type: number;        // Website type (IGDB type ID)
 }
 
+/**
+ * Game interface - Main game data structure
+ * Comprehensive interface representing all game information from IGDB API
+ * Includes metadata, ratings, relationships, and external data
+ */
 declare interface Game {
-    id: number;
-    name: string;
+    id: number;          // Unique game identifier
+    name: string;        // Game title
     cover: {
-        url: string;
+        url: string;     // Game cover image URL
     };
-    category: number;
-    version_title: string;
-    summary: string;
-    storyline: string;
-    genres: {
+    game_type: number;   // Game type (replaces deprecated category)
+    game_status?: number; // Game status (replaces deprecated status)
+
+    version_title: string; // Version-specific title
+    summary: string;     // Game description/summary
+    storyline: string;   // Game storyline/narrative
+    
+    // Game classifications
+    genres: {            // Game genres
         name: string;
     }[];
-    themes: {
+    themes: {            // Game themes
         name: string;
     }[];
-    player_perspectives: {
+    player_perspectives: { // Camera perspectives
         name: string;
     }[];
-    game_modes: {
+    game_modes: {        // Multiplayer modes
         name: string;
     }[];
-    platforms: {
+    platforms: {         // Supported platforms
         name: string;
     }[];
-    first_release_date: number;
-    screenshots: {
+    
+    first_release_date: number; // Release date timestamp
+    
+    screenshots: {       // Game screenshots
         url: string;
     }[];
-    language_supports: {
+    
+    language_supports: { // Supported languages
         language: {
             native_name: string;
         },
@@ -73,7 +97,8 @@ declare interface Game {
             name: string;
         },
     }[];
-    involved_companies: {
+    
+    involved_companies: { // Companies involved in development
         company: {
             id: number;
             name: string;
@@ -81,30 +106,37 @@ declare interface Game {
                 url: string;
             };
         };
-        developer: boolean;
-        porting: boolean;
-        publisher: boolean;
-        supporting: boolean;
+        developer: boolean;    // Is developer
+        porting: boolean;      // Is porting company
+        publisher: boolean;    // Is publisher
+        supporting: boolean;   // Is supporting company
     }[];
-    slug: string;
-    total_rating: number;
-    aggregated_rating: number;
-    rating: number;
-    similar_games: Game[];
-    expanded_games: Game[];
-    expansions: Game[];
-    dlcs: Game[];
-    bundles: Game[];
-    remakes: Game[];
-    remasters: Game[];
-    parent_game: Game;
-    standalone_expansions: Game[];
-    forks: Game[];
-    websites: {
+    
+    slug: string;        // URL-friendly game identifier
+    
+    // Rating information
+    total_rating: number;      // Average rating
+    aggregated_rating: number; // Aggregated critic rating
+    rating: number;            // User rating
+    
+    // Game relationships
+    similar_games: Game[];           // Similar games
+    expanded_games: Game[];          // Expanded versions
+    expansions: Game[];              // Expansion packs
+    dlcs: Game[];                    // Downloadable content
+    bundles: Game[];                 // Game bundles
+    remakes: Game[];                 // Remake versions
+    remasters: Game[];               // Remastered versions
+    parent_game: Game;               // Original game (for DLC/expansions)
+    standalone_expansions: Game[];   // Standalone expansions
+    forks: Game[];                   // Forked versions
+    
+    // External data
+    websites: {                      // Related websites
         url: string;
-        category: number;
+        type: number;
     }[];
-    price: string;
-    deals?: Deal[];
-    websites?: Website[];
+    price: string;                   // Current price
+    deals?: Deal[];                  // Available deals
+    websites?: Website[];            // Alternative websites array
 }

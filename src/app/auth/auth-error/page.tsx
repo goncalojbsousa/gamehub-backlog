@@ -1,4 +1,5 @@
 import { RxExclamationTriangle } from "react-icons/rx";
+import Link from "next/link";
 
 const AuthErrorPage: React.FC = () => {
   return (
@@ -28,12 +29,12 @@ const AuthErrorPage: React.FC = () => {
           <p>
             {"To go back to the sign in page, "}
 
-            <a
+            <Link
               href="/api/auth/signin"
               style={{ cursor: "pointer", textDecoration: "underline" }}
             >
               Click Here
-            </a>
+            </Link>
           </p>
         </div>
       </div>

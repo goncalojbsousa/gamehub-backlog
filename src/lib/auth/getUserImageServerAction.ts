@@ -4,7 +4,8 @@ import { auth } from "@/src/lib/auth/authConfig"
 
 export const getUserImage = async () => {
     const session = await auth();
-    if (session) {
-        return session.user?.image;    
+    if (session && session.user?.image) {
+        return session.user.image || '';
     }
+    return '';
 };

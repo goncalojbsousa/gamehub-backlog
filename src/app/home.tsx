@@ -34,37 +34,66 @@ export default function HomePage({
   };
 
   return (
-    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-color_bg" style={mainStyle}>
+    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background" style={mainStyle}>
       <Navbar />
 
-      <div className="p-4 pt-0 text-color_text xl:px-24">
-        {!isAuthenticated && <IntroductionSection />}
-        <GameSection
-          title="Popular Games"
-          games={gamesPopular}
-          coverImageUrl={getCoverImageUrl(`https://${gamesPopular[0]?.screenshots[0]?.url}`)}
-        />
-        <GameSection
-          className="pt-6"
-          title="Popular Games of 2024"
-          games={gamesPopularYear}
-          coverImageUrl={getCoverImageUrl(`https://${gamesPopularYear[0]?.screenshots[0]?.url}`)}
-        />
-        {<GameSection
-          className="pt-6"
-          title="Recent Games"
-          games={gamesRecent}
-          coverImageUrl={getCoverImageUrl(`https://${gamesRecent[0]?.screenshots?.[0]?.url || ''}`)}
-        />}
-        <GameSection
-          className="pt-6"
-          title="Upcoming Games"
-          games={gamesUpcoming}
-          coverImageUrl={getCoverImageUrl(`https://${gamesUpcoming[0]?.screenshots[0]?.url}`)}
-        />
+      {/* Hero Section with Dynamic Background */}
+      <div className="relative overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+        </div>
+
+        <div className="relative z-10">
+          {!isAuthenticated && <IntroductionSection />}
+        </div>
       </div>
 
-      <div className="mt-8">
+      {/* Content Sections with Enhanced Spacing */}
+      <div className="relative z-10">
+        <div className="container mx-auto px-4 lg:px-8 py-4">
+          {/* Popular Games Section */}
+          <div className="mb-16 animate-on-load animate-slide-in-up">
+            <GameSection
+              title="🔥 Trending Now"
+              games={gamesPopular}
+              coverImageUrl={getCoverImageUrl(`https://${gamesPopular[0]?.screenshots[0]?.url}`)}
+              isLoading={gamesPopular.length === 0}
+            />
+          </div>
+
+          {/* Popular Games of 2024 Section */}
+          <div className="mb-16 animate-on-load animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
+            <GameSection
+              title="🏆 Best of 2024"
+              games={gamesPopularYear}
+              coverImageUrl={getCoverImageUrl(`https://${gamesPopularYear[0]?.screenshots[0]?.url}`)}
+              isLoading={gamesPopularYear.length === 0}
+            />
+          </div>
+
+          {/* Recent Games Section */}
+          <div className="mb-16 animate-on-load animate-slide-in-up" style={{ animationDelay: '0.4s' }}>
+            <GameSection
+              title="🆕 Recently Released"
+              games={gamesRecent}
+              coverImageUrl={getCoverImageUrl(`https://${gamesRecent[0]?.screenshots?.[0]?.url || ''}`)}
+              isLoading={gamesRecent.length === 0}
+            />
+          </div>
+
+          {/* Upcoming Games Section */}
+          <div className="mb-16 animate-on-load animate-slide-in-up" style={{ animationDelay: '0.6s' }}>
+            <GameSection
+              title="🚀 Coming Soon"
+              games={gamesUpcoming}
+              coverImageUrl={getCoverImageUrl(`https://${gamesUpcoming[0]?.screenshots[0]?.url}`)}
+              isLoading={gamesUpcoming.length === 0}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-16">
         <Footer />
       </div>
     </main>

@@ -3,16 +3,22 @@ import React from 'react'
 
 const LegalNavbar = () => {
   return (
-    <div className="p-4 pl-6 pt-0">
-    <ul className="flex list-disc list-inside space-x-4">
-        <li className="p-2">
-            <Link href="/terms" className="text-blue-600 hover:underline">Terms of Service</Link>
-        </li>
-        <li className="p-2">
-            <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>
-        </li>
-    </ul>
-</div>
+    <div className="mb-6">
+      <nav className="flex items-center space-x-1 bg-color_sec rounded-lg p-2 shadow-sm border border-border_detail">
+        <Link 
+          href="/terms" 
+          className="px-4 py-2 rounded-md text-color_text_sec hover:text-color_text hover:bg-color_hover transition-all duration-200 font-medium"
+        >
+          Terms of Service
+        </Link>
+        <Link 
+          href="/privacy" 
+          className="px-4 py-2 rounded-md text-color_text_sec hover:text-color_text hover:bg-color_hover transition-all duration-200 font-medium"
+        >
+          Privacy Policy
+        </Link>
+      </nav>
+    </div>
   )
 }
 

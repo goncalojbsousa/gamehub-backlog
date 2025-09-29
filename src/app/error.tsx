@@ -20,7 +20,7 @@ export default function Error({ error, reset }: ErrorProps) {
             <main className='flex flex-col justify-center items-center flex-grow text-color_text'>
                 <h1 className='text-3xl font-bold bg-color_error rounded p-2'>Something went wrong!</h1>
                 <p className='text-lg mb-4 mt-2'>
-                    We encountered an unexpected error: {error.message}
+                    We encountered an unexpected error: {error.name}
                 </p>
                 <div className='flex space-x-4 justify-center itens-center'>
                     <button

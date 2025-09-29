@@ -4,6 +4,8 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import UserDataFetcher from "@/src/context/userDataFetcher";
 import { ThemeProvider } from "@/src/context/themeContext";
+import { GameStatusProvider } from "@/src/context/gameStatusContext";
+import BannedUserMessage from "@/src/components/banned-user-message";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,35 +37,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              function getInitialColorMode() {
-                const persistedColorPreference = window.localStorage.getItem('darkMode');
-                const hasPersistedPreference = typeof persistedColorPreference === 'string';
-                if (hasPersistedPreference) {
-                  return persistedColorPreference === 'true' ? 'dark' : 'light';
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {
+                  document.documentElement.setAttribute('data-theme', 'light');
                 }
-                const mql = window.matchMedia('(prefers-color-scheme: dark)');
-                const hasMediaQueryPreference = typeof mql.matches === 'boolean';
-                if (hasMediaQueryPreference) {
-                  return mql.matches ? 'dark' : 'light';
-                }
-                return 'light';
-              }
-              const colorMode = getInitialColorMode();
-              document.documentElement.setAttribute('data-theme', colorMode);
-            })();
-          `
-        }} />
+              })();
+            `,
+          }}
+        />
       </head>
-      <body className={`${inter.className} bg-background text-color_text transition-colors duration-200`}>
+      <body className={`${inter.className} bg-background text-color_text transition-colors duration-200`} suppressHydrationWarning>
         <ThemeProvider>
-          <SessionProvider>
+          <SessionProvider refetchInterval={0} refetchOnWindowFocus={false}>
             <UserDataFetcher>
-              {children}
+              <GameStatusProvider>
+                <BannedUserMessage />
+                {children}
+              </GameStatusProvider>
             </UserDataFetcher>
           </SessionProvider>
         </ThemeProvider>

@@ -1,0 +1,1410 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "GameHub Backlog API",
+    "description": "API for managing game backlog, reviews and user profiles",
+    "version": "1.0.0",
+    "contact": {
+      "name": "GameHub Backlog"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "isProfilePublic": {
+            "type": "boolean"
+          },
+          "image": {
+            "type": "string"
+          },
+          "steamId": {
+            "type": "string"
+          }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "gameId": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Report": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "targetType": {
+            "type": "string",
+            "enum": ["REVIEW"]
+          },
+          "targetId": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 500
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "RESOLVED", "DISMISSED"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GameStatus": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "details": {
+             "type": "object"
+           }
+         }
+       }
+     }
+   },
+  "paths": {
+    "/auth/link/steam": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Link Steam account",
+        "description": "Initiates Steam account linking process",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Steam linking initiated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/oauth-proxy/{provider}": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "OAuth proxy",
+        "description": "Handles OAuth authentication for various providers",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["steam", "google", "discord"]
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to OAuth provider"
+          }
+        }
+      }
+    },
+    "/auth/session": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Get session",
+        "description": "Returns current user session information",
+        "responses": {
+          "200": {
+            "description": "Session information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "expires": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/csrf": {
+      "get": {
+        "tags": ["Security"],
+        "summary": "Get CSRF token",
+        "description": "Returns CSRF token for form protection",
+        "responses": {
+          "200": {
+            "description": "CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "csrfToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/checkBanStatus": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Check user ban status",
+        "description": "Checks if current user is banned",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ban status information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isBanned": {
+                      "type": "boolean"
+                    },
+                    "banReason": {
+                      "type": "string"
+                    },
+                    "banExpiresAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/getCurrentUser": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get current user data",
+        "description": "Returns authenticated user data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/updateProfile": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Update user profile",
+        "description": "Updates authenticated user profile data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "username": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "^[a-zA-Z0-9_-]+$"
+                  },
+                  "bio": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "isProfilePublic": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/checkUsername": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Check username availability",
+        "description": "Checks if a username is available",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "^[a-zA-Z0-9_-]+$"
+                  }
+                },
+                "required": ["username"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Username disponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "available": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Username inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/createReview": {
+      "post": {
+        "tags": ["Reviews"],
+        "summary": "Create new review",
+        "description": "Creates a new review for a game",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "gameId": {
+                    "type": "integer"
+                  },
+                  "rating": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "content": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": ["gameId", "rating"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Review"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Usuário já possui review para este jogo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/updateReview": {
+      "put": {
+        "tags": ["Reviews"],
+        "summary": "Update review",
+        "description": "Updates an existing review",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "gameId": {
+                    "type": "integer"
+                  },
+                  "rating": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "content": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": ["gameId", "rating"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Review"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Review não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/getUserReviews": {
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "Get user reviews",
+        "description": "Returns reviews from a specific user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["createdAt", "updatedAt", "rating"],
+              "default": "createdAt"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de reviews do usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Review"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "totalReviews": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parâmetros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/game/updateGameStatus": {
+      "post": {
+        "tags": ["Games"],
+        "summary": "Update game status",
+        "description": "Updates a game status in user's backlog",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "gameId": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "required": ["gameId", "status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/report/create": {
+      "post": {
+        "tags": ["Reports"],
+        "summary": "Create report",
+        "description": "Creates a new report",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "targetType": {
+                    "type": "string",
+                    "enum": ["REVIEW"]
+                  },
+                  "targetId": {
+                    "type": "integer"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 500
+                  }
+                },
+                "required": ["targetType", "targetId", "reason"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Denúncia criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "report": {
+                      "$ref": "#/components/schemas/Report"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conteúdo já foi denunciado pelo usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/report/list": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "List reports (Admin)",
+        "description": "Lists all reports - administrators only",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "RESOLVED", "DISMISSED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de denúncias",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reports": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Report"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado - apenas administradores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/report/update": {
+      "patch": {
+        "tags": ["Reports"],
+        "summary": "Update report (Admin)",
+        "description": "Updates report status - administrators only",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["PENDING", "RESOLVED", "DISMISSED"]
+                  },
+                  "resolutionNotes": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": ["id", "status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Denúncia atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "report": {
+                      "$ref": "#/components/schemas/Report"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado - apenas administradores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/deleteReview": {
+      "delete": {
+        "tags": ["Reviews"],
+        "summary": "Delete review",
+        "description": "Deletes an existing review",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review deletada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Review não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+       }
+     },
+     "/user/completeSteamLink": {
+       "post": {
+         "tags": ["User"],
+         "summary": "Complete Steam account linking",
+         "description": "Completes the Steam account linking process",
+         "security": [
+           {
+             "bearerAuth": []
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "Steam account linked successfully",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "object",
+                   "properties": {
+                     "success": {
+                       "type": "boolean"
+                     }
+                   }
+                 }
+               }
+             }
+           },
+           "400": {
+             "description": "Missing link cookie",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "$ref": "#/components/schemas/Error"
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/user/unlinkSteam": {
+       "post": {
+         "tags": ["User"],
+         "summary": "Unlink Steam account",
+         "description": "Removes Steam account link from user profile",
+         "security": [
+           {
+             "bearerAuth": []
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "Steam account unlinked successfully",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "object",
+                   "properties": {
+                     "success": {
+                       "type": "boolean"
+                     }
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/user/getUserByUsername": {
+       "get": {
+         "tags": ["User"],
+         "summary": "Get user by username",
+         "description": "Returns user data by username",
+         "parameters": [
+           {
+             "name": "username",
+             "in": "query",
+             "required": true,
+             "schema": {
+               "type": "string"
+             }
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "User data",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "$ref": "#/components/schemas/User"
+                 }
+               }
+             }
+           },
+           "404": {
+             "description": "User not found",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "$ref": "#/components/schemas/Error"
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/user/getUserData": {
+       "get": {
+         "tags": ["User"],
+         "summary": "Get user data",
+         "description": "Returns user data by user ID",
+         "parameters": [
+           {
+             "name": "userId",
+             "in": "query",
+             "required": true,
+             "schema": {
+               "type": "string"
+             }
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "User data",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "$ref": "#/components/schemas/User"
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/review/getGameReviews": {
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "Get game reviews",
+        "description": "Returns all reviews for a specific game",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de reviews do jogo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Review"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+       }
+     },
+     "/game/getGameStatus": {
+       "get": {
+         "tags": ["Games"],
+         "summary": "Get game status",
+         "description": "Returns game status for a user",
+         "security": [
+           {
+             "bearerAuth": []
+           }
+         ],
+         "parameters": [
+           {
+             "name": "gameId",
+             "in": "query",
+             "required": true,
+             "schema": {
+               "type": "integer"
+             }
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "Game status",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "$ref": "#/components/schemas/GameStatus"
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/game/getAllGameStatusByUserId": {
+       "get": {
+         "tags": ["Games"],
+         "summary": "Get all game statuses by user ID",
+         "description": "Returns all game statuses for a specific user",
+         "parameters": [
+           {
+             "name": "userId",
+             "in": "query",
+             "required": true,
+             "schema": {
+               "type": "string"
+             }
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "List of game statuses",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "array",
+                   "items": {
+                     "$ref": "#/components/schemas/GameStatus"
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/game/getGameRating": {
+       "get": {
+         "tags": ["Games"],
+         "summary": "Get game rating",
+         "description": "Returns average rating for a game",
+         "parameters": [
+           {
+             "name": "gameId",
+             "in": "query",
+             "required": true,
+             "schema": {
+               "type": "integer"
+             }
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "Game rating information",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "object",
+                   "properties": {
+                     "averageRating": {
+                       "type": "number"
+                     },
+                     "totalReviews": {
+                       "type": "integer"
+                     }
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/profile/getInitialData": {
+       "get": {
+         "tags": ["Profile"],
+         "summary": "Get initial profile data",
+         "description": "Returns initial data for user profile page",
+         "parameters": [
+           {
+             "name": "userId",
+             "in": "query",
+             "required": true,
+             "schema": {
+               "type": "string"
+             }
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "Profile initial data",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "object",
+                   "properties": {
+                     "statusCounts": {
+                       "type": "object"
+                     },
+                     "games": {
+                       "type": "object"
+                     },
+                     "reviews": {
+                       "type": "object"
+                     }
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/admin/getUsers": {
+       "get": {
+         "tags": ["Admin"],
+         "summary": "Get all users (Admin)",
+         "description": "Returns list of all users - administrators only",
+         "security": [
+           {
+             "bearerAuth": []
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "List of users",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "array",
+                   "items": {
+                     "$ref": "#/components/schemas/User"
+                   }
+                 }
+               }
+             }
+           },
+           "403": {
+             "description": "Access denied - administrators only",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "$ref": "#/components/schemas/Error"
+                 }
+               }
+             }
+           }
+         }
+       }
+     },
+     "/admin/getStats": {
+       "get": {
+         "tags": ["Admin"],
+         "summary": "Get admin statistics",
+         "description": "Returns platform statistics - administrators only",
+         "security": [
+           {
+             "bearerAuth": []
+           }
+         ],
+         "responses": {
+           "200": {
+             "description": "Platform statistics",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "object",
+                   "properties": {
+                     "totalUsers": {
+                       "type": "integer"
+                     },
+                     "totalReviews": {
+                       "type": "integer"
+                     },
+                     "totalReports": {
+                       "type": "integer"
+                     }
+                   }
+                 }
+               }
+             }
+           },
+           "403": {
+             "description": "Access denied - administrators only",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "$ref": "#/components/schemas/Error"
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   }
+ }
+}

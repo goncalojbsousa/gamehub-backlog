@@ -1,84 +1,236 @@
+// Prisma Client configuration
 generator client {
   provider = "prisma-client-js"
 }
 
+// Database connection configuration
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
+// User authentication roles
+// Defines the permission levels for users in the system
 enum AuthRole {
-  USER
-  ADMIN
+  USER  // Standard user with basic permissions
+  ADMIN // Administrator with full system access
 }
-
+// Report status for content reporting workflow
+enum ReportStatus {
+  PENDING   // Newly created report, awaiting review
+  RESOLVED  // Addressed by a moderator/admin
+  DISMISSED // Considered invalid or not actionable
+}
+// User model - Core user entity for authentication and profile management
+// Stores user account information, authentication details, and profile settings
 model User {
   id            String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name          String?          @db.VarChar(255)
-  email         String?          @unique @db.VarChar(255)
-  emailVerified DateTime?        @db.Timestamptz
-  image         String?
-  role          AuthRole         @default(USER)
-  createdAt     DateTime         @default(now())
-  username      String?          @unique @db.VarChar(255)
-  accounts      Account[]
-  gameStatus    UserGameStatus[]
+  name          String?          @db.VarChar(255) // Display name for the user
+  email         String?          @unique @db.VarChar(255) // Unique email address for authentication
+  emailVerified DateTime?        @db.Timestamptz // Timestamp when email was verified
+  image         String?          // Profile image URL
+  role          AuthRole         @default(USER) // User's permission level
+  isBanned      Boolean          @default(false) // Flag to indicate if user is banned
+  createdAt     DateTime         @default(now()) // Account creation timestamp
+  username      String?          @unique @db.VarChar(255) // Unique username for profile URLs
+  bio           String?          @db.Text // User's biography/description
+  isProfilePublic Boolean        @default(true) // Controls profile visibility
+  steamId       String?          @unique @db.VarChar(32) // Linked Steam 64 ID for account linking
+  
+  // Relationships
+  accounts         Account[]        // OAuth account connections
+  gameStatus       UserGameStatus[] // User's game status tracking
+  reviews          Review[]         // User's game reviews
+  reportsReported  Report[]         @relation("ReportReporter") // Reports this user submitted
+  reportsModerated Report[]         @relation("ReportModerator") // Reports this user moderated
+  reportsAgainst   Report[]         @relation("ReportTargetUser") // Reports where this user is the reported target
+  userLogs         UserLog[]        // User's action logs for audit trail
 }
-
+// Account model - OAuth provider connections
+// Links user accounts to external authentication providers (Google, etc.)
 model Account {
   id                String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userId            String  @db.Uuid
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
+  userId            String  @db.Uuid // Reference to the user
+  type              String  // OAuth account type
+  provider          String  // OAuth provider name (e.g., "google")
+  providerAccountId String  // Unique ID from the OAuth provider
+  refresh_token     String? @db.Text // OAuth refresh token
+  access_token      String? @db.Text // OAuth access token
+  expires_at        Int?    // Token expiration timestamp
+  token_type        String? // Type of OAuth token
+  scope             String? // OAuth scope permissions
+  id_token          String? @db.Text // OAuth ID token
+  session_state     String? // OAuth session state
+  
+  // Relationship to user
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Ensure unique provider-account combinations
   @@unique([provider, providerAccountId])
 }
 
+// Verification token model - Email verification tokens
+// Temporary tokens used for email verification during registration
 model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime @db.Timestamptz
+  identifier String   // Email or identifier being verified
+  token      String   // Verification token
+  expires    DateTime @db.Timestamptz // Token expiration time
 
-  @@id([identifier, token])
+  @@id([identifier, token]) // Composite primary key
 }
 
+// Rate limiting request tracking
+// Records individual API requests for rate limiting enforcement
 model RateLimitRequest {
   id        Int      @id @default(autoincrement())
-  ip        String   @db.VarChar(45)
-  timestamp DateTime @db.Timestamptz
+  ip        String   @db.VarChar(45) // Client IP address (IPv4/IPv6)
+  timestamp DateTime @db.Timestamptz // Request timestamp
 
+  // Index for efficient rate limit queries
   @@index([ip, timestamp], name: "idx_rate_limit_requests_ip_timestamp")
 }
 
+// Rate limiting violation tracking
+// Tracks repeated violations by IP address for progressive rate limiting
 model RateLimitViolation {
-  ip         String @id @db.VarChar(45)
-  violations Int
+  ip         String @id @db.VarChar(45) // Client IP address
+  violations Int    // Number of violations committed
 }
 
+// Rate limiting block list
+// Temporarily blocks IP addresses that exceed rate limits
 model RateLimitBlock {
-  ip          String   @id @db.VarChar(45)
-  block_until DateTime @db.Timestamptz
+  ip          String   @id @db.VarChar(45) // Client IP address
+  block_until DateTime @db.Timestamptz // Block expiration time
 }
 
+// User game status tracking
+// Records user's status for individual games
 model UserGameStatus {
   id        Int      @id @default(autoincrement())
-  userId    String   @db.Uuid
-  gameId    Int
-  status    String   @db.VarChar(20)
-  progress  String   @db.VarChar(20)
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @default(now()) @db.Timestamptz
+  userId    String   @db.Uuid // Reference to the user
+  gameId    Int      // IGDB game identifier
+  status    String   @db.VarChar(20) // Game status (playing, completed, etc.)
+  createdAt DateTime @default(now()) @db.Timestamptz // Status creation time
+  updatedAt DateTime @default(now()) @db.Timestamptz // Last update time
+  
+  // Relationship to user
   user      User     @relation(fields: [userId], references: [id])
 
+  // Ensure one status per user per game
   @@unique([userId, gameId])
+  // Index for efficient queries
   @@index([userId, gameId], name: "idx_user_game_status")
+}
+
+// Game review model
+// Stores user reviews and ratings for games
+model Review {
+  id          Int      @id @default(autoincrement())
+  userId      String   @db.Uuid // Reference to the user
+  gameId      Int      // IGDB game identifier
+  rating      Int      @db.SmallInt // Rating from 1-5
+  content     String?  @db.Text // Review text content
+  isEdited    Boolean  @default(false) // Flag indicating if review was edited
+  createdAt   DateTime @default(now()) @db.Timestamptz // Review creation time
+  updatedAt   DateTime @updatedAt @db.Timestamptz // Last edit time
+  
+  // Relationship to user
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Ensure one review per user per game
+  @@unique([userId, gameId])
+  // Indexes for efficient queries
+  @@index([userId, gameId], name: "idx_user_game_review")
+  @@index([gameId], name: "idx_game_reviews")
+}
+
+// User action logging
+// Audit trail for user actions performed in the system
+model UserLog {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  action      String   @db.VarChar(100) // Type of user action performed
+  userId      String   @db.Uuid // ID of the user who performed the action
+  userEmail   String?  @db.VarChar(255) // Email of the user for audit purposes
+  targetId    String?  @db.Uuid // ID of the target entity (user, review, etc.)
+  targetType  String?  @db.VarChar(50) // Type of target entity
+  details     String?  @db.Text // Additional details about the action
+  oldValue    String?  @db.Text // Previous value (for updates)
+  newValue    String?  @db.Text // New value (for updates)
+  ipAddress   String?  @db.VarChar(45) // IP address of the user
+  userAgent   String?  @db.Text // User agent string for security tracking
+  timestamp   DateTime @default(now()) @db.Timestamptz // Action timestamp
+
+  // Relationship to user
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Indexes for efficient audit queries
+  @@index([userId], name: "idx_user_log_user_id")
+  @@index([action], name: "idx_user_log_action")
+  @@index([timestamp], name: "idx_user_log_timestamp")
+  @@index([targetType], name: "idx_user_log_target_type")
+}
+
+// Admin action logging
+// Audit trail for administrative actions performed in the system
+model AdminLog {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  action      String   @db.VarChar(100) // Type of admin action performed
+  adminId     String   @db.Uuid // ID of the admin who performed the action
+  adminEmail  String   @db.VarChar(255) // Email of the admin for audit purposes
+  targetId    String?  @db.Uuid // ID of the target entity (user, review, etc.)
+  targetType  String?  @db.VarChar(50) // Type of target entity
+  details     String?  @db.Text // Additional details about the action
+  ipAddress   String?  @db.VarChar(45) // IP address of the admin
+  userAgent   String?  @db.Text // User agent string for security tracking
+  timestamp   DateTime @default(now()) @db.Timestamptz // Action timestamp
+
+  // Indexes for efficient audit queries
+  @@index([adminId], name: "idx_admin_log_admin_id")
+  @@index([action], name: "idx_admin_log_action")
+  @@index([timestamp], name: "idx_admin_log_timestamp")
+  @@index([targetType], name: "idx_admin_log_target_type")
+}
+
+// API Token storage
+// Stores access tokens for external providers (e.g., IGDB via Twitch)
+// Only the token and metadata are stored; client credentials remain in env vars
+model ApiToken {
+  id          Int      @id @default(autoincrement())
+  provider    String   @unique @db.VarChar(50) // e.g., "igdb"
+  accessToken String   @db.Text
+  tokenType   String?  @db.VarChar(20) // e.g., "bearer"
+  expiresAt   DateTime @db.Timestamptz
+  refreshedAt DateTime @default(now()) @db.Timestamptz
+}
+
+// Content Report model
+// Stores user reports against inappropriate or abusive content
+model Report {
+  id             Int           @id @default(autoincrement())
+  reporterId     String        @db.Uuid // User who reported
+  targetType     String        @db.VarChar(50) // e.g., 'REVIEW' (extensible)
+  targetId       Int                       // ID of the reported content (e.g., Review.id)
+  // Snapshot fields to preserve original content context
+  targetContent  String?      @db.Text     // Snapshot of content at report time
+  targetUrl      String?      @db.VarChar(255) // Optional URL to navigate to the content
+  reason         String        @db.VarChar(500) // Reason provided by reporter
+  status         ReportStatus  @default(PENDING)
+  createdAt      DateTime      @default(now()) @db.Timestamptz
+  resolvedAt     DateTime?     @db.Timestamptz
+  moderatorId    String?       @db.Uuid // Admin/moderator who handled
+  resolutionNotes String?      @db.Text
+  // The user who authored/owns the reported content (if applicable)
+  reportedUserId String?       @db.Uuid
+
+  // Relationships
+  reporter       User          @relation("ReportReporter", fields: [reporterId], references: [id])
+  moderator      User?         @relation("ReportModerator", fields: [moderatorId], references: [id])
+  reportedUser   User?         @relation("ReportTargetUser", fields: [reportedUserId], references: [id])
+
+  // Prevent duplicate reports by the same user on the same content
+  @@unique([reporterId, targetType, targetId])
+  // Indexes for efficient moderation queries
+  @@index([status, createdAt], name: "idx_report_status_created")
+  @@index([targetType, targetId], name: "idx_report_target")
+  @@index([reportedUserId], name: "idx_report_reported_user")
 }

@@ -2,11 +2,12 @@
 
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
+import { getIgdbAccessToken } from './tokenManager';
 import { fetchAllDeals } from '@/src/services/cheapsharkServices/getAllDeals';
 
 interface Website {
     url: string;
-    category: number;
+    type: number;
 }
 
 interface Deal {
@@ -36,7 +37,7 @@ export const fetchGamesBySearchFilter = async (
     }
 
     // GET CLIENT IP
-    const headersList = headers();
+    const headersList = await headers();
     const clientIp = headersList.get('x-forwarded-for') || 'unknown';
 
     if (typeof clientIp !== 'string') {
@@ -55,7 +56,8 @@ export const fetchGamesBySearchFilter = async (
         const IGDB_API_URL = `${process.env.IGDB_API_URL}v4/games`;
         const origin = process.env.NEXTAUTH_URL;
         const clientID = process.env.IGDB_CLIENT;
-        const authorization = 'Bearer ' + process.env.IGDB_SECRET;
+        const token = await getIgdbAccessToken();
+        const authorization = 'Bearer ' + token;
 
         if (!origin || !clientID || !authorization) {
             throw new Error('Token or Origin not defined');
@@ -95,10 +97,10 @@ export const fetchGamesBySearchFilter = async (
                     player_perspectives.name,
                     game_modes.name,
                     total_rating, aggregated_rating, rating,
-                    category,
+                    game_type,
                     first_release_date,
                     websites.url,
-                    websites.category,
+                    websites.type,
                     slug;
                 where ${whereClause};
                 limit 20;
@@ -114,7 +116,7 @@ export const fetchGamesBySearchFilter = async (
 
         // EXTRACT STEAM APP IDS
         const steamIds = data.flatMap((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
@@ -125,22 +127,33 @@ export const fetchGamesBySearchFilter = async (
             return [];
         });
 
+        // Add debug logging
+        console.log(`[DEBUG] Search results - Steam IDs found:`, steamIds.length, 'unique IDs');
+
         let prices: Record<string, string> = {};
         if (steamIds.length > 0) {
-            const allDeals = await fetchAllDeals(steamIds);
-            prices = allDeals.reduce((acc: Record<string, string>, deal: Deal) => {
-                const steamAppID = deal.steamAppID.toLowerCase();
-                if (!acc[steamAppID] || parseFloat(deal.salePrice) < parseFloat(acc[steamAppID])) {
-                    acc[steamAppID] = deal.salePrice;
-                }
-                return acc;
-            }, {});
+            try {
+                const allDeals = await fetchAllDeals(steamIds);
+                console.log(`[DEBUG] Found ${allDeals.length} deals for ${steamIds.length} Steam IDs`);
+                prices = allDeals.reduce((acc: Record<string, string>, deal: Deal) => {
+                    const steamAppID = deal.steamAppID.toLowerCase();
+                    if (!acc[steamAppID] || parseFloat(deal.salePrice) < parseFloat(acc[steamAppID])) {
+                        acc[steamAppID] = deal.salePrice;
+                    }
+                    return acc;
+                }, {});
+            } catch (error) {
+                console.error('Error fetching deals from CheapShark:', error);
+                // Continue without prices if deals fetch fails
+            }
+        } else {
+            console.log(`[DEBUG] No Steam IDs found for search results`);
         }
 
 
         // ADD PRICES TO GAME DATA
         const enhancedData = data.map((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 const match = steamSite.url.match(/\/app\/(\d+)/i);
                 if (match) {

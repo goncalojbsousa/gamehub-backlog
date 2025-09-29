@@ -4,10 +4,11 @@ import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
 import { fetchAllDeals } from '../cheapsharkServices/getAllDeals';
 import { fetchAllStores } from '../cheapsharkServices/getAllStores';
+import { getIgdbAccessToken } from './tokenManager';
 
 interface Website {
     url: string;
-    category: number;
+    type: number;
 }
 
 interface Deal {
@@ -19,7 +20,7 @@ interface Deal {
 export const fetchGameDetails = async (query: string) => {
 
     // GET CLIENT IP
-    const headersList = headers();
+    const headersList = await headers();
     const clientIp = headersList.get('x-forwarded-for') || 'unknown';
 
     if (typeof clientIp !== 'string') {
@@ -38,7 +39,8 @@ export const fetchGameDetails = async (query: string) => {
         const IGDB_API_URL = `${process.env.IGDB_API_URL}v4/games`;
         const origin = process.env.NEXTAUTH_URL;
         const clientID = process.env.IGDB_CLIENT;
-        const authorization = 'Bearer ' + process.env.IGDB_SECRET;
+        const token = await getIgdbAccessToken();
+        const authorization = 'Bearer ' + token;
 
         if (!origin || !clientID || !authorization) {
             throw new Error('Token or Origin not defined');
@@ -60,13 +62,13 @@ export const fetchGameDetails = async (query: string) => {
                 storyline,
 
                 genres.name, 
-                category,
+                game_type,
                 themes.name,
                 language_supports.language.native_name,
                 language_supports.language_support_type.name,
                 age_ratings.rating_cover_url,
                 age_ratings.synopsis,
-                age_ratings.rating,
+                age_ratings.rating_category,
 
                 aggregated_rating,
                 rating,
@@ -90,7 +92,7 @@ export const fetchGameDetails = async (query: string) => {
                 game_localizations.name,
                 game_engines.name,
 
-                status,
+                game_status,
                 
                 language_supports,
 
@@ -145,7 +147,7 @@ export const fetchGameDetails = async (query: string) => {
                 standalone_expansions.cover.url,
 
                 websites.url,
-                websites.category,
+                websites.type,
 
                 version_title,
                 involved_companies;
@@ -161,7 +163,7 @@ export const fetchGameDetails = async (query: string) => {
 
         // EXTRACT STEAM APP IDS
         const steamId = data.flatMap((game: Game) => {
-            const steamSite = game.websites?.find((site: Website) => site.category === 13);
+            const steamSite = game.websites?.find((site: Website) => site.type === 13);
             if (steamSite) {
                 // MATCH THE STEAM APP ID FROM THE URL
                 const match = steamSite.url.match(/\/(app|bundle)\/(\d+)/i);
@@ -172,7 +174,17 @@ export const fetchGameDetails = async (query: string) => {
             return [];
         });
 
-        const deals = await fetchAllDeals(steamId);
+        // Add debug logging
+        console.log(`[DEBUG] Game: ${data[0]?.name || 'Unknown'}, Steam IDs found:`, steamId);
+
+        // Only fetch deals if we have valid Steam IDs
+        let deals: Deal[] = [];
+        if (steamId.length > 0) {
+            deals = await fetchAllDeals(steamId);
+            console.log(`[DEBUG] Found ${deals.length} deals for Steam IDs:`, steamId);
+        } else {
+            console.log(`[DEBUG] No Steam IDs found for game: ${data[0]?.name || 'Unknown'}`);
+        }
 
         const allStores = await fetchAllStores();
 
