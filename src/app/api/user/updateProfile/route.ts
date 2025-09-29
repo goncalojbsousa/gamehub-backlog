@@ -9,6 +9,7 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
 import { updateSession } from '@/src/lib/auth/updateSessionServerAction';
+import { logUserAction, USER_ACTIONS } from '@/src/utils/userLogger';
 
 const prisma = new PrismaClient();
 
@@ -73,6 +74,21 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Get current user data for logging purposes
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        name: true
+      }
+    });
+
+    if (!currentUser) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
+
     // If username is being updated, check for uniqueness
     if (validatedInput.username) {
       const existingUser = await prisma.user.findFirst({
@@ -116,6 +132,47 @@ export async function POST(request: Request) {
         isProfilePublic: true,
       }
     });
+
+    // Log username change if it occurred
+    if (validatedInput.username && currentUser.username !== validatedInput.username) {
+      await logUserAction({
+        action: USER_ACTIONS.USERNAME_CHANGE,
+        userId: userId,
+        userEmail: currentUser.email || undefined,
+        targetId: userId,
+        targetType: 'USER',
+        details: `Username changed from "${currentUser.username || 'null'}" to "${validatedInput.username}"`,
+        oldValue: currentUser.username || null,
+        newValue: validatedInput.username,
+        ipAddress: clientIp,
+        userAgent: headersList.get('user-agent') || undefined
+      });
+    }
+
+    // Log other profile updates
+    const profileChanges = [];
+    if (validatedInput.name && currentUser.name !== validatedInput.name) {
+      profileChanges.push(`name: "${currentUser.name || 'null'}" → "${validatedInput.name}"`);
+    }
+    if (validatedInput.bio !== undefined) {
+      profileChanges.push(`bio updated`);
+    }
+    if (validatedInput.isProfilePublic !== undefined) {
+      profileChanges.push(`profile visibility: ${validatedInput.isProfilePublic ? 'public' : 'private'}`);
+    }
+
+    if (profileChanges.length > 0) {
+      await logUserAction({
+        action: USER_ACTIONS.PROFILE_UPDATE,
+        userId: userId,
+        userEmail: currentUser.email || undefined,
+        targetId: userId,
+        targetType: 'USER',
+        details: `Profile updated: ${profileChanges.join(', ')}`,
+        ipAddress: clientIp,
+        userAgent: headersList.get('user-agent') || undefined
+      });
+    }
 
     // If username was updated, force session update
     if (validatedInput.username) {

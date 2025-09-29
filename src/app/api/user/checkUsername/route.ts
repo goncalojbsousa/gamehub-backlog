@@ -5,7 +5,6 @@ import { PrismaClient } from '@prisma/client';
 import { checkRateLimit } from '@/src/utils/rateLimit';
 import { headers } from 'next/headers';
 import { checkIsAuthenticated } from '@/src/lib/auth/checkIsAuthenticated';
-import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getUserId } from '@/src/lib/auth/getUserIdServerAction';
 
@@ -19,7 +18,7 @@ export async function POST(request: Request) {
   // CHECK IS AUTHENTICATED
   const isAuthenticated = await checkIsAuthenticated();
   if (!isAuthenticated) {
-    redirect("/auth/sign-in");
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   // GET CLIENT IP
@@ -27,15 +26,15 @@ export async function POST(request: Request) {
   const clientIp = headersList.get('x-forwarded-for') || 'unknown';
 
   if (typeof clientIp !== 'string') {
-    throw new Error('Access temporarily blocked. Try again later.');
+    return NextResponse.json({ message: 'Access temporarily blocked. Try again later.' }, { status: 400 });
   }
 
   if (clientIp === 'unknown') {
-    throw new Error('Access temporarily blocked. Try again later.');
+    return NextResponse.json({ message: 'Access temporarily blocked. Try again later.' }, { status: 400 });
   }
 
   if (!(await checkRateLimit(clientIp))) {
-    throw new Error('Limit rate exceeded. Try again later.');
+    return NextResponse.json({ message: 'Rate limit exceeded. Try again later.' }, { status: 429 });
   }
 
   // VALIDATE INPUT

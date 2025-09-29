@@ -43,6 +43,7 @@ model User {
   reportsReported  Report[]         @relation("ReportReporter") // Reports this user submitted
   reportsModerated Report[]         @relation("ReportModerator") // Reports this user moderated
   reportsAgainst   Report[]         @relation("ReportTargetUser") // Reports where this user is the reported target
+  userLogs         UserLog[]        // User's action logs for audit trail
 }
 // Account model - OAuth provider connections
 // Links user accounts to external authentication providers (Google, etc.)
@@ -141,6 +142,32 @@ model Review {
   // Indexes for efficient queries
   @@index([userId, gameId], name: "idx_user_game_review")
   @@index([gameId], name: "idx_game_reviews")
+}
+
+// User action logging
+// Audit trail for user actions performed in the system
+model UserLog {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  action      String   @db.VarChar(100) // Type of user action performed
+  userId      String   @db.Uuid // ID of the user who performed the action
+  userEmail   String?  @db.VarChar(255) // Email of the user for audit purposes
+  targetId    String?  @db.Uuid // ID of the target entity (user, review, etc.)
+  targetType  String?  @db.VarChar(50) // Type of target entity
+  details     String?  @db.Text // Additional details about the action
+  oldValue    String?  @db.Text // Previous value (for updates)
+  newValue    String?  @db.Text // New value (for updates)
+  ipAddress   String?  @db.VarChar(45) // IP address of the user
+  userAgent   String?  @db.Text // User agent string for security tracking
+  timestamp   DateTime @default(now()) @db.Timestamptz // Action timestamp
+
+  // Relationship to user
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Indexes for efficient audit queries
+  @@index([userId], name: "idx_user_log_user_id")
+  @@index([action], name: "idx_user_log_action")
+  @@index([timestamp], name: "idx_user_log_timestamp")
+  @@index([targetType], name: "idx_user_log_target_type")
 }
 
 // Admin action logging

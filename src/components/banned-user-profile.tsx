@@ -68,14 +68,15 @@ export const BannedUserProfile: React.FC<BannedUserProfileProps> = ({
   };
 
   return (
-    <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background" style={mainStyle}>
-      {/* Navigation bar */}
-      <Navbar />
+    <div className="min-h-screen flex flex-col">
+      <main className="transition-colors duration-200 pt-24 relative flex-1 bg-background" style={mainStyle}>
+        {/* Navigation bar */}
+        <Navbar />
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="relative z-10">
-          <div className="container mx-auto px-4 lg:px-8 py-8">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="relative z-10">
+            <div className="container mx-auto px-4 lg:px-8 py-8">
             {/* Profile Header */}
             <div className="bg-color_sec rounded-xl p-8 shadow-lg border border-border_detail relative overflow-hidden mb-8 animate-slide-in-up">
               {/* Content */}
@@ -115,24 +116,25 @@ export const BannedUserProfile: React.FC<BannedUserProfileProps> = ({
         </div>
       </div>
 
-      {/* Banned message section */}
-      <div className="container mx-auto px-4 lg:px-8 pb-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-red-100 border border-red-200 rounded-xl p-8 shadow-lg animate-slide-in-up">
-            <div className="text-5xl mb-4">🚫</div>
-            <h2 className="text-2xl font-bold text-red-600 mb-2">Account Suspended</h2>
-            <p className="text-color_text_sec mb-4">
-              This account has been suspended and is no longer accessible.
-            </p>
-            <p className="text-sm text-gray-500">
-              If you believe this is a mistake, please contact support.
-            </p>
+        {/* Banned message section */}
+        <div className="container mx-auto px-4 lg:px-8 pb-16">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-8 shadow-lg animate-slide-in-up">
+              <div className="text-5xl mb-4">🚫</div>
+              <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">Account Suspended</h2>
+              <p className="text-color_text_sec mb-4">
+                This account has been suspended and is no longer accessible.
+              </p>
+              <p className="text-sm text-color_text_sec">
+                If you believe this is a mistake, please contact support.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Footer */}
       <Footer />
-    </main>
+    </div>
   );
 }; 

@@ -202,13 +202,14 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
     };
 
     return (
-        <main className="transition-colors duration-200 pt-24 relative min-h-screen bg-background" style={mainStyle}>
-            <Navbar />
+        <div className="min-h-screen flex flex-col">
+            <main className="transition-colors duration-200 pt-24 relative flex-1 bg-background" style={mainStyle}>
+                <Navbar />
 
-            {/* Hero Section */}
-            <div className="relative overflow-hidden">
-                <div className="relative z-10">
-                    <div className="container mx-auto px-4 lg:px-8 py-8">
+                {/* Hero Section */}
+                <div className="relative overflow-hidden">
+                    <div className="relative z-10">
+                        <div className="container mx-auto px-4 lg:px-8 py-8">
                         {/* Admin Profile Indicator */}
                         <AdminProfileIndicator isPrivate={isPrivateProfile} isAdmin={userRole === 'ADMIN'} />
                         
@@ -260,14 +261,14 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                                                     </p>
                                                 )}
                                                 {isBanned && (
-                                                                                                     <div className="mt-3 p-3 bg-red-100 border border-red-200 rounded-lg">
+                                                                                                     <div className="mt-3 p-3 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                                                    <div className="flex items-center gap-2">
-                                                     <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                     <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
                                                      </svg>
-                                                     <span className="text-red-800 font-medium">Account Suspended</span>
+                                                     <span className="text-red-800 dark:text-red-300 font-medium">Account Suspended</span>
                                                    </div>
-                                                   <p className="text-red-700 text-sm mt-1">
+                                                   <p className="text-red-700 dark:text-red-300 text-sm mt-1">
                                                      This user has been banned and cannot access the site.
                                                    </p>
                                                  </div>
@@ -490,10 +491,11 @@ export const ProfilePage: React.FC<UserProps> = ({ userImage, name, userName, jo
                     )}
                 </div>
             </div>
-
+            </main>
+            
             <div className="mt-16">
                 <Footer />
             </div>
-        </main>
+        </div>
     );
 };

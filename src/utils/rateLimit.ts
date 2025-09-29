@@ -1,5 +1,3 @@
-'use server'
-
 import { prisma } from '@/src/lib/prisma'
 
 // Rate limiting configuration constants
@@ -82,9 +80,7 @@ export async function checkRateLimit(clientIp: string): Promise<boolean> {
         return true;
     } catch (e) {
         console.error('Error in rate limiting:', e);
-        throw e;
-    } finally {
-        // Ensure database connection is properly closed
-        await prisma.$disconnect();
+        // Fail open: do not block the user flow if rate limit storage fails
+        return true;
     }
 }
