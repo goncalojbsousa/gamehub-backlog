@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
   // Get current user ID from session
   const userId = await getUserId();
-  if (userId === undefined) {
+  if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     // Get game statuses for the provided game IDs
     const gameStatuses = await prisma.userGameStatus.findMany({
       where: {
-        userId: userId,
+        userId: userId as string,
         gameId: {
           in: validatedInput.gameIds
         }

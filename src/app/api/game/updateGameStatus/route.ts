@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
   // Get current user ID from session
   const userId = await getUserId();
-  if (userId === undefined) {
+  if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     const result = await prisma.userGameStatus.upsert({
       where: {
         userId_gameId: {
-          userId: userId,
+          userId: userId as string,
           gameId: validatedInput.gameId,
         },
       },
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
         updatedAt: new Date(), // Update timestamp
       },
       create: {
-        userId: userId,
+        userId: userId as string,
         gameId: validatedInput.gameId,
         status: validatedInput.status,
       },

@@ -142,7 +142,7 @@ export async function POST(request: Request) {
         targetId: userId,
         targetType: 'USER',
         details: `Username changed from "${currentUser.username || 'null'}" to "${validatedInput.username}"`,
-        oldValue: currentUser.username || null,
+        oldValue: currentUser.username || undefined,
         newValue: validatedInput.username,
         ipAddress: clientIp,
         userAgent: headersList.get('user-agent') || undefined

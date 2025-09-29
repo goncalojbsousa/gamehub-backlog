@@ -55,7 +55,7 @@ export async function DELETE(request: Request) {
 
   // Get current user ID from session
   const userId = await getUserId();
-  if (userId === undefined) {
+  if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
@@ -63,7 +63,7 @@ export async function DELETE(request: Request) {
     // Delete the game status record
     const result = await prisma.userGameStatus.deleteMany({
       where: {
-        userId: userId,
+        userId: userId as string,
         gameId: validatedInput.gameId,
       },
     });

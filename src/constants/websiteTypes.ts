@@ -3,8 +3,6 @@
  * Maps website type IDs to their corresponding platforms
  * Used for identifying Steam and other platform websites
  * 
- * ⚠️ WARNING: These IDs may change with IGDB API v4 updates
- * Monitor IGDB documentation for changes to website_types endpoint
  */
 export const WEBSITE_TYPES = {
     STEAM: 13, // Steam store page - may change with new API

@@ -145,7 +145,20 @@ export async function getUserLogs(
       prisma.userLog.count({ where: whereClause })
     ]);
 
-    return { logs, total };
+    return {
+      logs: logs.map((log: any) => ({
+        ...log,
+        userEmail: log.userEmail ?? undefined,
+        targetId: log.targetId ?? undefined,
+        targetType: log.targetType ?? undefined,
+        details: log.details ?? undefined,
+        oldValue: log.oldValue ?? undefined,
+        newValue: log.newValue ?? undefined,
+        ipAddress: log.ipAddress ?? undefined,
+        userAgent: log.userAgent ?? undefined,
+      })),
+      total
+    };
   } catch (error) {
     console.error('Error fetching user logs:', error);
     return { logs: [], total: 0 };
